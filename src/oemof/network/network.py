@@ -12,8 +12,12 @@ available from its original location oemof/oemof/network.py
 SPDX-License-Identifier: MIT
 """
 
-from collections import (namedtuple as NT, Mapping, MutableMapping as MM,
-                         UserDict as UD)
+from collections import (
+    namedtuple as NT,
+    Mapping,
+    MutableMapping as MM,
+    UserDict as UD,
+)
 from contextlib import contextmanager
 from functools import total_ordering
 
@@ -37,6 +41,7 @@ from functools import total_ordering
 class Inputs(MM):
     """ A special helper to map `n1.inputs[n2]` to `n2.outputs[n1]`.
     """
+
     def __init__(self, target):
         self.target = target
 
@@ -56,13 +61,17 @@ class Inputs(MM):
         return self.target._in_edges.__len__()
 
     def __repr__(self):
-        return repr("<{0.__module__}.{0.__name__}: {1!r}>"
-                    .format(type(self), dict(self)))
+        return repr(
+            "<{0.__module__}.{0.__name__}: {1!r}>".format(
+                type(self), dict(self)
+            )
+        )
 
 
 class Outputs(UD):
     """ Helper that intercepts modifications to update `Inputs` symmetrically.
     """
+
     def __init__(self, source):
         self.source = source
         super().__init__()
@@ -122,41 +131,45 @@ class Node:
         args.reverse
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
-        for optional in ['label']:
+        for optional in ["label"]:
             if optional in kwargs:
                 if args:
-                    raise(TypeError((
-                        "{}.__init__()\n"
-                        "  got multiple values for argument '{}'")
-                        .format(type(self), optional)))
-                setattr(self, '_' + optional, kwargs[optional])
+                    raise (
+                        TypeError(
+                            (
+                                "{}.__init__()\n"
+                                "  got multiple values for argument '{}'"
+                            ).format(type(self), optional)
+                        )
+                    )
+                setattr(self, "_" + optional, kwargs[optional])
             else:
                 if args:
-                    setattr(self, '_' + optional, args.pop())
+                    setattr(self, "_" + optional, args.pop())
         self._in_edges = set()
-        for i in kwargs.get('inputs', {}):
+        for i in kwargs.get("inputs", {}):
             assert isinstance(i, Node), (
-                    "\n\nInput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
-                    "not an instance of Node, but of {}."
-                    ).format(i, self, type(i))
+                "\n\nInput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
+                "not an instance of Node, but of {}."
+            ).format(i, self, type(i))
             self._in_edges.add(i)
             try:
-                flow = kwargs['inputs'].get(i)
+                flow = kwargs["inputs"].get(i)
             except AttributeError:
                 flow = None
-            edge = globals()['Edge'].from_object(flow)
-            edge.input=i
-            edge.output=self
-        for o in kwargs.get('outputs', {}):
+            edge = globals()["Edge"].from_object(flow)
+            edge.input = i
+            edge.output = self
+        for o in kwargs.get("outputs", {}):
             assert isinstance(o, Node), (
-                    "\n\nOutput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
-                    "not an instance of Node, but of {}."
-                    ).format(o, self, type(o))
+                "\n\nOutput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
+                "not an instance of Node, but of {}."
+            ).format(o, self, type(o))
             try:
-                flow = kwargs['outputs'].get(o)
+                flow = kwargs["outputs"].get(o)
             except AttributeError:
                 flow = None
-            edge = globals()['Edge'].from_object(flow)
+            edge = globals()["Edge"].from_object(flow)
             edge.input = self
             edge.output = o
 
@@ -180,8 +193,9 @@ class Node:
         """
 
     def register(self):
-        if (__class__.registry is not None and
-                not getattr(self, "_delay_registration_", False)):
+        if __class__.registry is not None and not getattr(
+            self, "_delay_registration_", False
+        ):
             __class__.registry.add(self)
 
     def __eq__(self, other):
@@ -197,8 +211,11 @@ class Node:
         return str(self.label)
 
     def __repr__(self):
-        return repr("<{0.__module__}.{0.__name__}: {1!r}>"
-                    .format(type(self), self.label))
+        return repr(
+            "<{0.__module__}.{0.__name__}: {1!r}>".format(
+                type(self), self.label
+            )
+        )
 
     @property
     def label(self):
@@ -207,8 +224,11 @@ class Node:
         attribute holds the actual object passed as a parameter. Otherwise
         :py:`node.label` is a synonym for :py:`str(node)`.
         """
-        return (self._label if hasattr(self, "_label")
-                else "<{} #0x{:x}>".format(type(self).__name__, id(self)))
+        return (
+            self._label
+            if hasattr(self, "_label")
+            else "<{} #0x{:x}>".format(type(self).__name__, id(self))
+        )
 
     @label.setter
     def label(self, label):
@@ -236,7 +256,7 @@ class Node:
         return self._outputs
 
 
-EdgeLabel = NT("EdgeLabel", ['input', 'output'])
+EdgeLabel = NT("EdgeLabel", ["input", "output"])
 
 
 class Edge(Node):
@@ -259,18 +279,21 @@ class Edge(Node):
     Note that all of these parameters are also set as attributes with the same
     name.
     """
+
     Label = EdgeLabel
 
-    def __init__(self, input=None, output=None, flow=None, values=None,
-                 **kwargs):
+    def __init__(
+        self, input=None, output=None, flow=None, values=None, **kwargs
+    ):
         if flow is not None and values is not None:
             raise ValueError(
-                    "\n\n`Edge`'s `flow` and `values` keyword arguments are "
-                    "aliases of each other,\nso they're mutually exclusive.\n"
-                    "You supplied:\n" +
-                    "    `flow`  : {}\n".format(flow) +
-                    "    `values`: {}\n".format(values) +
-                    "Choose one.")
+                "\n\n`Edge`'s `flow` and `values` keyword arguments are "
+                "aliases of each other,\nso they're mutually exclusive.\n"
+                "You supplied:\n"
+                + "    `flow`  : {}\n".format(flow)
+                + "    `values`: {}\n".format(values)
+                + "Choose one."
+            )
         if input is None or output is None:
             self._delay_registration_ = True
         super().__init__(label=Edge.Label(input, output))
@@ -410,11 +433,12 @@ class Entity:
                 e_out.inputs.append(self)
         self.geo_data = kwargs.get("geo_data", None)
         self.regions = []
-        self.add_regions(kwargs.get('regions', []))
+        self.add_regions(kwargs.get("regions", []))
         if __class__.registry is not None:
             __class__.registry.add(self)
 
         # TODO: @Gunni Yupp! Add docstring.
+
     def add_regions(self, regions):
         """Add regions to self.regions
         """
@@ -446,7 +470,9 @@ def temporarily_modifies_registry(f):
     `f` can freely set `Node.registry` to something else. The registration's
     original value is restored afterwards.
     """
+
     def result(*xs, **ks):
         with registry_changed_to(None):
             return f(*xs, **ks)
+
     return result

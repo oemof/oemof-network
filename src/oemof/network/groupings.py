@@ -9,8 +9,7 @@ available from its original location oemof/oemof/groupings.py
 SPDX-License-Identifier: MIT
 """
 
-from collections.abc import (Hashable, Iterable, Mapping,
-                             MutableMapping as MuMa)
+from collections.abc import Hashable, Iterable, Mapping, MutableMapping as MuMa
 from itertools import chain, filterfalse
 
 from oemof.network.network import Edge
@@ -21,6 +20,7 @@ from oemof.network.network import Edge
 #   * Make them easier to understand.
 #   * Update them to use nodes instead of entities.
 #
+
 
 class Grouping:
     """
@@ -102,16 +102,18 @@ class Grouping:
     def __init__(self, key=None, constant_key=None, filter=None, **kwargs):
         if key and constant_key:
             raise TypeError(
-                    "Grouping arguments `key` and `constant_key` are " +
-                    " mutually exclusive.")
+                "Grouping arguments `key` and `constant_key` are "
+                + " mutually exclusive."
+            )
         if constant_key:
             self.key = lambda _: constant_key
         elif key:
             self.key = key
         else:
             raise TypeError(
-                "Grouping constructor missing required argument: " +
-                "one of `key` or `constant_key`.")
+                "Grouping constructor missing required argument: "
+                + "one of `key` or `constant_key`."
+            )
         self.filter = filter
         for kw in ["value", "merge", "filter"]:
             if kw in kwargs:
@@ -132,12 +134,14 @@ class Grouping:
 
         Return :obj:`None` if you don't want to store :obj:`e` in a group.
         """
-        raise NotImplementedError("\n\n"
+        raise NotImplementedError(
+            "\n\n"
             "There is no default implementation for `Groupings.key`.\n"
             "Congratulations, you managed to execute supposedly "
             "unreachable code.\n"
             "Please let us know by filing a bug at:\n\n    "
-            "https://github.com/oemof/oemof/issues\n")
+            "https://github.com/oemof/oemof/issues\n"
+        )
 
     def value(self, e):
         """ Generate the group obtained from :obj:`e`.
@@ -167,10 +171,13 @@ class Grouping:
         """
         if old is new:
             return old
-        raise ValueError("\nGrouping \n  "
-                         "{}:{}\nand\n  {}:{}\ncollides.\n".format(
-                             id(old), old, id(new), new) +
-                         "Possibly duplicate uids/labels?")
+        raise ValueError(
+            "\nGrouping \n  "
+            "{}:{}\nand\n  {}:{}\ncollides.\n".format(
+                id(old), old, id(new), new
+            )
+            + "Possibly duplicate uids/labels?"
+        )
 
     def filter(self, group):
         """
@@ -187,12 +194,14 @@ class Grouping:
         (:obj:`True`) or not (:obj:`False`).
 
         """
-        raise NotImplementedError("\n\n"
+        raise NotImplementedError(
+            "\n\n"
             "`Groupings.filter` called without being overridden.\n"
             "Congratulations, you managed to execute supposedly "
             "unreachable code.\n"
             "Please let us know by filing a bug at:\n\n    "
-            "https://github.com/oemof/oemof/issues\n")
+            "https://github.com/oemof/oemof/issues\n"
+        )
 
     def __call__(self, e, d):
         k = self.key(e) if callable(self.key) else self.key
@@ -210,10 +219,12 @@ class Grouping:
             return
         if not v:
             return
-        for group in (k if (isinstance(k, Iterable) and not
-                            isinstance(k, Hashable))
-                      else [k]):
-            d[group] = (self.merge(v, d[group]) if group in d else v)
+        for group in (
+            k
+            if (isinstance(k, Iterable) and not isinstance(k, Hashable))
+            else [k]
+        ):
+            d[group] = self.merge(v, d[group]) if group in d else v
 
 
 class Nodes(Grouping):
@@ -221,6 +232,7 @@ class Nodes(Grouping):
     Specialises :class:`Grouping` to group :class:`nodes <oemof.network.Node>`
     into :class:`sets <set>`.
     """
+
     def value(self, e):
         """
         Returns a :class:`set` containing only :obj:`e`, so groups are
@@ -243,6 +255,7 @@ class Flows(Nodes):
     Note that this specifically means that the :meth:`key <Flows.key>`, and
     :meth:`value <Flows.value>` functions act on a set of flows.
     """
+
     def value(self, flows):
         """
         Returns a :class:`set` containing only :obj:`flows`, so groups are
@@ -267,6 +280,7 @@ class FlowsWithNodes(Nodes):
     Note that this specifically means that the :meth:`key <Flows.key>`, and
     :meth:`value <Flows.value>` functions act on sets like these.
     """
+
     def value(self, tuples):
         """
         Returns a :class:`set` containing only :obj:`tuples`, so groups are
@@ -291,8 +305,12 @@ class FlowsWithNodes(Nodes):
 def _uid_or_str(node_or_entity):
     """ Helper function to support the transition from `Entitie`s to `Node`s.
     """
-    return (node_or_entity.uid if hasattr(node_or_entity, "uid")
-            else str(node_or_entity))
+    return (
+        node_or_entity.uid
+        if hasattr(node_or_entity, "uid")
+        else str(node_or_entity)
+    )
+
 
 DEFAULT = Grouping(_uid_or_str)
 """ The default :class:`Grouping`.
