@@ -12,15 +12,12 @@ available from its original location oemof/oemof/network.py
 SPDX-License-Identifier: MIT
 """
 
-from collections import (
-    namedtuple as NT,
-    Mapping,
-    MutableMapping as MM,
-    UserDict as UD,
-)
+from collections import Mapping
+from collections import MutableMapping as MM
+from collections import UserDict as UD
+from collections import namedtuple as NT
 from contextlib import contextmanager
 from functools import total_ordering
-
 
 # TODO:
 #

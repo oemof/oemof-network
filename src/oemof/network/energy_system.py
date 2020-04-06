@@ -9,15 +9,16 @@ available from its original location oemof/oemof/energy_system.py
 SPDX-License-Identifier: MIT
 """
 
-from collections import deque
 import logging
 import os
+from collections import deque
 
 import blinker
 import dill as pickle
 
-from oemof.network.groupings import DEFAULT as BY_UID, Grouping, Nodes
-from oemof.network.network import Bus
+from oemof.network.groupings import DEFAULT as BY_UID
+from oemof.network.groupings import Grouping
+from oemof.network.groupings import Nodes
 
 
 class EnergySystem:
@@ -35,8 +36,8 @@ class EnergySystem:
         Stored in the :attr:`entities` attribute.
         Defaults to `[]` if not supplied.
     timeindex : pandas.datetimeindex
-        Defines the time range and, if equidistant, the timeindex for the energy
-        system
+        Defines the time range and, if equidistant, the timeindex for the
+        energy system
     timeincrement : numeric (sequence)
         Define the timeincrement for the energy system
     groupings : list
@@ -83,8 +84,8 @@ class EnergySystem:
     <oemof.core.network.Entity>` will always be grouped by their :attr:`uid
     <oemof.core.network.Entity.uid>`:
 
-    >>> from oemof.network import Entity
-    >>> from oemof.network import Bus, Sink
+    >>> from oemof.network.network import Entity
+    >>> from oemof.network.network import Bus, Sink
     >>> es = EnergySystem()
     >>> bus = Bus(label='electricity')
     >>> es.add(bus)
@@ -126,26 +127,28 @@ class EnergySystem:
     def __init__(self, **kwargs):
         self._first_ungrouped_node_index_ = 0
         self._groups = {}
-        self._groupings = ([BY_UID] +
-                           [g if isinstance(g, Grouping) else Nodes(g)
-                            for g in kwargs.get('groupings', [])])
+        self._groupings = [BY_UID] + [
+            g if isinstance(g, Grouping) else Nodes(g)
+            for g in kwargs.get("groupings", [])
+        ]
         self.entities = []
 
-        self.results = kwargs.get('results')
+        self.results = kwargs.get("results")
 
-        self.timeindex = kwargs.get('timeindex')
+        self.timeindex = kwargs.get("timeindex")
 
-        self.timeincrement = kwargs.get('timeincrement', None)
+        self.timeincrement = kwargs.get("timeincrement", None)
 
-        self.temporal = kwargs.get('temporal')
+        self.temporal = kwargs.get("temporal")
 
-        self.add(*kwargs.get('entities', ()))
+        self.add(*kwargs.get("entities", ()))
 
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
         self.nodes.extend(nodes)
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
+
     signals[add] = blinker.signal(add)
 
     @property
@@ -171,28 +174,29 @@ class EnergySystem:
         self.entities = value
 
     def flows(self):
-        return {(source, target): source.outputs[target]
-                for source in self.nodes
-                for target in source.outputs}
+        return {
+            (source, target): source.outputs[target]
+            for source in self.nodes
+            for target in source.outputs
+        }
 
     def dump(self, dpath=None, filename=None):
         r""" Dump an EnergySystem instance.
         """
         if dpath is None:
-            bpath = os.path.join(os.path.expanduser("~"), '.oemof')
+            bpath = os.path.join(os.path.expanduser("~"), ".oemof")
             if not os.path.isdir(bpath):
                 os.mkdir(bpath)
-            dpath = os.path.join(bpath, 'dumps')
+            dpath = os.path.join(bpath, "dumps")
             if not os.path.isdir(dpath):
                 os.mkdir(dpath)
 
         if filename is None:
-            filename = 'es_dump.oemof'
+            filename = "es_dump.oemof"
 
-        pickle.dump(self.__dict__, open(os.path.join(dpath, filename), 'wb'))
+        pickle.dump(self.__dict__, open(os.path.join(dpath, filename), "wb"))
 
-        msg = ('Attributes dumped to: {0}'.format(os.path.join(
-            dpath, filename)))
+        msg = "Attributes dumped to: {0}".format(os.path.join(dpath, filename))
         logging.debug(msg)
         return msg
 
@@ -200,17 +204,18 @@ class EnergySystem:
         r""" Restore an EnergySystem instance.
         """
         logging.info(
-            "Restoring attributes will overwrite existing attributes.")
+            "Restoring attributes will overwrite existing attributes."
+        )
         if dpath is None:
-            dpath = os.path.join(os.path.expanduser("~"), '.oemof', 'dumps')
+            dpath = os.path.join(os.path.expanduser("~"), ".oemof", "dumps")
 
         if filename is None:
-            filename = 'es_dump.oemof'
+            filename = "es_dump.oemof"
 
-        self.__dict__ = pickle.load(
-                open(os.path.join(dpath, filename), "rb"))
+        self.__dict__ = pickle.load(open(os.path.join(dpath, filename), "rb"))
 
-        msg = ('Attributes restored from: {0}'.format(os.path.join(
-            dpath, filename)))
+        msg = "Attributes restored from: {0}".format(
+            os.path.join(dpath, filename)
+        )
         logging.debug(msg)
         return msg

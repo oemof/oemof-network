@@ -9,11 +9,14 @@ available from its original location oemof/oemof/groupings.py
 SPDX-License-Identifier: MIT
 """
 
-from collections.abc import Hashable, Iterable, Mapping, MutableMapping as MuMa
-from itertools import chain, filterfalse
+from collections.abc import Hashable
+from collections.abc import Iterable
+from collections.abc import Mapping
+from collections.abc import MutableMapping as MuMa
+from itertools import chain
+from itertools import filterfalse
 
 from oemof.network.network import Edge
-
 
 # TODO: Update docstrings.
 #
