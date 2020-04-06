@@ -8,15 +8,13 @@ available from its original location oemof/tests/basic_tests.py
 
 SPDX-License-Identifier: MIT
 """
-try:
-    from collections.abc import Iterable
-except ImportError:
-    from collections import Iterable
+from collections.abc import Iterable
 from pprint import pformat
 
 import pandas as pd
 from nose.tools import eq_
 from nose.tools import ok_
+
 from oemof.network import energy_system as es
 from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
