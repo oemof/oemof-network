@@ -14,6 +14,7 @@ from traceback import format_exception_only as feo
 from nose.tools import assert_raises
 from nose.tools import eq_
 from nose.tools import ok_
+
 from oemof.network.energy_system import EnergySystem as EnSys
 from oemof.network.network import Bus
 from oemof.network.network import Edge
