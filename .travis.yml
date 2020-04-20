@@ -7,24 +7,12 @@ env:
     - SEGFAULT_SIGNALS=all
 matrix:
   include:
-    - python: '3.6'
+    - python: '3.7'
       env:
         - TOXENV=check
-    - python: '3.6'
+    - python: '3.7'
       env:
         - TOXENV=docs
-    - env:
-        - TOXENV=py27-cover,coveralls
-      python: '2.7'
-    - env:
-        - TOXENV=py27-nocov
-      python: '2.7'
-    - env:
-        - TOXENV=py35-cover,coveralls
-      python: '3.5'
-    - env:
-        - TOXENV=py35-nocov
-      python: '3.5'
     - env:
         - TOXENV=py36-cover,coveralls
       python: '3.6'
@@ -43,20 +31,6 @@ matrix:
     - env:
         - TOXENV=py38-nocov
       python: '3.8'
-    - env:
-        - TOXENV=pypy-cover,coveralls
-      python: 'pypy'
-    - env:
-        - TOXENV=pypy-nocov
-      python: 'pypy'
-    - env:
-        - TOXENV=pypy3-cover,coveralls
-        - TOXPYTHON=pypy3
-      python: 'pypy3'
-    - env:
-        - TOXENV=pypy3-nocov
-        - TOXPYTHON=pypy3
-      python: 'pypy3'
 before_install:
   - python --version
   - uname -a

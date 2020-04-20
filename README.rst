@@ -16,7 +16,7 @@ Overview
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
-.. |docs| image:: https://readthedocs.org/projects/oemof.network/badge/?style=flat
+.. |docs| image:: https://readthedocs.org/projects/oemofnetwork/badge/?style=flat
     :target: https://readthedocs.org/projects/oemofnetwork
     :alt: Documentation Status
 
@@ -40,26 +40,25 @@ Overview
    :target: https://codeclimate.com/github/oemof/oemof.network
    :alt: CodeClimate Quality Status
 
-.. |version| image:: https://img.shields.io/pypi/v/oemof.network.svg
+.. |version| image:: https://img.shields.io/pypi/v/oemof.svg
     :alt: PyPI Package latest release
-    :target: https://pypi.org/project/oemof.network
+    :target: https://pypi.org/project/oemof
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/oemof.network.svg
+.. |wheel| image:: https://img.shields.io/pypi/wheel/oemof.svg
     :alt: PyPI Wheel
-    :target: https://pypi.org/project/oemof.network
+    :target: https://pypi.org/project/oemof
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/oemof.network.svg
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/oemof.svg
     :alt: Supported versions
-    :target: https://pypi.org/project/oemof.network
+    :target: https://pypi.org/project/oemof
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/oemof.network.svg
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/oemof.svg
     :alt: Supported implementations
-    :target: https://pypi.org/project/oemof.network
+    :target: https://pypi.org/project/oemof
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0.dev0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0.dev0/uvchik-test-branch
     :alt: Commits since latest release
-    :target: https://github.com/oemof/oemof.network/compare/v0.4.0.dev0...master
-
+    :target: https://github.com/oemof/oemof.network/compare/master...uvchik-test-branch
 
 .. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof.network/master.svg
     :alt: Scrutinizer Status
@@ -88,7 +87,7 @@ Documentation
 =============
 
 
-https://oemof-network.readthedocs.io/
+https://oemofnetwork.readthedocs.io/
 
 
 Development
@@ -114,3 +113,4 @@ Note, to combine the coverage data from all the tox environments run:
       - ::
 
             PYTEST_ADDOPTS=--cov-append tox
+
