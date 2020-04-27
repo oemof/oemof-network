@@ -56,7 +56,7 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/oemof
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0.dev0/uvchik-test-branch
+.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0rc0/uvchik-test-branch
     :alt: Commits since latest release
     :target: https://github.com/oemof/oemof.network/compare/master...uvchik-test-branch
 

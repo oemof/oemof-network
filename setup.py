@@ -25,7 +25,7 @@ def read(*names, **kwargs):
 
 setup(
     name="oemof.network",
-    version="0.4.0.dev0",
+    version="0.4.0rc0",
     license="MIT",
     description="The network/graph submodules of oemof.",
     long_description="%s\n%s"
