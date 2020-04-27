@@ -32,8 +32,8 @@ Overview
     :alt: Coverage Status
     :target: https://coveralls.io/r/oemof/oemof.network
 
-.. |codacy| image:: https://img.shields.io/codacy/grade/CODACY_PROJECT_ID.svg
-    :target: https://www.codacy.com/app/oemof/oemof.network
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
+    :target: https://www.codacy.com/gh/oemof/oemof.network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof.network&amp;utm_campaign=Badge_Grade
     :alt: Codacy Code Quality Status
 
 .. |codeclimate| image:: https://codeclimate.com/github/oemof/oemof.network/badges/gpa.svg
