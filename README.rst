@@ -40,25 +40,25 @@ Overview
    :target: https://codeclimate.com/github/oemof/oemof.network
    :alt: CodeClimate Quality Status
 
-.. |version| image:: https://img.shields.io/pypi/v/oemof.svg
+.. |version| image:: https://img.shields.io/pypi/v/oemof.network.svg
     :alt: PyPI Package latest release
     :target: https://pypi.org/project/oemof
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/oemof.svg
+.. |wheel| image:: https://img.shields.io/pypi/wheel/oemof.network.svg
     :alt: PyPI Wheel
     :target: https://pypi.org/project/oemof
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/oemof.svg
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/oemof.network.svg
     :alt: Supported versions
     :target: https://pypi.org/project/oemof
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/oemof.svg
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/oemof.network.svg
     :alt: Supported implementations
     :target: https://pypi.org/project/oemof
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0rc0/uvchik-test-branch
+.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0rc1/dev
     :alt: Commits since latest release
-    :target: https://github.com/oemof/oemof.network/compare/master...uvchik-test-branch
+    :target: https://github.com/oemof/oemof.network/compare/master...dev
 
 .. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof.network/master.svg
     :alt: Scrutinizer Status
