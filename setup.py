@@ -35,6 +35,7 @@ setup(
         ),
         re.sub(":[a-z]+:`~?(.*?)`", r"``\1``", read("CHANGELOG.rst")),
     ),
+    long_description_content_type="text/x-rst",
     author="oemof developer group",
     author_email="contact@oemof.org",
     url="https://github.com/oemof/oemof.network",
