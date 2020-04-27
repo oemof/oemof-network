@@ -30,7 +30,7 @@ from oemof.network.network import temporarily_modifies_registry
 class TestsEnergySystem:
 
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         cls.timeindex = pd.date_range('1/1/2012', periods=5, freq='H')
 
     def setup(self):
