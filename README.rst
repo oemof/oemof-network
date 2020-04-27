@@ -42,19 +42,19 @@ Overview
 
 .. |version| image:: https://img.shields.io/pypi/v/oemof.network.svg
     :alt: PyPI Package latest release
-    :target: https://pypi.org/project/oemof
+    :target: https://pypi.org/project/oemof.network
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/oemof.network.svg
     :alt: PyPI Wheel
-    :target: https://pypi.org/project/oemof
+    :target: https://pypi.org/project/oemof.network
 
 .. |supported-versions| image:: https://img.shields.io/pypi/pyversions/oemof.network.svg
     :alt: Supported versions
-    :target: https://pypi.org/project/oemof
+    :target: https://pypi.org/project/oemof.network
 
 .. |supported-implementations| image:: https://img.shields.io/pypi/implementation/oemof.network.svg
     :alt: Supported implementations
-    :target: https://pypi.org/project/oemof
+    :target: https://pypi.org/project/oemof.network
 
 .. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0rc1/dev
     :alt: Commits since latest release
