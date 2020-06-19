@@ -12,8 +12,8 @@ available from its original location oemof/oemof/network.py
 SPDX-License-Identifier: MIT
 """
 
-from collections import Mapping
-from collections import MutableMapping as MM
+from collections.abc import Mapping
+from collections.abc import MutableMapping as MM
 from collections import UserDict as UD
 from collections import namedtuple as NT
 from contextlib import contextmanager
