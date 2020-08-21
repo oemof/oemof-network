@@ -84,7 +84,6 @@ class EnergySystem:
     <oemof.core.network.Entity>` will always be grouped by their :attr:`uid
     <oemof.core.network.Entity.uid>`:
 
-    >>> from oemof.network.network import Entity
     >>> from oemof.network.network import Bus, Sink
     >>> es = EnergySystem()
     >>> bus = Bus(label='electricity')
