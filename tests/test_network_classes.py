@@ -335,6 +335,7 @@ class TestsEnergySystemNodesIntegration:
     def test_registry_modification_decorator(self):
         Node("registered")
         ok_("registered" in self.es.groups)
+
         @temporarily_modifies_registry
         def create_a_node():
             Node("not registered")
