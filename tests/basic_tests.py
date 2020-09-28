@@ -22,7 +22,6 @@ from oemof.network.groupings import FlowsWithNodes as FWNs
 from oemof.network.groupings import Grouping
 from oemof.network.groupings import Nodes
 from oemof.network.network import Bus
-from oemof.network.network import Edge
 from oemof.network.network import Entity
 from oemof.network.network import Node
 from oemof.network.network import Transformer
