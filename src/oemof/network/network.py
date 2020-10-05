@@ -18,7 +18,7 @@ from collections import UserDict as UD
 from collections import namedtuple as NT
 from contextlib import contextmanager
 from functools import total_ordering
-from warnings import warn
+import warnings
 
 
 # TODO:
@@ -90,12 +90,12 @@ class Metaclass(type):
 
     @property
     def registry(cls):
-        warn(cls.registry_warning)
+        warnings.warn(cls.registry_warning)
         return cls._registry
 
     @registry.setter
     def registry(cls, registry):
-        warn(cls.registry_warning)
+        warnings.warn(cls.registry_warning)
         cls._registry = registry
 
 
