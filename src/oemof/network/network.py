@@ -215,7 +215,11 @@ class Node(metaclass=Metaclass):
         """
 
     def register(self):
-        if __class__.registry is not None and not getattr(
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            registry = __class__.registry
+
+        if registry is not None and not getattr(
             self, "_delay_registration_", False
         ):
             __class__.registry.add(self)
