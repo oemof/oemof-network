@@ -19,6 +19,7 @@ import warnings
 import pandas as pd
 import pytest
 
+from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Node
 
 
@@ -51,3 +52,11 @@ class NodeRegistrationTests:
                     "\n---\n".join([str(w.message) for w in recorded])
                 )
             )
+
+    def test_that_node_creation_emits_a_warning_if_registry_is_not_none(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            Node.registry = EnergySystem()
+
+        with pytest.warns(FutureWarning):
+            n = Node()
