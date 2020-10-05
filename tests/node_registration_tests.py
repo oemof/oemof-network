@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 
-""" Tests pertaining to :obj:`node <oemof.network.network.Node>` registration via :attr:`Node.registry <oemof.network.network.Node.registry>`.
+""" Tests pertaining to :obj:`node {}` registration via :attr:`Node.registry <oemof.network.network.Node.registry>`.
 
 This test suite (eventually) collects all tests revolving around automatically
 registering :obj:`nodes <oemof.network.network.Node>` in an
@@ -13,10 +13,9 @@ by the contributors recorded in the version control history of the file,
 available from its original location oemof/tests/basic_tests.py
 
 SPDX-License-Identifier: MIT
-"""
+""".format("<oemof.network.network.Node>")
 import warnings
 
-import pandas as pd
 import pytest
 
 from oemof.network.energy_system import EnergySystem
@@ -42,7 +41,7 @@ class NodeRegistrationTests:
 
     def test_that_node_creation_does_not_emit_a_warning(self):
         with pytest.warns(None) as record:
-            n = Node()
+            Node()
 
         recorded = [w for w in record.list if w.category is FutureWarning]
         if recorded:
@@ -59,4 +58,4 @@ class NodeRegistrationTests:
             Node.registry = EnergySystem()
 
         with pytest.warns(FutureWarning):
-            n = Node()
+            Node()
