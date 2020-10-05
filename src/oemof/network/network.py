@@ -18,6 +18,8 @@ from collections import UserDict as UD
 from collections import namedtuple as NT
 from contextlib import contextmanager
 from functools import total_ordering
+from warnings import warn
+
 
 # TODO:
 #
@@ -88,10 +90,12 @@ class Metaclass(type):
 
     @property
     def registry(cls):
+        warn(cls.registry_warning)
         return cls._registry
 
     @registry.setter
     def registry(cls, registry):
+        warn(cls.registry_warning)
         cls._registry = registry
 
 
@@ -132,6 +136,14 @@ class Node(metaclass=Metaclass):
         <https://docs.python.org/3/reference/datamodel.html#slots>`_ for more
         information.
     """
+
+    registry_warning = FutureWarning(
+        "\nAutomatic registration of `Node`s is deprecated in favour of\n"
+        "explicitly adding `Node`s to an `EnergySystem` via "
+        "`EnergySystem.add`.\n"
+        "This feature, i.e. the `Node.registry` attribute and functionality\n"
+        "pertaining to it, will be removed in future versions.\n"
+    )
 
     _registry = None
     __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
