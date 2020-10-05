@@ -82,8 +82,21 @@ class Outputs(UD):
         return super().__setitem__(key, value)
 
 
+class Metaclass(type):
+    """ The metaclass for objects in an oemof energy system."
+    """
+
+    @property
+    def registry(cls):
+        return cls._registry
+
+    @registry.setter
+    def registry(cls, registry):
+        cls._registry = registry
+
+
 @total_ordering
-class Node:
+class Node(metaclass=Metaclass):
     """ Represents a Node in an energy system graph.
 
     Abstract superclass of the two general types of nodes of an energy system
@@ -120,7 +133,7 @@ class Node:
         information.
     """
 
-    registry = None
+    _registry = None
     __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
 
     def __init__(self, *args, **kwargs):
