@@ -25,6 +25,12 @@ from oemof.network.network import Node
 class NodeRegistrationTests:
 
     # TODO: Move all other registration tests into this test suite.
+
+    def setup(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            Node.registry = None
+
     def test_that_setting_a_node_registry_emits_a_warning(self):
         with pytest.warns(FutureWarning):
             Node.registry = 1
@@ -32,3 +38,16 @@ class NodeRegistrationTests:
     def test_that_accessing_the_node_registry_emits_a_warning(self):
         with pytest.warns(FutureWarning):
             Node.registry
+
+    def test_that_node_creation_does_not_emit_a_warning(self):
+        with pytest.warns(None) as record:
+            n = Node()
+
+        recorded = [w for w in record.list if w.category is FutureWarning]
+        if recorded:
+            pytest.fail(
+                "Creating a node emitted the following `FutureWarning`s\n"
+                "although no warning was expected:\n{}".format(
+                    "\n---\n".join([str(w.message) for w in recorded])
+                )
+            )
