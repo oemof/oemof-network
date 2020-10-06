@@ -26,7 +26,6 @@ from oemof.network.network import Node
 
 
 class TestsEnergySystem:
-
     def setup(self):
         self.es = es.EnergySystem()
 
@@ -52,10 +51,10 @@ class TestsEnergySystem:
 
         ensys = es.EnergySystem(groupings=[by_uid])
 
-        ungrouped = [Entity(uid="Not in 'Group': {}".format(i))
-                     for i in range(10)]
-        grouped = [Entity(uid="In 'Group': {}".format(i))
-                   for i in range(10)]
+        ungrouped = [
+            Entity(uid="Not in 'Group': {}".format(i)) for i in range(10)
+        ]
+        grouped = [Entity(uid="In 'Group': {}".format(i)) for i in range(10)]
         ok_(None not in ensys.groups)
         for g in ensys.groups.values():
             for e in ungrouped:
@@ -82,19 +81,29 @@ class TestsEnergySystem:
         ]
         ensy.add(*nodes)
         for group in ["Foo", "Bar", "A", "B"]:
-            eq_(len(ensy.groups[group]), 5,
-                ("\n  Failed testing length of group '{}'." +
-                 "\n  Expected: 5" +
-                 "\n  Got     : {}" +
-                 "\n  Group   : {}").format(
-                    group, len(ensy.groups[group]),
-                    sorted([e.label for e in ensy.groups[group]])))
+            eq_(
+                len(ensy.groups[group]),
+                5,
+                (
+                    "\n  Failed testing length of group '{}'."
+                    + "\n  Expected: 5"
+                    + "\n  Got     : {}"
+                    + "\n  Group   : {}"
+                ).format(
+                    group,
+                    len(ensy.groups[group]),
+                    sorted([e.label for e in ensy.groups[group]]),
+                ),
+            )
 
     def test_grouping_filter_parameter(self):
-        g1 = Grouping(key=lambda e: "The Special One",
-                      filter=lambda e: "special" in str(e))
-        g2 = Nodes(key=lambda e: "A Subset",
-                   filter=lambda e: "subset" in str(e))
+        g1 = Grouping(
+            key=lambda e: "The Special One",
+            filter=lambda e: "special" in str(e),
+        )
+        g2 = Nodes(
+            key=lambda e: "A Subset", filter=lambda e: "subset" in str(e)
+        )
         ensys = es.EnergySystem(groupings=[g1, g2])
         special = Node(label="special")
         subset = set(Node(label="subset: {}".format(i)) for i in range(10))
@@ -112,8 +121,11 @@ class TestsEnergySystem:
         retained.
         This test makes sure that the bug doesn't resurface again.
         """
-        g = Nodes(key="group", value=lambda _: {1, 2, 3, 4},
-                  filter=lambda x: x % 2 == 0)
+        g = Nodes(
+            key="group",
+            value=lambda _: {1, 2, 3, 4},
+            filter=lambda x: x % 2 == 0,
+        )
         ensys = es.EnergySystem(groupings=[g])
         special = Node(label="object")
         ensys.add(special)
@@ -121,8 +133,9 @@ class TestsEnergySystem:
 
     def test_non_callable_group_keys(self):
         collect_everything = Nodes(key="everything")
-        g1 = Grouping(key="The Special One",
-                      filter=lambda e: "special" in e.label)
+        g1 = Grouping(
+            key="The Special One", filter=lambda e: "special" in e.label
+        )
         g2 = Nodes(key="A Subset", filter=lambda e: "subset" in e.label)
         ensys = es.EnergySystem(groupings=[g1, g2, collect_everything])
         special = Node(label="special")
@@ -151,19 +164,22 @@ class TestsEnergySystem:
         self.es.add(*buses[1:])
         ok_(
             group in self.es.groups,
-            "\nExpected to find\n\n  `{!r}`\n\nin `es.groups`.\nGot:\n\n  `{}`"
-            .format(
+            (
+                "\nExpected to find"
+                "\n\n  `{!r}`\n\n"
+                "in `es.groups`.\n"
+                "Got:\n\n  `{}`"
+            ).format(
                 group,
                 "\n   ".join(pformat(set(self.es.groups.keys())).split("\n")),
             ),
         )
         ok_(
             buses[0] in self.es.groups[group],
-            "\nExpected\n\n  `{}`\n\nin `es.groups['{}']`:\n\n  `{}`"
-            .format(
+            "\nExpected\n\n  `{}`\n\nin `es.groups['{}']`:\n\n  `{}`".format(
                 "\n   ".join(pformat(buses[0]).split("\n")),
                 group,
-                "\n   ".join(pformat(self.es.groups[group]).split("\n"))
+                "\n   ".join(pformat(self.es.groups[group]).split("\n")),
             ),
         )
 
@@ -174,7 +190,10 @@ class TestsEnergySystem:
         without having to worry about `Grouping`s trying to call them. This
         test makes sure that the parameter is handled correctly.
         """
-        def everything(): return "everything"
+
+        def everything():
+            return "everything"
+
         collect_everything = Nodes(constant_key=everything)
         ensys = es.EnergySystem(groupings=[collect_everything])
         node = Node(label="A Node")
@@ -213,7 +232,7 @@ class TestsEnergySystem:
 
         def subscriber(sender, **kwargs):
             ok_(sender is node)
-            ok_(kwargs['EnergySystem'] is self.es)
+            ok_(kwargs["EnergySystem"] is self.es)
             subscriber.called = True
 
         subscriber.called = False
