@@ -84,8 +84,7 @@ class Outputs(UD):
 
 
 class Metaclass(type):
-    """ The metaclass for objects in an oemof energy system."
-    """
+    """ The metaclass for objects in an oemof energy system."""
 
     @property
     def registry(cls):
