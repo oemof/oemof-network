@@ -13,7 +13,9 @@ by the contributors recorded in the version control history of the file,
 available from its original location oemof/tests/basic_tests.py
 
 SPDX-License-Identifier: MIT
-""".format("<oemof.network.network.Node>")
+""".format(
+    "<oemof.network.network.Node>"
+)
 import warnings
 
 import pandas as pd
@@ -31,7 +33,7 @@ class NodeRegistrationTests:
 
     @classmethod
     def setup_class(cls):
-        cls.timeindex = pd.date_range('1/1/2012', periods=5, freq='H')
+        cls.timeindex = pd.date_range("1/1/2012", periods=5, freq="H")
 
     def setup(self):
         self.es = EnergySystem()
@@ -41,11 +43,11 @@ class NodeRegistrationTests:
 
     def test_entity_registration(self):
         Node.registry = self.es
-        bus = Bus(label='bus-uid', type='bus-type')
+        bus = Bus(label="bus-uid", type="bus-type")
         assert self.es.nodes[0] == bus
-        bus2 = Bus(label='bus-uid2', type='bus-type')
+        bus2 = Bus(label="bus-uid2", type="bus-type")
         assert self.es.nodes[1] == bus2
-        t1 = Transformer(label='pp_gas', inputs=[bus], outputs=[bus2])
+        t1 = Transformer(label="pp_gas", inputs=[bus], outputs=[bus2])
         assert t1 in self.es.nodes
         self.es.timeindex = self.timeindex
         assert len(self.es.timeindex) == 5
