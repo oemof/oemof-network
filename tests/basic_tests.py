@@ -12,7 +12,6 @@ from collections.abc import Iterable
 from itertools import chain
 from pprint import pformat
 
-import pandas as pd
 from nose.tools import eq_
 from nose.tools import ok_
 
@@ -24,29 +23,14 @@ from oemof.network.groupings import Nodes
 from oemof.network.network import Bus
 from oemof.network.network import Entity
 from oemof.network.network import Node
-from oemof.network.network import Transformer
 from oemof.network.network import temporarily_modifies_registry
 
 
 class TestsEnergySystem:
 
-    @classmethod
-    def setup_class(cls):
-        cls.timeindex = pd.date_range('1/1/2012', periods=5, freq='H')
-
     def setup(self):
         self.es = es.EnergySystem()
         Node.registry = self.es
-
-    def test_entity_registration(self):
-        bus = Bus(label='bus-uid', type='bus-type')
-        eq_(self.es.nodes[0], bus)
-        bus2 = Bus(label='bus-uid2', type='bus-type')
-        eq_(self.es.nodes[1], bus2)
-        t1 = Transformer(label='pp_gas', inputs=[bus], outputs=[bus2])
-        ok_(t1 in self.es.nodes)
-        self.es.timeindex = self.timeindex
-        ok_(len(self.es.timeindex) == 5)
 
     def test_entity_grouping_on_construction(self):
         bus = Bus(label="test bus")

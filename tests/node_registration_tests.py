@@ -16,20 +16,41 @@ SPDX-License-Identifier: MIT
 """.format("<oemof.network.network.Node>")
 import warnings
 
+import pandas as pd
 import pytest
+from nose.tools import eq_
+from nose.tools import ok_
 
 from oemof.network.energy_system import EnergySystem
+from oemof.network.network import Bus
 from oemof.network.network import Node
+from oemof.network.network import Transformer
 
 
 class NodeRegistrationTests:
 
     # TODO: Move all other registration tests into this test suite.
 
+    @classmethod
+    def setup_class(cls):
+        cls.timeindex = pd.date_range('1/1/2012', periods=5, freq='H')
+
     def setup(self):
+        self.es = EnergySystem()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             Node.registry = None
+
+    def test_entity_registration(self):
+        Node.registry = self.es
+        bus = Bus(label='bus-uid', type='bus-type')
+        eq_(self.es.nodes[0], bus)
+        bus2 = Bus(label='bus-uid2', type='bus-type')
+        eq_(self.es.nodes[1], bus2)
+        t1 = Transformer(label='pp_gas', inputs=[bus], outputs=[bus2])
+        ok_(t1 in self.es.nodes)
+        self.es.timeindex = self.timeindex
+        ok_(len(self.es.timeindex) == 5)
 
     def test_that_setting_a_node_registry_emits_a_warning(self):
         with pytest.warns(FutureWarning):
