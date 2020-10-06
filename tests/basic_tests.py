@@ -23,14 +23,12 @@ from oemof.network.groupings import Nodes
 from oemof.network.network import Bus
 from oemof.network.network import Entity
 from oemof.network.network import Node
-from oemof.network.network import temporarily_modifies_registry
 
 
 class TestsEnergySystem:
 
     def setup(self):
         self.es = es.EnergySystem()
-        Node.registry = self.es
 
     def test_entity_grouping_on_construction(self):
         bus = Bus(label="test bus")
@@ -39,6 +37,7 @@ class TestsEnergySystem:
 
     def test_that_nodes_is_a_proper_alias_for_entities(self):
         b1, b2 = Bus(label="B1"), Bus(label="B2")
+        self.es.add(b1, b2)
         eq_(self.es.nodes, [b1, b2])
         empty = []
         self.es.nodes = empty
@@ -66,7 +65,6 @@ class TestsEnergySystem:
                 if isinstance(g, Iterable) and not isinstance(g, str):
                     ok_(e in g)
 
-    @temporarily_modifies_registry
     def test_defining_multiple_groupings_with_one_function(self):
         def assign_to_multiple_groups_in_one_go(n):
             g1 = n.label[-1]
@@ -74,10 +72,15 @@ class TestsEnergySystem:
             return [g1, g2]
 
         ensy = es.EnergySystem(groupings=[assign_to_multiple_groups_in_one_go])
-        Node.registry = ensy
-        [Node(label=("Foo: " if i % 2 == 0 else "Bar: ") +
-              "{}".format(i) + ("A" if i < 5 else "B")) for i in
-         range(10)]
+        nodes = [
+            Node(
+                label=("Foo: " if i % 2 == 0 else "Bar: ")
+                + "{}".format(i)
+                + ("A" if i < 5 else "B")
+            )
+            for i in range(10)
+        ]
+        ensy.add(*nodes)
         for group in ["Foo", "Bar", "A", "B"]:
             eq_(len(ensy.groups[group]), 5,
                 ("\n  Failed testing length of group '{}'." +
@@ -164,7 +167,6 @@ class TestsEnergySystem:
             ),
         )
 
-    @temporarily_modifies_registry
     def test_constant_group_keys(self):
         """ Callable keys passed in as `constant_key` should not be called.
 
@@ -175,31 +177,29 @@ class TestsEnergySystem:
         def everything(): return "everything"
         collect_everything = Nodes(constant_key=everything)
         ensys = es.EnergySystem(groupings=[collect_everything])
-        Node.registry = ensys
         node = Node(label="A Node")
+        ensys.add(node)
         ok_("everything" not in ensys.groups)
         ok_(everything in ensys.groups)
         eq_(ensys.groups[everything], {node})
 
-    @temporarily_modifies_registry
     def test_flows(self):
         key = object()
         ensys = es.EnergySystem(groupings=[Flows(key)])
-        Node.registry = ensys
         bus = Bus(label="A Bus")
-        Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        ensys.add(bus, node)
         eq_(
             ensys.groups[key],
             set(chain(bus.inputs.values(), bus.outputs.values())),
         )
 
-    @temporarily_modifies_registry
     def test_flows_with_nodes(self):
         key = object()
         ensys = es.EnergySystem(groupings=[FWNs(key)])
-        Node.registry = ensys
         bus = Bus(label="A Bus")
         node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        ensys.add(bus, node)
         eq_(
             ensys.groups[key],
             {(bus, node, bus.outputs[node]), (node, bus, node.outputs[bus])},
