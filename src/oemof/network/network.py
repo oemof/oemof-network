@@ -376,8 +376,7 @@ class Edge(Node):
         self.label = Edge.Label(self.label.input, o)
         if old_output is None and o is not None and self.input is not None:
             del self._delay_registration_
-            if __class__.registry is not None:
-                __class__.registry.add(self)
+            self.register()
             o.inputs[self.input] = self
 
 
