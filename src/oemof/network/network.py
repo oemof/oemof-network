@@ -13,10 +13,10 @@ SPDX-License-Identifier: MIT
 """
 
 import warnings
-from collections import Mapping
-from collections import MutableMapping as MM
 from collections import UserDict as UD
 from collections import namedtuple as NT
+from collections.abc import Mapping
+from collections.abc import MutableMapping as MM
 from contextlib import contextmanager
 from functools import total_ordering
 
