@@ -182,7 +182,10 @@ class TestsEnergySystem:
         self.es.add(*buses[1:])
         ok_(
             group in self.es.groups,
-            "\nExpected to find\n\n  `{!r}`\n\nin `es.groups`.\nGot:\n\n  `{}`".format(
+            (
+                "\nExpected to find\n\n  `{!r}`\n\n"
+                "in `es.groups`.\nGot:\n\n  `{}`"
+            ).format(
                 group,
                 "\n   ".join(pformat(set(self.es.groups.keys())).split("\n")),
             ),
