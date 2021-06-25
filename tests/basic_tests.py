@@ -9,6 +9,7 @@ available from its original location oemof/tests/basic_tests.py
 SPDX-License-Identifier: MIT
 """
 from collections.abc import Iterable
+from itertools import chain
 from pprint import pformat
 
 import pandas as pd
@@ -201,21 +202,24 @@ class TestsEnergySystem:
         key = object()
         ensys = es.EnergySystem(groupings=[Flows(key)])
         Node.registry = ensys
-        flows = (object(), object())
         bus = Bus(label="A Bus")
-        Node(label="A Node", inputs={bus: flows[0]}, outputs={bus: flows[1]})
-        eq_(ensys.groups[key], set(flows))
+        Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        eq_(
+            ensys.groups[key],
+            set(chain(bus.inputs.values(), bus.outputs.values())),
+        )
 
     @temporarily_modifies_registry
     def test_flows_with_nodes(self):
         key = object()
         ensys = es.EnergySystem(groupings=[FWNs(key)])
         Node.registry = ensys
-        flows = (object(), object())
         bus = Bus(label="A Bus")
-        node = Node(label="A Node",
-                    inputs={bus: flows[0]}, outputs={bus: flows[1]})
-        eq_(ensys.groups[key], {(bus, node, flows[0]), (node, bus, flows[1])})
+        node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        eq_(
+            ensys.groups[key],
+            {(bus, node, bus.outputs[node]), (node, bus, node.outputs[bus])},
+        )
 
     def test_that_node_additions_are_signalled(self):
         """
