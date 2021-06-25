@@ -32,15 +32,15 @@ class TestsEnergySystem:
     def test_entity_grouping_on_construction(self):
         bus = Bus(label="test bus")
         ensys = es.EnergySystem(entities=[bus])
-        ok_(ensys.groups[bus.label] is bus)
+        assert ensys.groups[bus.label] is bus
 
     def test_that_nodes_is_a_proper_alias_for_entities(self):
         b1, b2 = Bus(label="B1"), Bus(label="B2")
         self.es.add(b1, b2)
-        eq_(self.es.nodes, [b1, b2])
+        assert self.es.nodes == [b1, b2]
         empty = []
         self.es.nodes = empty
-        ok_(self.es.entities is empty)
+        assert self.es.entities is empty
 
     def test_that_none_is_not_a_valid_group(self):
         def by_uid(n):
@@ -55,14 +55,14 @@ class TestsEnergySystem:
             Entity(uid="Not in 'Group': {}".format(i)) for i in range(10)
         ]
         grouped = [Entity(uid="In 'Group': {}".format(i)) for i in range(10)]
-        ok_(None not in ensys.groups)
+        assert None not in ensys.groups
         for g in ensys.groups.values():
             for e in ungrouped:
                 if isinstance(g, Iterable) and not isinstance(g, str):
-                    ok_(e not in g)
+                    assert e not in g
             for e in grouped:
                 if isinstance(g, Iterable) and not isinstance(g, str):
-                    ok_(e in g)
+                    assert e in g
 
     def test_defining_multiple_groupings_with_one_function(self):
         def assign_to_multiple_groups_in_one_go(n):
@@ -110,11 +110,11 @@ class TestsEnergySystem:
         others = set(Node(label="other: {}".format(i)) for i in range(10))
         ensys.add(special, *subset)
         ensys.add(*others)
-        eq_(ensys.groups["The Special One"], special)
-        eq_(ensys.groups["A Subset"], subset)
+        assert ensys.groups["The Special One"] == special
+        assert ensys.groups["A Subset"] == subset
 
     def test_proper_filtering(self):
-        """ `Grouping.filter` should not be "all or nothing".
+        """`Grouping.filter` should not be "all or nothing".
 
         There was a bug where, if `Grouping.filter` returned `False` only for
         some elements of `Grouping.value(e)`, those elements where actually
@@ -129,7 +129,7 @@ class TestsEnergySystem:
         ensys = es.EnergySystem(groupings=[g])
         special = Node(label="object")
         ensys.add(special)
-        eq_(ensys.groups["group"], {2, 4})
+        assert ensys.groups["group"] == {2, 4}
 
     def test_non_callable_group_keys(self):
         collect_everything = Nodes(key="everything")
@@ -144,12 +144,12 @@ class TestsEnergySystem:
         everything = subset.union(others)
         everything.add(special)
         ensys.add(*everything)
-        eq_(ensys.groups["The Special One"], special)
-        eq_(ensys.groups["A Subset"], subset)
-        eq_(ensys.groups["everything"], everything)
+        assert ensys.groups["The Special One"] == special
+        assert ensys.groups["A Subset"] == subset
+        assert ensys.groups["everything"] == everything
 
     def test_grouping_laziness(self):
-        """ Energy system `groups` should be fully lazy.
+        """Energy system `groups` should be fully lazy.
 
         `Node`s added to an energy system should only be tested for and put
         into their respective groups right before the `groups` property of an
@@ -162,20 +162,16 @@ class TestsEnergySystem:
         self.es.add(buses[0])
         buses[0].group = True
         self.es.add(*buses[1:])
-        ok_(
-            group in self.es.groups,
+        assert group in self.es.groups, (
             (
-                "\nExpected to find"
-                "\n\n  `{!r}`\n\n"
-                "in `es.groups`.\n"
-                "Got:\n\n  `{}`"
+                "\nExpected to find\n\n  `{!r}`\n\n"
+                "in `es.groups`.\nGot:\n\n  `{}`"
             ).format(
                 group,
                 "\n   ".join(pformat(set(self.es.groups.keys())).split("\n")),
             ),
         )
-        ok_(
-            buses[0] in self.es.groups[group],
+        assert buses[0] in self.es.groups[group], (
             "\nExpected\n\n  `{}`\n\nin `es.groups['{}']`:\n\n  `{}`".format(
                 "\n   ".join(pformat(buses[0]).split("\n")),
                 group,
@@ -184,7 +180,7 @@ class TestsEnergySystem:
         )
 
     def test_constant_group_keys(self):
-        """ Callable keys passed in as `constant_key` should not be called.
+        """Callable keys passed in as `constant_key` should not be called.
 
         The `constant_key` parameter can be used to specify callable group keys
         without having to worry about `Grouping`s trying to call them. This
@@ -197,10 +193,10 @@ class TestsEnergySystem:
         collect_everything = Nodes(constant_key=everything)
         ensys = es.EnergySystem(groupings=[collect_everything])
         node = Node(label="A Node")
-        ensys.add(node)
-        ok_("everything" not in ensys.groups)
-        ok_(everything in ensys.groups)
-        eq_(ensys.groups[everything], {node})
+        assert "everything" not in ensys.groups
+        assert everything in ensys.groups
+        assert ensys.groups[everything] == {node}
+        assert everything() == "everything"
 
     def test_flows(self):
         key = object()
@@ -208,9 +204,8 @@ class TestsEnergySystem:
         bus = Bus(label="A Bus")
         node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
         ensys.add(bus, node)
-        eq_(
-            ensys.groups[key],
-            set(chain(bus.inputs.values(), bus.outputs.values())),
+        assert ensys.groups[key] == set(
+            chain(bus.inputs.values(), bus.outputs.values())
         )
 
     def test_flows_with_nodes(self):
@@ -218,11 +213,11 @@ class TestsEnergySystem:
         ensys = es.EnergySystem(groupings=[FWNs(key)])
         bus = Bus(label="A Bus")
         node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
-        ensys.add(bus, node)
-        eq_(
-            ensys.groups[key],
-            {(bus, node, bus.outputs[node]), (node, bus, node.outputs[bus])},
-        )
+	ensys.add(bus, node)
+        assert ensys.groups[key], {
+            (bus, node, bus.outputs[node]),
+            (node, bus, node.outputs[bus]),
+        }
 
     def test_that_node_additions_are_signalled(self):
         """
@@ -231,8 +226,8 @@ class TestsEnergySystem:
         node = Node(label="Node")
 
         def subscriber(sender, **kwargs):
-            ok_(sender is node)
-            ok_(kwargs["EnergySystem"] is self.es)
+            assert sender is node
+            assert kwargs["EnergySystem"] is self.es
             subscriber.called = True
 
         subscriber.called = False
@@ -241,11 +236,8 @@ class TestsEnergySystem:
             subscriber, sender=node
         )
         self.es.add(node)
-        ok_(
-            subscriber.called,
-            (
-                "\nExpected `subscriber.called` to be `True`.\n"
-                "Got {}.\n"
-                "Probable reason: `subscriber` didn't get called."
-            ).format(subscriber.called),
-        )
+        assert subscriber.called, (
+            "\nExpected `subscriber.called` to be `True`.\n"
+            "Got {}.\n"
+            "Probable reason: `subscriber` didn't get called."
+        ).format(subscriber.called)

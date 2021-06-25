@@ -10,12 +10,22 @@ Overview
     * - docs
       - |docs|
     * - tests
-      - | |travis| |requires|
+      - | |tox-pytest| |tox-checks| |requires|
         | |coveralls|
         | |scrutinizer| |codacy| |codeclimate|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
-        | |commits-since|
+        | |commits-since| |packaging|
+
+.. |tox-pytest| image:: https://github.com/oemof/oemof.network/workflows/tox%20pytests/badge.svg?branch=dev
+     :target: https://github.com/oemof/oemof.network/actions?query=workflow%3A%22tox+checks%22
+
+.. |tox-checks| image:: https://github.com/oemof/oemof.network/workflows/tox%20checks/badge.svg?branch=dev
+     :target: https://github.com/oemof/oemof.network/actions?query=workflow%3A%22tox+checks%22
+
+.. |packaging| image:: https://github.com/oemof/oemof.network/workflows/packaging/badge.svg?branch=dev
+     :target: https://github.com/oemof/oemof.network/actions?query=workflow%3Apackaging
+
 .. |docs| image:: https://readthedocs.org/projects/oemofnetwork/badge/?style=flat
     :target: https://readthedocs.org/projects/oemofnetwork
     :alt: Documentation Status

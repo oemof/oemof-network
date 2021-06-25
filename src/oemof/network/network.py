@@ -37,8 +37,7 @@ from functools import total_ordering
 
 
 class Inputs(MM):
-    """ A special helper to map `n1.inputs[n2]` to `n2.outputs[n1]`.
-    """
+    """A special helper to map `n1.inputs[n2]` to `n2.outputs[n1]`."""
 
     def __init__(self, target):
         self.target = target
@@ -67,7 +66,8 @@ class Inputs(MM):
 
 
 class Outputs(UD):
-    """ Helper that intercepts modifications to update `Inputs` symmetrically.
+    """
+    Helper that intercepts modifications to update `Inputs` symmetrically.
     """
 
     def __init__(self, source):
@@ -99,7 +99,7 @@ class Metaclass(type):
 
 @total_ordering
 class Node(metaclass=Metaclass):
-    """ Represents a Node in an energy system graph.
+    """Represents a Node in an energy system graph.
 
     Abstract superclass of the two general types of nodes of an energy system
     graph, collecting attributes and operations common to all types of nodes.
@@ -243,7 +243,7 @@ class Node(metaclass=Metaclass):
 
     @property
     def label(self):
-        """ object :
+        """object :
         If this node was given a `label` on construction, this
         attribute holds the actual object passed as a parameter. Otherwise
         :py:`node.label` is a synonym for :py:`str(node)`.
@@ -260,7 +260,7 @@ class Node(metaclass=Metaclass):
 
     @property
     def inputs(self):
-        """ dict:
+        """dict:
         Dictionary mapping input :class:`Nodes <Node>` :obj:`n` to
         :class:`Edge`s from :obj:`n` into :obj:`self`.
         If :obj:`self` is an :class:`Edge`, returns a dict containing the
@@ -270,7 +270,7 @@ class Node(metaclass=Metaclass):
 
     @property
     def outputs(self):
-        """ dict:
+        """dict:
         Dictionary mapping output :class:`Nodes <Node>` :obj:`n` to
         :class:`Edges` from :obj:`self` into :obj:`n`.
         If :obj:`self` is an :class:`Edge`, returns a dict containing the
@@ -327,7 +327,7 @@ class Edge(Node):
 
     @classmethod
     def from_object(cls, o):
-        """ Creates an `Edge` instance from a single object.
+        """Creates an `Edge` instance from a single object.
 
         This method inspects its argument and does something different
         depending on various cases:
@@ -463,8 +463,7 @@ class Entity:
         # TODO: @Gunni Yupp! Add docstring.
 
     def add_regions(self, regions):
-        """Add regions to self.regions
-        """
+        """Add regions to self.regions"""
         self.regions.extend(regions)
         for region in regions:
             if self not in region.entities:
@@ -487,7 +486,7 @@ def registry_changed_to(r):
 
 
 def temporarily_modifies_registry(f):
-    """ Decorator that disables `Node` registration during `f`'s execution.
+    """Decorator that disables `Node` registration during `f`'s execution.
 
     It does so by setting `Node.registry` to `None` while `f` is executing, so
     `f` can freely set `Node.registry` to something else. The registration's

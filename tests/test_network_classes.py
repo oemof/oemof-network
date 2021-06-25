@@ -23,7 +23,6 @@ from oemof.network.network import temporarily_modifies_registry
 
 
 class TestsNode:
-
     def setup(self):
         self.energysystem = EnSys()
         Node.registry = self.energysystem
@@ -264,7 +263,6 @@ class TestsNode:
 
 
 class TestsEdge:
-
     def setup(self):
         Node.registry = None
 
@@ -335,7 +333,6 @@ class TestsEdge:
 
 
 class TestsEnergySystemNodesIntegration:
-
     def setup(self):
         self.es = EnSys()
         Node.registry = self.es

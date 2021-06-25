@@ -167,7 +167,7 @@ class EnergySystem:
             (
                 g(n, gs)
                 for g in self._groupings
-                for n in self.nodes[self._first_ungrouped_node_index_:]
+                for n in self.nodes[self._first_ungrouped_node_index_ :]
             ),
             maxlen=0,
         )
@@ -190,8 +190,7 @@ class EnergySystem:
         }
 
     def dump(self, dpath=None, filename=None):
-        r""" Dump an EnergySystem instance.
-        """
+        r"""Dump an EnergySystem instance."""
         if dpath is None:
             bpath = os.path.join(os.path.expanduser("~"), ".oemof")
             if not os.path.isdir(bpath):
@@ -210,8 +209,7 @@ class EnergySystem:
         return msg
 
     def restore(self, dpath=None, filename=None):
-        r""" Restore an EnergySystem instance.
-        """
+        r"""Restore an EnergySystem instance."""
         logging.info(
             "Restoring attributes will overwrite existing attributes."
         )
