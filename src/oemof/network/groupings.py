@@ -123,7 +123,7 @@ class Grouping:
                 setattr(self, kw, kwargs[kw])
 
     def key(self, node):
-        """ Obtain a key under which to store the group.
+        """Obtain a key under which to store the group.
 
         You have to supply this method yourself using the :obj:`key` parameter
         when creating :class:`Grouping` instances.
@@ -147,7 +147,7 @@ class Grouping:
         )
 
     def value(self, e):
-        """ Generate the group obtained from :obj:`e`.
+        """Generate the group obtained from :obj:`e`.
 
         This methd returns the actual group obtained from :obj:`e`. Like
         :meth:`key <Grouping.key>`, it is called for every :obj:`e` in the
@@ -162,7 +162,7 @@ class Grouping:
         return e
 
     def merge(self, new, old):
-        """ Merge a known :obj:`old` group with a :obj:`new` one.
+        """Merge a known :obj:`old` group with a :obj:`new` one.
 
         This method is called if there is already a value stored under
         :obj:`group[key(e)]`. In that case, :meth:`merge(value(e),
@@ -306,8 +306,7 @@ class FlowsWithNodes(Nodes):
 
 
 def _uid_or_str(node_or_entity):
-    """ Helper function to support the transition from `Entitie`s to `Node`s.
-    """
+    """Helper function to support the transition from `Entitie`s to `Node`s."""
     return (
         node_or_entity.uid
         if hasattr(node_or_entity, "uid")
