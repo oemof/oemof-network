@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -
 
-""" Tests pertaining to :obj:`node {}` registration via :attr:`Node.registry <oemof.network.network.Node.registry>`.
+""" Tests pertaining to :obj:`node {}` registration via
+:attr:`Node.registry <oemof.network.network.Node.registry>`.
 
 This test suite (eventually) collects all tests revolving around automatically
 registering :obj:`nodes <oemof.network.network.Node>` in an
@@ -16,6 +17,7 @@ SPDX-License-Identifier: MIT
 """.format(
     "<oemof.network.network.Node>"
 )
+
 import warnings
 
 import pandas as pd
