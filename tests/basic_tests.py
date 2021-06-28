@@ -207,7 +207,7 @@ class TestsEnergySystem:
         ensys = es.EnergySystem(groupings=[FWNs(key)])
         bus = Bus(label="A Bus")
         node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
-	ensys.add(bus, node)
+        ensys.add(bus, node)
         assert ensys.groups[key], {
             (bus, node, bus.outputs[node]),
             (node, bus, node.outputs[bus]),
