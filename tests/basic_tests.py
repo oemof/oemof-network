@@ -186,6 +186,7 @@ class TestsEnergySystem:
         collect_everything = Nodes(constant_key=everything)
         ensys = es.EnergySystem(groupings=[collect_everything])
         node = Node(label="A Node")
+        ensys.add(node)
         assert "everything" not in ensys.groups
         assert everything in ensys.groups
         assert ensys.groups[everything] == {node}
