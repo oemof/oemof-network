@@ -12,9 +12,6 @@ from collections.abc import Iterable
 from itertools import chain
 from pprint import pformat
 
-from nose.tools import eq_
-from nose.tools import ok_
-
 from oemof.network import energy_system as es
 from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
@@ -81,19 +78,15 @@ class TestsEnergySystem:
         ]
         ensy.add(*nodes)
         for group in ["Foo", "Bar", "A", "B"]:
-            eq_(
+            assert len(ensy.groups[group]) == 5, (
+                "\n  Failed testing length of group '{}'."
+                + "\n  Expected: 5"
+                + "\n  Got     : {}"
+                + "\n  Group   : {}"
+            ).format(
+                group,
                 len(ensy.groups[group]),
-                5,
-                (
-                    "\n  Failed testing length of group '{}'."
-                    + "\n  Expected: 5"
-                    + "\n  Got     : {}"
-                    + "\n  Group   : {}"
-                ).format(
-                    group,
-                    len(ensy.groups[group]),
-                    sorted([e.label for e in ensy.groups[group]]),
-                ),
+                sorted([e.label for e in ensy.groups[group]]),
             )
 
     def test_grouping_filter_parameter(self):
