@@ -12,6 +12,7 @@ available from its original location oemof/oemof/network.py
 SPDX-License-Identifier: MIT
 """
 
+import warnings
 from collections import UserDict as UD
 from collections import namedtuple as NT
 from collections.abc import Mapping
@@ -82,8 +83,22 @@ class Outputs(UD):
         return super().__setitem__(key, value)
 
 
+class Metaclass(type):
+    """The metaclass for objects in an oemof energy system."""
+
+    @property
+    def registry(cls):
+        warnings.warn(cls.registry_warning)
+        return cls._registry
+
+    @registry.setter
+    def registry(cls, registry):
+        warnings.warn(cls.registry_warning)
+        cls._registry = registry
+
+
 @total_ordering
-class Node:
+class Node(metaclass=Metaclass):
     """Represents a Node in an energy system graph.
 
     Abstract superclass of the two general types of nodes of an energy system
@@ -120,7 +135,15 @@ class Node:
         information.
     """
 
-    registry = None
+    registry_warning = FutureWarning(
+        "\nAutomatic registration of `Node`s is deprecated in favour of\n"
+        "explicitly adding `Node`s to an `EnergySystem` via "
+        "`EnergySystem.add`.\n"
+        "This feature, i.e. the `Node.registry` attribute and functionality\n"
+        "pertaining to it, will be removed in future versions.\n"
+    )
+
+    _registry = None
     __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
 
     def __init__(self, *args, **kwargs):
@@ -190,7 +213,11 @@ class Node:
         """
 
     def register(self):
-        if __class__.registry is not None and not getattr(
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            registry = __class__.registry
+
+        if registry is not None and not getattr(
             self, "_delay_registration_", False
         ):
             __class__.registry.add(self)
@@ -349,8 +376,7 @@ class Edge(Node):
         self.label = Edge.Label(self.label.input, o)
         if old_output is None and o is not None and self.input is not None:
             del self._delay_registration_
-            if __class__.registry is not None:
-                __class__.registry.add(self)
+            self.register()
             o.inputs[self.input] = self
 
 

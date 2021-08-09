@@ -12,8 +12,6 @@ from collections.abc import Iterable
 from itertools import chain
 from pprint import pformat
 
-import pandas as pd
-
 from oemof.network import energy_system as es
 from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
@@ -22,28 +20,11 @@ from oemof.network.groupings import Nodes
 from oemof.network.network import Bus
 from oemof.network.network import Entity
 from oemof.network.network import Node
-from oemof.network.network import Transformer
-from oemof.network.network import temporarily_modifies_registry
 
 
 class TestsEnergySystem:
-    @classmethod
-    def setup_class(cls):
-        cls.timeindex = pd.date_range("1/1/2012", periods=5, freq="H")
-
     def setup(self):
         self.es = es.EnergySystem()
-        Node.registry = self.es
-
-    def test_entity_registration(self):
-        bus = Bus(label="bus-uid", type="bus-type")
-        assert self.es.nodes[0] == bus
-        bus2 = Bus(label="bus-uid2", type="bus-type")
-        assert self.es.nodes[1] == bus2
-        t1 = Transformer(label="pp_gas", inputs=[bus], outputs=[bus2])
-        assert t1 in self.es.nodes
-        self.es.timeindex = self.timeindex
-        assert len(self.es.timeindex) == 5
 
     def test_entity_grouping_on_construction(self):
         bus = Bus(label="test bus")
@@ -52,6 +33,7 @@ class TestsEnergySystem:
 
     def test_that_nodes_is_a_proper_alias_for_entities(self):
         b1, b2 = Bus(label="B1"), Bus(label="B2")
+        self.es.add(b1, b2)
         assert self.es.nodes == [b1, b2]
         empty = []
         self.es.nodes = empty
@@ -79,7 +61,6 @@ class TestsEnergySystem:
                 if isinstance(g, Iterable) and not isinstance(g, str):
                     assert e in g
 
-    @temporarily_modifies_registry
     def test_defining_multiple_groupings_with_one_function(self):
         def assign_to_multiple_groups_in_one_go(n):
             g1 = n.label[-1]
@@ -87,8 +68,7 @@ class TestsEnergySystem:
             return [g1, g2]
 
         ensy = es.EnergySystem(groupings=[assign_to_multiple_groups_in_one_go])
-        Node.registry = ensy
-        [
+        nodes = [
             Node(
                 label=("Foo: " if i % 2 == 0 else "Bar: ")
                 + "{}".format(i)
@@ -96,6 +76,7 @@ class TestsEnergySystem:
             )
             for i in range(10)
         ]
+        ensy.add(*nodes)
         for group in ["Foo", "Bar", "A", "B"]:
             assert len(ensy.groups[group]) == 5, (
                 "\n  Failed testing length of group '{}'."
@@ -191,7 +172,6 @@ class TestsEnergySystem:
             ),
         )
 
-    @temporarily_modifies_registry
     def test_constant_group_keys(self):
         """Callable keys passed in as `constant_key` should not be called.
 
@@ -205,31 +185,29 @@ class TestsEnergySystem:
 
         collect_everything = Nodes(constant_key=everything)
         ensys = es.EnergySystem(groupings=[collect_everything])
-        Node.registry = ensys
         node = Node(label="A Node")
+        ensys.add(node)
         assert "everything" not in ensys.groups
         assert everything in ensys.groups
         assert ensys.groups[everything] == {node}
         assert everything() == "everything"
 
-    @temporarily_modifies_registry
     def test_flows(self):
         key = object()
         ensys = es.EnergySystem(groupings=[Flows(key)])
-        Node.registry = ensys
         bus = Bus(label="A Bus")
-        Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        ensys.add(bus, node)
         assert ensys.groups[key] == set(
             chain(bus.inputs.values(), bus.outputs.values())
         )
 
-    @temporarily_modifies_registry
     def test_flows_with_nodes(self):
         key = object()
         ensys = es.EnergySystem(groupings=[FWNs(key)])
-        Node.registry = ensys
         bus = Bus(label="A Bus")
         node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
+        ensys.add(bus, node)
         assert ensys.groups[key], {
             (bus, node, bus.outputs[node]),
             (node, bus, node.outputs[bus]),
