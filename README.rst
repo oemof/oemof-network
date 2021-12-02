@@ -17,40 +17,40 @@ Overview
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since| |packaging|
 
-.. |tox-pytest| image:: https://github.com/oemof/oemof.network/workflows/tox%20pytests/badge.svg?branch=dev
-     :target: https://github.com/oemof/oemof.network/actions?query=workflow%3A%22tox+checks%22
+.. |tox-pytest| image:: https://github.com/oemof/oemof-network/workflows/tox%20pytests/badge.svg?branch=dev
+     :target: https://github.com/oemof/oemof-network/actions?query=workflow%3A%22tox+checks%22
 
-.. |tox-checks| image:: https://github.com/oemof/oemof.network/workflows/tox%20checks/badge.svg?branch=dev
-     :target: https://github.com/oemof/oemof.network/actions?query=workflow%3A%22tox+checks%22
+.. |tox-checks| image:: https://github.com/oemof/oemof-network/workflows/tox%20checks/badge.svg?branch=dev
+     :target: https://github.com/oemof/oemof-network/actions?query=workflow%3A%22tox+checks%22
 
-.. |packaging| image:: https://github.com/oemof/oemof.network/workflows/packaging/badge.svg?branch=dev
-     :target: https://github.com/oemof/oemof.network/actions?query=workflow%3Apackaging
+.. |packaging| image:: https://github.com/oemof/oemof-network/workflows/packaging/badge.svg?branch=dev
+     :target: https://github.com/oemof/oemof-network/actions?query=workflow%3Apackaging
 
-.. |docs| image:: https://readthedocs.org/projects/oemofnetwork/badge/?style=flat
-    :target: https://readthedocs.org/projects/oemofnetwork
+.. |docs| image:: https://readthedocs.org/projects/oemof-network/badge/?style=flat
+    :target: https://readthedocs.org/projects/oemof-network
     :alt: Documentation Status
 
-.. |travis| image:: https://api.travis-ci.org/oemof/oemof.network.svg?branch=master
+.. |travis| image:: https://api.travis-ci.org/oemof/oemof-network.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/oemof/oemof.network
+    :target: https://travis-ci.org/oemof/oemof-network
 
-.. |requires| image:: https://requires.io/github/oemof/oemof.network/requirements.svg?branch=master
+.. |requires| image:: https://requires.io/github/oemof/oemof-network/requirements.svg?branch=master
     :alt: Requirements Status
-    :target: https://requires.io/github/oemof/oemof.network/requirements/?branch=master
+    :target: https://requires.io/github/oemof/oemof-network/requirements/?branch=master
 
-.. |coveralls| image:: https://coveralls.io/repos/oemof/oemof.network/badge.svg?branch=master&service=github
+.. |coveralls| image:: https://coveralls.io/repos/oemof/oemof-network/badge.svg?branch=master&service=github
     :alt: Coverage Status
-    :target: https://coveralls.io/r/oemof/oemof.network
+    :target: https://coveralls.io/r/oemof/oemof-network
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
-    :target: https://www.codacy.com/gh/oemof/oemof.network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof.network&amp;utm_campaign=Badge_Grade
+    :target: https://www.codacy.com/gh/oemof/oemof-network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof.network&amp;utm_campaign=Badge_Grade
     :alt: Codacy Code Quality Status
 
-.. |codeclimate| image:: https://codeclimate.com/github/oemof/oemof.network/badges/gpa.svg
-   :target: https://codeclimate.com/github/oemof/oemof.network
+.. |codeclimate| image:: https://codeclimate.com/github/oemof/oemof-network/badges/gpa.svg
+   :target: https://codeclimate.com/github/oemof/oemof-network
    :alt: CodeClimate Quality Status
 
-.. |version| image:: https://img.shields.io/pypi/v/oemof.network.svg
+.. |version| image:: https://img.shields.io/pypi/v/oemof-network.svg
     :alt: PyPI Package latest release
     :target: https://pypi.org/project/oemof.network
 
@@ -68,11 +68,11 @@ Overview
 
 .. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0rc1/dev
     :alt: Commits since latest release
-    :target: https://github.com/oemof/oemof.network/compare/master...dev
+    :target: https://github.com/oemof/oemof-network/compare/master...dev
 
 .. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof.network/master.svg
     :alt: Scrutinizer Status
-    :target: https://scrutinizer-ci.com/g/oemof/oemof.network/
+    :target: https://scrutinizer-ci.com/g/oemof/oemof-network/
 
 
 .. end-badges
@@ -90,14 +90,14 @@ Installation
 
 You can also install the in-development version with::
 
-    pip install https://github.com/oemof/oemof.network/archive/master.zip
+    pip install https://github.com/oemof/oemof-network/archive/master.zip
 
 
 Documentation
 =============
 
 
-https://oemofnetwork.readthedocs.io/
+https://oemof-network.readthedocs.io/
 
 
 Development
