@@ -6,6 +6,11 @@ This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
 available from its original location oemof/oemof/energy_system.py
 
+SPDX-FileCopyrightText: Stephan Günther <>
+SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Simon Hilpert <>
+SPDX-FileCopyrightText: Cord Kaldemeyer <>
+
 SPDX-License-Identifier: MIT
 """
 
@@ -90,6 +95,15 @@ class EnergySystem:
     >>> es.add(bus)
     >>> bus is es.groups['electricity']
     True
+    >>> es.dump()  # doctest: +ELLIPSIS
+    'Attributes dumped to:...
+    >>> es = EnergySystem()
+    >>> es.restore()  # doctest: +ELLIPSIS
+    'Attributes restored from:...
+    >>> bus is es.groups['electricity']
+    False
+    >>> es.groups['electricity']
+    "<oemof.network.network.Bus: 'electricity'>"
 
     For simple user defined groupings, you can just supply a function that
     computes a key from an :class:`entity <oemof.core.network.Entity>` and the
@@ -157,7 +171,7 @@ class EnergySystem:
             (
                 g(n, gs)
                 for g in self._groupings
-                for n in self.nodes[self._first_ungrouped_node_index_:]
+                for n in self.nodes[self._first_ungrouped_node_index_ :]
             ),
             maxlen=0,
         )
@@ -180,8 +194,7 @@ class EnergySystem:
         }
 
     def dump(self, dpath=None, filename=None):
-        r""" Dump an EnergySystem instance.
-        """
+        r"""Dump an EnergySystem instance."""
         if dpath is None:
             bpath = os.path.join(os.path.expanduser("~"), ".oemof")
             if not os.path.isdir(bpath):
@@ -200,8 +213,7 @@ class EnergySystem:
         return msg
 
     def restore(self, dpath=None, filename=None):
-        r""" Restore an EnergySystem instance.
-        """
+        r"""Restore an EnergySystem instance."""
         logging.info(
             "Restoring attributes will overwrite existing attributes."
         )
