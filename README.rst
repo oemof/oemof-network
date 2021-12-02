@@ -43,14 +43,14 @@ Overview
     :target: https://coveralls.io/r/oemof/oemof-network
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
-    :target: https://www.codacy.com/gh/oemof/oemof-network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof.network&amp;utm_campaign=Badge_Grade
+    :target: https://www.codacy.com/gh/oemof/oemof-network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof-network&amp;utm_campaign=Badge_Grade
     :alt: Codacy Code Quality Status
 
 .. |codeclimate| image:: https://codeclimate.com/github/oemof/oemof-network/badges/gpa.svg
    :target: https://codeclimate.com/github/oemof/oemof-network
    :alt: CodeClimate Quality Status
 
-.. |version| image:: https://img.shields.io/pypi/v/oemof-network.svg
+.. |version| image:: https://img.shields.io/pypi/v/oemof.network.svg
     :alt: PyPI Package latest release
     :target: https://pypi.org/project/oemof.network
 
@@ -66,11 +66,11 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/oemof.network
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof.network/v0.4.0rc1/dev
+.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof-network/v0.4.0rc1/dev
     :alt: Commits since latest release
     :target: https://github.com/oemof/oemof-network/compare/master...dev
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof.network/master.svg
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof-network/master.svg
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/oemof/oemof-network/
 
