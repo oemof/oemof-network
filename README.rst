@@ -10,8 +10,7 @@ Overview
     * - docs
       - |docs|
     * - tests
-      - | |tox-pytest| |tox-checks| |requires|
-        | |coveralls|
+      - | |tox-pytest| |tox-checks| |coveralls|
         | |scrutinizer| |codacy| |codeclimate|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
@@ -34,13 +33,9 @@ Overview
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/oemof/oemof.network
 
-.. |requires| image:: https://requires.io/github/oemof/oemof.network/requirements.svg?branch=master
-    :alt: Requirements Status
-    :target: https://requires.io/github/oemof/oemof.network/requirements/?branch=master
-
-.. |coveralls| image:: https://coveralls.io/repos/oemof/oemof.network/badge.svg?branch=master&service=github
+.. |coveralls| image:: https://coveralls.io/repos/oemof/oemof.network/badge.svg?branch=dev&service=github
     :alt: Coverage Status
-    :target: https://coveralls.io/r/oemof/oemof.network
+    :target: https://coveralls.io/r/oemof/oemof.network?branch=dev
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
     :target: https://www.codacy.com/gh/oemof/oemof.network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof.network&amp;utm_campaign=Badge_Grade
