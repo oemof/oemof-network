@@ -25,8 +25,8 @@ Overview
 .. |packaging| image:: https://github.com/oemof/oemof-network/workflows/packaging/badge.svg?branch=dev
      :target: https://github.com/oemof/oemof-network/actions?query=workflow%3Apackaging
 
-.. |docs| image:: https://readthedocs.org/projects/oemofnetwork/badge/?style=flat
-    :target: https://readthedocs.org/projects/oemofnetwork
+.. |docs| image:: https://readthedocs.org/projects/oemof-network/badge/?style=flat
+    :target: https://readthedocs.org/projects/oemof-network
     :alt: Documentation Status
 
 .. |travis| image:: https://api.travis-ci.org/oemof/oemof-network.svg?branch=master
