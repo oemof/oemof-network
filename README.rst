@@ -92,7 +92,7 @@ Documentation
 =============
 
 
-https://oemofnetwork.readthedocs.io/
+https://oemof-network.readthedocs.io/
 
 
 Development
