@@ -23,7 +23,7 @@ import dill as pickle
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Grouping
-from oemof.network.groupings import Nodes
+from oemof.network.groupings import Entities
 
 
 class EnergySystem:
@@ -129,9 +129,9 @@ class EnergySystem:
     """A dictionary of blinker_ signals emitted by energy systems.
 
     Currently only one signal is supported. This signal is emitted whenever a
-    `Node <oemof.network.Node>` is `add`ed to an energy system. The signal's
-    `sender` is set to the `node <oemof.network.Node>` that got added to the
-    energy system so that `nodes <oemof.network.Node>` have an easy way to only
+    `Entity <oemof.network.Entity>` is `add`ed to an energy system. The signal's
+    `sender` is set to the `node <oemof.network.Entity>` that got added to the
+    energy system so that `nodes <oemof.network.Entity>` have an easy way to only
     receive signals for when they themselves get added to an energy system.
 
     .. _blinker: https://pythonhosted.org/blinker/
@@ -141,7 +141,7 @@ class EnergySystem:
         self._first_ungrouped_node_index_ = 0
         self._groups = {}
         self._groupings = [BY_UID] + [
-            g if isinstance(g, Grouping) else Nodes(g)
+            g if isinstance(g, Grouping) else Entities(g)
             for g in kwargs.get("groupings", [])
         ]
         self.entities = []
@@ -157,7 +157,7 @@ class EnergySystem:
         self.add(*kwargs.get("entities", ()))
 
     def add(self, *nodes):
-        """Add :class:`nodes <oemof.network.Node>` to this energy system."""
+        """Add :class:`nodes <oemof.network.Entity>` to this energy system."""
         self.nodes.extend(nodes)
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)

@@ -21,6 +21,7 @@ import pytest
 from oemof.network.energy_system import EnergySystem as EnSys
 from oemof.network.network import Bus
 from oemof.network.network import Edge
+from oemof.network.network import Entity
 from oemof.network.network import Node
 from oemof.network.network import Transformer
 from oemof.network.network import registry_changed_to
@@ -30,12 +31,12 @@ from oemof.network.network import temporarily_modifies_registry
 class TestsNode:
     def setup(self):
         self.energysystem = EnSys()
-        Node.registry = self.energysystem
+        Entity.registry = self.energysystem
 
     def test_that_attributes_cannot_be_added(self):
-        node = Node()
+        entity = Entity()
         with pytest.raises(AttributeError):
-            node.foo = "bar"
+            entity.foo = "bar"
 
     def test_symmetric_input_output_assignment(self):
         n1 = Node(label="<N1>")
@@ -332,18 +333,18 @@ class TestsEdge:
         i, o = (Node("input"), Node("output"))
         with registry_changed_to(EnSys()):
             e = Edge(output=o)
-            assert e not in Node.registry.groups.values()
+            assert e not in Entity.registry.groups.values()
             e.input = i
-            assert e in Node.registry.groups.values()
+            assert e in Entity.registry.groups.values()
 
 
 class TestsEnergySystemNodesIntegration:
     def setup(self):
         self.es = EnSys()
-        Node.registry = self.es
+        Entity.registry = self.es
 
-    def test_node_registration(self):
-        assert Node.registry == self.es
+    def test_entity_registration(self):
+        assert Entity.registry == self.es
         b1 = Bus(label="<B1>")
         assert self.es.entities[0] == b1
         b2 = Bus(label="<B2>")
@@ -352,12 +353,12 @@ class TestsEnergySystemNodesIntegration:
         assert t1 in self.es.entities
 
     def test_registry_modification_decorator(self):
-        Node("registered")
+        Entity("registered")
         assert "registered" in self.es.groups
 
         @temporarily_modifies_registry
-        def create_a_node():
-            Node("not registered")
+        def create_an_entity():
+            Entity("not registered")
 
-        create_a_node()
+        create_an_entity()
         assert "not registered" not in self.es.groups

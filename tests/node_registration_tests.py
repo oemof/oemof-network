@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -
 
 """ Tests pertaining to :obj:`node {}` registration via
-:attr:`Node.registry <oemof.network.network.Node.registry>`.
+:attr:`Entity.registry <oemof.network.network.Entity.registry>`.
 
 This test suite (eventually) collects all tests revolving around automatically
-registering :obj:`nodes <oemof.network.network.Node>` in an
+registering :obj:`nodes <oemof.network.network.Entity>` in an
 :obj:`energy system <oemof.network.EnergySystem>`. Since this feature is
 deprecated, having all tests pertaining to it in one file makes it easier to
 remove them all at once, when the feature is romved.
@@ -15,7 +15,7 @@ available from its original location oemof/tests/basic_tests.py
 
 SPDX-License-Identifier: MIT
 """.format(
-    "<oemof.network.network.Node>"
+    "<oemof.network.network.Entity>"
 )
 
 import warnings
@@ -25,7 +25,7 @@ import pytest
 
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Bus
-from oemof.network.network import Node
+from oemof.network.network import Entity
 from oemof.network.network import Transformer
 
 
@@ -41,12 +41,12 @@ class NodeRegistrationTests:
         self.es = EnergySystem()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            Node.registry = None
+            Entity.registry = None
 
     def test_entity_registration(self):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            Node.registry = self.es
+            Entity.registry = self.es
             bus = Bus(label="bus-uid", type="bus-type")
             assert self.es.nodes[0] == bus
             bus2 = Bus(label="bus-uid2", type="bus-type")
@@ -58,15 +58,15 @@ class NodeRegistrationTests:
 
     def test_that_setting_a_node_registry_emits_a_warning(self):
         with pytest.warns(FutureWarning):
-            Node.registry = 1
+            Entity.registry = 1
 
     def test_that_accessing_the_node_registry_emits_a_warning(self):
         with pytest.warns(FutureWarning):
-            Node.registry
+            Entity.registry
 
     def test_that_node_creation_does_not_emit_a_warning(self):
         with pytest.warns(None) as record:
-            Node()
+            Entity()
 
         recorded = [w for w in record.list if w.category is FutureWarning]
         if recorded:
@@ -80,7 +80,7 @@ class NodeRegistrationTests:
     def test_that_node_creation_emits_a_warning_if_registry_is_not_none(self):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            Node.registry = EnergySystem()
+            Entity.registry = EnergySystem()
 
         with pytest.warns(FutureWarning):
-            Node()
+            Entity()

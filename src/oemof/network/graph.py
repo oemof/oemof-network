@@ -35,10 +35,10 @@ def create_nx_graph(
         format. If no filename is given no file will be written.
 
     remove_nodes: list of strings
-        Nodes to be removed e.g. ['node1', node2')]
+        Entities to be removed e.g. ['node1', node2')]
 
     remove_nodes_with_substrings: list of strings
-        Nodes that contain substrings to be removed e.g. ['elec', 'heat')]
+        Entities that contain substrings to be removed e.g. ['elec', 'heat')]
 
     remove_edges: list of string tuples
         Edges to be removed e.g. [('resource_gas', 'gas_balance')]

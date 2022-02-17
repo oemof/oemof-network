@@ -60,7 +60,7 @@ class Grouping:
           <Grouping.merge>`.
 
     Instead of trying to use this class directly, have a look at its
-    subclasses, like :class:`Nodes`, which should cater for most use cases.
+    subclasses, like :class:`Entities`, which should cater for most use cases.
 
     Notes
     -----
@@ -131,7 +131,7 @@ class Grouping:
         You have to supply this method yourself using the :obj:`key` parameter
         when creating :class:`Grouping` instances.
 
-        Called for every :class:`node <oemof.core.network.Node>` of the energy
+        Called for every :class:`node <oemof.core.network.Entity>` of the energy
         system. Expected to return the key (i.e. a valid :class:`hashable`)
         under which the group :meth:`value(node) <Grouping.value>` will be
         stored. If it should be added to more than one group, return a
@@ -233,16 +233,16 @@ class Grouping:
             d[group] = self.merge(v, d[group]) if group in d else v
 
 
-class Nodes(Grouping):
+class Entities(Grouping):
     """
-    Specialises :class:`Grouping` to group :class:`nodes <oemof.network.Node>`
+    Specialises :class:`Grouping` to group :class:`nodes <oemof.network.Entity>`
     into :class:`sets <set>`.
     """
 
     def value(self, e):
         """
         Returns a :class:`set` containing only :obj:`e`, so groups are
-        :class:`sets <set>` of :class:`node <oemof.network.Node>`.
+        :class:`sets <set>` of :class:`node <oemof.network.Entity>`.
         """
         return {e}
 
@@ -254,10 +254,10 @@ class Nodes(Grouping):
         return old.union(new)
 
 
-class Flows(Nodes):
+class Flows(Entities):
     """
     Specialises :class:`Grouping` to group the flows connected to :class:`nodes
-    <oemof.network.Node>` into :class:`sets <set>`.
+    <oemof.network.Entity>` into :class:`sets <set>`.
     Note that this specifically means that the :meth:`key <Flows.key>`, and
     :meth:`value <Flows.value>` functions act on a set of flows.
     """
@@ -278,10 +278,10 @@ class Flows(Nodes):
         super().__call__(flows, d)
 
 
-class FlowsWithNodes(Nodes):
+class FlowsWithNodes(Entities):
     """
     Specialises :class:`Grouping` to act on the flows connected to
-    :class:`nodes <oemof.network.Node>` and create :class:`sets <set>` of
+    :class:`nodes <oemof.network.Entity>` and create :class:`sets <set>` of
     :obj:`(source, target, flow)` tuples.
     Note that this specifically means that the :meth:`key <Flows.key>`, and
     :meth:`value <Flows.value>` functions act on sets like these.
@@ -309,7 +309,7 @@ class FlowsWithNodes(Nodes):
 
 
 def _uid_or_str(node_or_entity):
-    """Helper function to support the transition from `Entitie`s to `Node`s."""
+    """Helper function to support the transition from `Entitie`s to `Entity`s."""
     return (
         node_or_entity.uid
         if hasattr(node_or_entity, "uid")

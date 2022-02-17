@@ -28,7 +28,7 @@ from functools import total_ordering
 
 # TODO:
 #
-#   * Only allow setting a Node's label if `_delay_registration_` is active
+#   * Only allow setting a Entity's label if `_delay_registration_` is active
 #     and/or the node is not yet registered.
 #   * Only allow setting an Edge's input/output if it is None
 #   * Document the `register` method. Maybe also document the
@@ -104,8 +104,8 @@ class Metaclass(type):
 
 
 @total_ordering
-class Node(metaclass=Metaclass):
-    """Represents a Node in an energy system graph.
+class Entity(metaclass=Metaclass):
+    """Represents a Entity in an energy system graph.
 
     Abstract superclass of the two general types of nodes of an energy system
     graph, collecting attributes and operations common to all types of nodes.
@@ -142,10 +142,10 @@ class Node(metaclass=Metaclass):
     """
 
     registry_warning = FutureWarning(
-        "\nAutomatic registration of `Node`s is deprecated in favour of\n"
-        "explicitly adding `Node`s to an `EnergySystem` via "
+        "\nAutomatic registration of `Entity`s is deprecated in favour of\n"
+        "explicitly adding `Entity`s to an `EnergySystem` via "
         "`EnergySystem.add`.\n"
-        "This feature, i.e. the `Node.registry` attribute and functionality\n"
+        "This feature, i.e. the `Entity.registry` attribute and functionality\n"
         "pertaining to it, will be removed in future versions.\n"
     )
 
@@ -174,9 +174,9 @@ class Node(metaclass=Metaclass):
                     setattr(self, "_" + optional, args.pop())
         self._in_edges = set()
         for i in kwargs.get("inputs", {}):
-            assert isinstance(i, Node), (
+            assert isinstance(i, Entity), (
                 "\n\nInput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
-                "not an instance of Node, but of {}."
+                "not an instance of Entity, but of {}."
             ).format(i, self, type(i))
             self._in_edges.add(i)
             try:
@@ -187,9 +187,9 @@ class Node(metaclass=Metaclass):
             edge.input = i
             edge.output = self
         for o in kwargs.get("outputs", {}):
-            assert isinstance(o, Node), (
+            assert isinstance(o, Entity), (
                 "\n\nOutput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
-                "not an instance of Node, but of {}."
+                "not an instance of Entity, but of {}."
             ).format(o, self, type(o))
             try:
                 flow = kwargs["outputs"].get(o)
@@ -267,7 +267,7 @@ class Node(metaclass=Metaclass):
     @property
     def inputs(self):
         """dict:
-        Dictionary mapping input :class:`Nodes <Node>` :obj:`n` to
+        Dictionary mapping input :class:`Entities <Entity>` :obj:`n` to
         :class:`Edge`s from :obj:`n` into :obj:`self`.
         If :obj:`self` is an :class:`Edge`, returns a dict containing the
         :class:`Edge`'s single input node as the key and the flow as the value.
@@ -277,7 +277,7 @@ class Node(metaclass=Metaclass):
     @property
     def outputs(self):
         """dict:
-        Dictionary mapping output :class:`Nodes <Node>` :obj:`n` to
+        Dictionary mapping output :class:`Entities <Entity>` :obj:`n` to
         :class:`Edges` from :obj:`self` into :obj:`n`.
         If :obj:`self` is an :class:`Edge`, returns a dict containing the
         :class:`Edge`'s single output node as the key and the flow as the
@@ -289,12 +289,12 @@ class Node(metaclass=Metaclass):
 EdgeLabel = NT("EdgeLabel", ["input", "output"])
 
 
-class Edge(Node):
+class Edge(Entity):
     """
     :class:`Bus`es/:class:`Component`s are always connected by an
     :class:`Edge`.
 
-    :class:`Edge`s connect a single non-:class:`Edge` Node with another. They
+    :class:`Edge`s connect a single non-:class:`Edge` Entity with another. They
     are directed and have a (sequence of) value(s) attached to them so they can
     be used to represent a flow from a source/an input to a target/an output.
 
@@ -386,6 +386,10 @@ class Edge(Node):
             o.inputs[self.input] = self
 
 
+class Node(Entity):
+    pass
+
+
 class Bus(Node):
     pass
 
@@ -414,17 +418,17 @@ def registry_changed_to(r):
     """
     Override registry during execution of a block and restore it afterwards.
     """
-    backup = Node.registry
-    Node.registry = r
+    backup = Entity.registry
+    Entity.registry = r
     yield
-    Node.registry = backup
+    Entity.registry = backup
 
 
 def temporarily_modifies_registry(f):
-    """Decorator that disables `Node` registration during `f`'s execution.
+    """Decorator that disables `Entity` registration during `f`'s execution.
 
-    It does so by setting `Node.registry` to `None` while `f` is executing, so
-    `f` can freely set `Node.registry` to something else. The registration's
+    It does so by setting `Entity.registry` to `None` while `f` is executing, so
+    `f` can freely set `Entity.registry` to something else. The registration's
     original value is restored afterwards.
     """
 
