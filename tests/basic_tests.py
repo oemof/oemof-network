@@ -6,6 +6,11 @@ This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
 available from its original location oemof/tests/basic_tests.py
 
+SPDX-FileCopyrightText: Stephan Günther <>
+SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Simon Hilpert <>
+SPDX-FileCopyrightText: Cord Kaldemeyer <>
+
 SPDX-License-Identifier: MIT
 """
 from collections.abc import Iterable
@@ -18,7 +23,6 @@ from oemof.network.groupings import FlowsWithNodes as FWNs
 from oemof.network.groupings import Grouping
 from oemof.network.groupings import Nodes
 from oemof.network.network import Bus
-from oemof.network.network import Entity
 from oemof.network.network import Node
 
 
@@ -49,9 +53,9 @@ class TestsEnergySystem:
         ensys = es.EnergySystem(groupings=[by_uid])
 
         ungrouped = [
-            Entity(uid="Not in 'Group': {}".format(i)) for i in range(10)
+            Node(uid="Not in 'Group': {}".format(i)) for i in range(10)
         ]
-        grouped = [Entity(uid="In 'Group': {}".format(i)) for i in range(10)]
+        grouped = [Node(uid="In 'Group': {}".format(i)) for i in range(10)]
         assert None not in ensys.groups
         for g in ensys.groups.values():
             for e in ungrouped:
