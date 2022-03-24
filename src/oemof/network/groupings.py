@@ -131,9 +131,10 @@ class Grouping:
         You have to supply this method yourself using the :obj:`key` parameter
         when creating :class:`Grouping` instances.
 
-        Called for every :class:`node <oemof.core.network.Entity>` of the energy
-        system. Expected to return the key (i.e. a valid :class:`hashable`)
-        under which the group :meth:`value(node) <Grouping.value>` will be
+        Called for every :class:`node <oemof.core.network.Entity>` of the
+        energy system. Expected to return the key (i.e. a valid
+        :class:`hashable`) under which the group
+        :meth:`value(node) <Grouping.value>` will be
         stored. If it should be added to more than one group, return a
         :class:`list` (or any other non-:class:`hashable <Hashable>`,
         :class:`iterable`) containing the group keys.
@@ -235,7 +236,8 @@ class Grouping:
 
 class Entities(Grouping):
     """
-    Specialises :class:`Grouping` to group :class:`nodes <oemof.network.Entity>`
+    Specialises :class:`Grouping` to group
+    :class:`nodes <oemof.network.Entity>`
     into :class:`sets <set>`.
     """
 
@@ -309,7 +311,9 @@ class FlowsWithNodes(Entities):
 
 
 def _uid_or_str(node_or_entity):
-    """Helper function to support the transition from `Entitie`s to `Entity`s."""
+    """
+    Helper function to support the transition from `Entitie`s to `Entity`s.
+    """
     return (
         node_or_entity.uid
         if hasattr(node_or_entity, "uid")

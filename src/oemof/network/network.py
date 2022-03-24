@@ -145,7 +145,8 @@ class Entity(metaclass=Metaclass):
         "\nAutomatic registration of `Entity`s is deprecated in favour of\n"
         "explicitly adding `Entity`s to an `EnergySystem` via "
         "`EnergySystem.add`.\n"
-        "This feature, i.e. the `Entity.registry` attribute and functionality\n"
+        "This feature, i.e. the `Entity.registry`"
+        "attribute and functionality\n"
         "pertaining to it, will be removed in future versions.\n"
     )
 
@@ -427,9 +428,9 @@ def registry_changed_to(r):
 def temporarily_modifies_registry(f):
     """Decorator that disables `Entity` registration during `f`'s execution.
 
-    It does so by setting `Entity.registry` to `None` while `f` is executing, so
-    `f` can freely set `Entity.registry` to something else. The registration's
-    original value is restored afterwards.
+    It does so by setting `Entity.registry` to `None` while `f` is executing,
+    so `f` can freely set `Entity.registry` to something else.
+    The registration's original value is restored afterwards.
     """
 
     def result(*xs, **ks):

@@ -129,10 +129,11 @@ class EnergySystem:
     """A dictionary of blinker_ signals emitted by energy systems.
 
     Currently only one signal is supported. This signal is emitted whenever a
-    `Entity <oemof.network.Entity>` is `add`ed to an energy system. The signal's
-    `sender` is set to the `node <oemof.network.Entity>` that got added to the
-    energy system so that `nodes <oemof.network.Entity>` have an easy way to only
-    receive signals for when they themselves get added to an energy system.
+    `Entity <oemof.network.Entity>` is `add`ed to an energy system. The
+    signal's `sender` is set to the `node <oemof.network.Entity>` that got
+    added to the energy system so that `nodes <oemof.network.Entity>` have an
+    easy way to only receive signals for when they themselves get added to an
+    energy system.
 
     .. _blinker: https://pythonhosted.org/blinker/
     """
