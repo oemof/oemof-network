@@ -281,7 +281,7 @@ class Flows(Entities):
 class FlowsWithNodes(Entities):
     """
     Specialises :class:`Grouping` to act on the flows connected to
-    :class:`nodes <oemof.network.Entity>` and create :class:`sets <set>` of
+    :class:`nodes <oemof.network.Node>` and create :class:`sets <set>` of
     :obj:`(source, target, flow)` tuples.
     Note that this specifically means that the :meth:`key <Flows.key>`, and
     :meth:`value <Flows.value>` functions act on sets like these.
