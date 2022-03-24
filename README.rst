@@ -81,11 +81,11 @@ Installation
 
 ::
 
-    pip install oemof.network
+    pip install oemof-network
 
 You can also install the in-development version with::
 
-    pip install https://github.com/oemof/oemof.network/archive/master.zip
+    pip install https://github.com/oemof/oemof-network/archive/dev.zip
 
 
 Documentation
