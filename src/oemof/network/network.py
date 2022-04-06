@@ -107,7 +107,7 @@ class Metaclass(type):
 class Entity(metaclass=Metaclass):
     """Represents a Entity in an energy system graph.
 
-    Abstract superclass of the two general types of nodes of an energy system
+    Abstract superclass of the general types of entities of an energy system
     graph, collecting attributes and operations common to all types of nodes.
     Users should neither instantiate nor subclass this, but use
     :class:`Component`, :class:`Bus`, :class:`Edge` or one of their subclasses
