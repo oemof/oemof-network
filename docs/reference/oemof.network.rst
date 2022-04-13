@@ -7,3 +7,5 @@ oemof.network
 
 .. automodule:: oemof.network
     :members:
+    :undoc-members:
+    :show-inheritance:
