@@ -1,9 +1,9 @@
 __version__ = "0.4.0rc0"
 
-import energy_system
-import graph
-import groupings
-import network
+from . import energy_system
+from . import graph
+from . import groupings
+from . import network
 from .network import (
     Bus,
     Component,
