@@ -157,6 +157,7 @@ class Node(metaclass=Metaclass):
         args.reverse
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
+        self.cell_list = kwargs.get('cell_list', [])
         for optional in ["label"]:
             if optional in kwargs:
                 if args:
