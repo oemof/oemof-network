@@ -249,7 +249,7 @@ class Node(metaclass=Metaclass):
 
     @property
     def label(self):
-        """object :
+        """
         If this node was given a `label` on construction, this
         attribute holds the actual object passed as a parameter. Otherwise
         :py:`node.label` is a synonym for :py:`str(node)`.
