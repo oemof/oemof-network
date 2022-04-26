@@ -2,7 +2,7 @@
 Usage
 =====
 
-oemof-network
+oemof.network
 =============
 The :ref:`oemof_network_label` library is part of the oemof installation. By now it can be used to define energy systems as a network with components and buses. Every component should be connected to one or more buses. After definition, a component has to explicitely be added to its energy system. Allowed components are sources, sinks and transformer.
 
@@ -52,7 +52,7 @@ To use oemof.network in a project::
 .. _oemof_network_label:
 
 ~~~~~~~~~~~~~~~~~~~~~~
-oemof-network
+oemof.network
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The modeling of energy supply systems and its variety of components has a clearly structured approach within the oemof framework. Thus, energy supply systems with different levels of complexity can be based on equal basic module blocks. Those form an universal basic structure.
@@ -67,7 +67,7 @@ A *source* has exactly one output but no input. Thus for example, wind energy an
 
 Components and buses can be combined to an energy system. Components and buses are nodes, connected among each other through edges which are the inputs and outputs of the components. Such a model can be interpreted mathematically as bipartite graph as buses are solely connected to components and vice versa. Thereby the in- and outputs of the components are the directed edges of the graph. The components and buses themselves are the nodes of the graph.
 
-**oemof-network is part of oemofs core and contains the base classes that are used in oemof-solph. You do not need to define your energy system on the network level as all components can be found in oemof-solph, too. You may want to inherit from oemof-network components if you want to create new components.**
+**oemof.network is part of oemofs core and contains the base classes that are used in oemof-solph. You do not need to define your energy system on the network level as all components can be found in oemof-solph, too. You may want to inherit from oemof.network components if you want to create new components.**
 
 .. _oemof_graph_label:
 

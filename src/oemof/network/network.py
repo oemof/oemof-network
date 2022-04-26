@@ -9,13 +9,20 @@ This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
 available from its original location oemof/oemof/network.py
 
+SPDX-FileCopyrightText: Stephan Günther <>
+SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Simon Hilpert <>
+SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
+
 SPDX-License-Identifier: MIT
 """
 
-from collections import Mapping
-from collections import MutableMapping as MM
+import warnings
 from collections import UserDict as UD
 from collections import namedtuple as NT
+from collections.abc import Mapping
+from collections.abc import MutableMapping as MM
 from contextlib import contextmanager
 from functools import total_ordering
 
@@ -36,8 +43,7 @@ from functools import total_ordering
 
 
 class Inputs(MM):
-    """ A special helper to map `n1.inputs[n2]` to `n2.outputs[n1]`.
-    """
+    """A special helper to map `n1.inputs[n2]` to `n2.outputs[n1]`."""
 
     def __init__(self, target):
         self.target = target
@@ -66,7 +72,8 @@ class Inputs(MM):
 
 
 class Outputs(UD):
-    """ Helper that intercepts modifications to update `Inputs` symmetrically.
+    """
+    Helper that intercepts modifications to update `Inputs` symmetrically.
     """
 
     def __init__(self, source):
@@ -82,9 +89,23 @@ class Outputs(UD):
         return super().__setitem__(key, value)
 
 
+class Metaclass(type):
+    """The metaclass for objects in an oemof energy system."""
+
+    @property
+    def registry(cls):
+        warnings.warn(cls.registry_warning)
+        return cls._registry
+
+    @registry.setter
+    def registry(cls, registry):
+        warnings.warn(cls.registry_warning)
+        cls._registry = registry
+
+
 @total_ordering
-class Node:
-    """ Represents a Node in an energy system graph.
+class Node(metaclass=Metaclass):
+    """Represents a Node in an energy system graph.
 
     Abstract superclass of the two general types of nodes of an energy system
     graph, collecting attributes and operations common to all types of nodes.
@@ -120,7 +141,15 @@ class Node:
         information.
     """
 
-    registry = None
+    registry_warning = FutureWarning(
+        "\nAutomatic registration of `Node`s is deprecated in favour of\n"
+        "explicitly adding `Node`s to an `EnergySystem` via "
+        "`EnergySystem.add`.\n"
+        "This feature, i.e. the `Node.registry` attribute and functionality\n"
+        "pertaining to it, will be removed in future versions.\n"
+    )
+
+    _registry = None
     __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
 
     def __init__(self, *args, **kwargs):
@@ -190,7 +219,11 @@ class Node:
         """
 
     def register(self):
-        if __class__.registry is not None and not getattr(
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            registry = __class__.registry
+
+        if registry is not None and not getattr(
             self, "_delay_registration_", False
         ):
             __class__.registry.add(self)
@@ -216,7 +249,7 @@ class Node:
 
     @property
     def label(self):
-        """ object :
+        """
         If this node was given a `label` on construction, this
         attribute holds the actual object passed as a parameter. Otherwise
         :py:`node.label` is a synonym for :py:`str(node)`.
@@ -233,7 +266,7 @@ class Node:
 
     @property
     def inputs(self):
-        """ dict:
+        """dict:
         Dictionary mapping input :class:`Nodes <Node>` :obj:`n` to
         :class:`Edge`s from :obj:`n` into :obj:`self`.
         If :obj:`self` is an :class:`Edge`, returns a dict containing the
@@ -243,7 +276,7 @@ class Node:
 
     @property
     def outputs(self):
-        """ dict:
+        """dict:
         Dictionary mapping output :class:`Nodes <Node>` :obj:`n` to
         :class:`Edges` from :obj:`self` into :obj:`n`.
         If :obj:`self` is an :class:`Edge`, returns a dict containing the
@@ -300,7 +333,7 @@ class Edge(Node):
 
     @classmethod
     def from_object(cls, o):
-        """ Creates an `Edge` instance from a single object.
+        """Creates an `Edge` instance from a single object.
 
         This method inspects its argument and does something different
         depending on various cases:
@@ -349,8 +382,7 @@ class Edge(Node):
         self.label = Edge.Label(self.label.input, o)
         if old_output is None and o is not None and self.input is not None:
             del self._delay_registration_
-            if __class__.registry is not None:
-                __class__.registry.add(self)
+            self.register()
             o.inputs[self.input] = self
 
 
@@ -377,78 +409,6 @@ class Transformer(Component):
         super().__init__(*args, **kwargs)
 
 
-# TODO: Adhere to PEP 0257 by listing the exported classes with a short
-#       summary.
-class Entity:
-    r"""
-    The most abstract type of vertex in an energy system graph. Since each
-    entity in an energy system has to be uniquely identifiable and
-    connected (either via input or via output) to at least one other
-    entity, these properties are collected here so that they are shared
-    with descendant classes.
-
-    Parameters
-    ----------
-    uid : string or tuple
-        Unique component identifier of the entity.
-    inputs : list
-        List of Entities acting as input to this Entity.
-    outputs : list
-        List of Entities acting as output from this Entity.
-    geo_data : shapely.geometry object
-        Geo-spatial data with informations for location/region-shape. The
-        geometry can be a polygon/multi-polygon for regions, a line fore
-        transport objects or a point for objects such as transformer sources.
-
-    Attributes
-    ----------
-    registry: :class:`EnergySystem <oemof.core.energy_system.EnergySystem>`
-        The central registry keeping track of all :class:`Node's <Node>`
-        created. If this is `None`, :class:`Node` instances are not
-        kept track of. Assign an :class:`EnergySystem
-        <oemof.core.energy_system.EnergySystem>` to this attribute to have it
-        become the a :class:`node <Node>` registry, i.e. all :class:`nodes
-        <Node>` created are added to its :attr:`nodes
-        <oemof.core.energy_system.EnergySystem.nodes>`
-        property on construction.
-    """
-    optimization_options = {}
-
-    registry = None
-
-    def __init__(self, **kwargs):
-        # TODO: @Günni:
-        # add default argument values to docstrings (if it's possible).
-        self.uid = kwargs["uid"]
-        self.inputs = kwargs.get("inputs", [])
-        self.outputs = kwargs.get("outputs", [])
-        for e_in in self.inputs:
-            if self not in e_in.outputs:
-                e_in.outputs.append(self)
-        for e_out in self.outputs:
-            if self not in e_out.inputs:
-                e_out.inputs.append(self)
-        self.geo_data = kwargs.get("geo_data", None)
-        self.regions = []
-        self.add_regions(kwargs.get("regions", []))
-        if __class__.registry is not None:
-            __class__.registry.add(self)
-
-        # TODO: @Gunni Yupp! Add docstring.
-
-    def add_regions(self, regions):
-        """Add regions to self.regions
-        """
-        self.regions.extend(regions)
-        for region in regions:
-            if self not in region.entities:
-                region.entities.append(self)
-
-    def __str__(self):
-        # TODO: @Günni: Unused privat method. No Docstring.
-        return "<{0} #{1}>".format(type(self).__name__, self.uid)
-
-
 @contextmanager
 def registry_changed_to(r):
     """
@@ -461,7 +421,7 @@ def registry_changed_to(r):
 
 
 def temporarily_modifies_registry(f):
-    """ Decorator that disables `Node` registration during `f`'s execution.
+    """Decorator that disables `Node` registration during `f`'s execution.
 
     It does so by setting `Node.registry` to `None` while `f` is executing, so
     `f` can freely set `Node.registry` to something else. The registration's

@@ -2,4 +2,10 @@
 Authors
 =======
 
-* Stephan Günther - https://oemof.org/
+(alphabetic order)
+
+* Cord Kaldemeyer 
+* Patrik Schönfeldt
+* Simon Hilpert
+* Stephan Günther
+* Uwe Krien

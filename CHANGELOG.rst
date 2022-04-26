@@ -6,3 +6,12 @@ Changelog
 -----------------------
 
 * First release on PyPI.
+
+
+0.4.0 (2022-04-26)
+------------------
+
+* Improved imports
+* Improved testing
+* Explicitly defined API
+

@@ -6,6 +6,9 @@ This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
 available from its original location oemof/oemof/graph.py
 
+SPDX-FileCopyrightText: Simon Hilpert <>
+SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+
 SPDX-License-Identifier: MIT
 """
 
@@ -44,26 +47,22 @@ def create_nx_graph(
     --------
     >>> import os
     >>> import pandas as pd
-    >>> from oemof.solph import (Bus, Sink, Transformer, Flow, EnergySystem)
-    >>> import oemof.graph as grph
+    >>> from oemof.network.network import Bus, Sink, Transformer
+    >>> from oemof.network.energy_system import EnergySystem
+    >>> import oemof.network.graph as grph
     >>> datetimeindex = pd.date_range('1/1/2017', periods=3, freq='H')
     >>> es = EnergySystem(timeindex=datetimeindex)
     >>> b_gas = Bus(label='b_gas', balanced=False)
     >>> bel1 = Bus(label='bel1')
     >>> bel2 = Bus(label='bel2')
-    >>> demand_el = Sink(label='demand_el',
-    ...                  inputs = {bel1: Flow(nominal_value=85,
-    ...                            actual_value=[0.5, 0.25, 0.75],
-    ...                            fixed=True)})
+    >>> demand_el = Sink(label='demand_el', inputs = [bel1])
     >>> pp_gas = Transformer(label=('pp', 'gas'),
-    ...                            inputs={b_gas: Flow()},
-    ...                            outputs={bel1: Flow(nominal_value=41,
-    ...                                                variable_costs=40)},
-    ...                            conversion_factors={bel1: 0.5})
-    >>> line_to2 = Transformer(label='line_to2',
-    ...                        inputs={bel1: Flow()}, outputs={bel2: Flow()})
+    ...                      inputs=[b_gas],
+    ...                      outputs=[bel1],
+    ...                      conversion_factors={bel1: 0.5})
+    >>> line_to2 = Transformer(label='line_to2', inputs=[bel1], outputs=[bel2])
     >>> line_from2 = Transformer(label='line_from2',
-    ...                          inputs={bel2: Flow()}, outputs={bel1: Flow()})
+    ...                          inputs=[bel2], outputs=[bel1])
     >>> es.add(b_gas, bel1, demand_el, pp_gas, bel2, line_to2, line_from2)
     >>> my_graph = grph.create_nx_graph(es)
     >>> # export graph as .graphml for programs like Yed where it can be

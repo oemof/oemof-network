@@ -23,17 +23,16 @@ def read(*names, **kwargs):
         return fh.read()
 
 
-long_description = "%s\n%s" % (
+long_description = "%s" % (
     re.compile("^.. start-badges.*^.. end-badges", re.M | re.S).sub(
         "", read("README.rst")
-    ),
-    re.sub(":[a-z]+:`~?(.*?)`", r"``\1``", read("CHANGELOG.rst")),
+    )
 )
 
 
 setup(
     name="oemof.network",
-    version="0.4.0rc0",
+    version="0.4.0",
     license="MIT",
     description="The network/graph submodules of oemof.",
     long_description=long_description,
@@ -57,9 +56,9 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         # uncomment if you test on these interpreters:
         # 'Programming Language :: Python :: Implementation :: IronPython',
@@ -77,9 +76,10 @@ setup(
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=["pandas", "blinker", "dill", "networkx"],
     extras_require={
+        "dev": ["pytest"],
         # eg:
         #   'rst': ['docutils>=0.11'],
         #   ':python_version=="2.6"': ['argparse'],
