@@ -15,7 +15,7 @@ SPDX-License-Identifier: MIT
 from collections.abc import Hashable
 from collections.abc import Iterable
 from collections.abc import Mapping
-from collections.abc import MutableMapping as MuMa
+from collections.abc import MutableMapping
 from itertools import chain
 from itertools import filterfalse
 
@@ -215,7 +215,7 @@ class Grouping:
         if k is None:
             return
         v = self.value(e)
-        if isinstance(v, MuMa):
+        if isinstance(v, MutableMapping):
             for k in list(filterfalse(self.filter, v)):
                 v.pop(k)
         elif isinstance(v, Mapping):
