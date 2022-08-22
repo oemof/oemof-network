@@ -105,7 +105,7 @@ class Metaclass(type):
 
 @total_ordering
 class Entity(metaclass=Metaclass):
-    """Represents a Entity in an energy system graph.
+    """Represents an Entity in an energy system graph.
 
     Abstract superclass of the general types of entities of an energy system
     graph, collecting attributes and operations common to all types of nodes.
