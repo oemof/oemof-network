@@ -155,7 +155,6 @@ class Entity(metaclass=Metaclass):
 
     def __init__(self, *args, **kwargs):
         args = list(args)
-        args.reverse
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
         for optional in ["label"]:
