@@ -246,13 +246,18 @@ class TestsNode:
         with pytest.raises(TypeError):
             Node("Positional Label", label="Keyword Label")
 
-    def test_node_input_output_type_assertions(self):
+    def test_entity_input_output_type_assertions(self):
         """
-        `Node`s should only accept `Node` instances as input/output targets.
+        `'Entity'` should only accept `Entity` instances
+        as input/output targets.
         """
-        with pytest.raises(AssertionError):
-            Node("A node with an output", outputs={"Not a Node": "A Flow"})
-            Node("A node with an input", inputs={"Not a Node": "A Flow"})
+        with pytest.raises(ValueError):
+            Entity(
+                "An entity with an output", outputs={"Not an Entity": "A Flow"}
+            )
+            Entity(
+                "An entity with an input", inputs={"Not an Entity": "A Flow"}
+            )
 
     def test_node_label_without_private_attribute(self):
         """

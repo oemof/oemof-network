@@ -175,10 +175,11 @@ class Entity(metaclass=Metaclass):
                     setattr(self, "_" + optional, args.pop())
         self._in_edges = set()
         for i in kwargs.get("inputs", {}):
-            assert isinstance(i, Entity), (
-                "\n\nInput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
-                "not an instance of Entity, but of {}."
-            ).format(i, self, type(i))
+            if not isinstance(i, Entity):
+                msg = (
+                    "Input {!r} of {!r} not an instance of Entity but of {}."
+                ).format(i, self, type(i))
+                raise ValueError(msg)
             self._in_edges.add(i)
             try:
                 flow = kwargs["inputs"].get(i)
@@ -188,10 +189,11 @@ class Entity(metaclass=Metaclass):
             edge.input = i
             edge.output = self
         for o in kwargs.get("outputs", {}):
-            assert isinstance(o, Entity), (
-                "\n\nOutput\n\n  {!r}\n\nof\n\n  {!r}\n\n"
-                "not an instance of Entity, but of {}."
-            ).format(o, self, type(o))
+            if not isinstance(o, Entity):
+                msg = (
+                    "Output {!r} of {!r} not an instance of Entity but of {}."
+                ).format(o, self, type(o))
+                raise ValueError(msg)
             try:
                 flow = kwargs["outputs"].get(o)
             except AttributeError:
