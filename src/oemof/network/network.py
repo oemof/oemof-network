@@ -19,10 +19,10 @@ SPDX-License-Identifier: MIT
 """
 
 import warnings
-from collections import UserDict as UD
-from collections import namedtuple as NT
+from collections import UserDict
+from collections import namedtuple
 from collections.abc import Mapping
-from collections.abc import MutableMapping as MM
+from collections.abc import MutableMapping
 from contextlib import contextmanager
 from functools import total_ordering
 
@@ -41,7 +41,7 @@ from functools import total_ordering
 #
 
 
-class Inputs(MM):
+class Inputs(MutableMapping):
     """A special helper to map `n1.inputs[n2]` to `n2.outputs[n1]`."""
 
     def __init__(self, target):
@@ -70,7 +70,7 @@ class Inputs(MM):
         )
 
 
-class Outputs(UD):
+class Outputs(UserDict):
     """
     Helper that intercepts modifications to update `Inputs` symmetrically.
     """
@@ -207,15 +207,24 @@ class Entity(metaclass=Metaclass):
 
         inputs = kwargs.get('inputs', {})
         self.in_edges = {
-                Edge(input=i, output=self,
-                    flow=None if not isinstance(inputs, MM) else inputs[i])
-                for i in inputs}
+            Edge(
+                input=i,
+                output=self,
+                flow=None if not isinstance(inputs, MutableMapping)
+                          else inputs[i]
+            )
+            for i in inputs
+        }
 
         outputs = kwargs.get('outputs', {})
         self.out_edges = {
-                Edge(input=self, output=o,
-                    flow=None if not isinstance(outputs, MM) else outputs[o])
-                for o in outputs}
+            Edge(
+                input=self,
+                output=o,
+                flow=None if not isinstance(outputs, MutableMapping)
+                          else outputs[o]
+            )
+            for o in outputs}
         self.edges = self.in_edges.union(self.out_edges)
         """
 
@@ -287,7 +296,7 @@ class Entity(metaclass=Metaclass):
         return self._outputs
 
 
-EdgeLabel = NT("EdgeLabel", ["input", "output"])
+EdgeLabel = namedtuple("EdgeLabel", ["input", "output"])
 
 
 class Edge(Entity):
