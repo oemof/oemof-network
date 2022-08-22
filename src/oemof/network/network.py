@@ -38,7 +38,6 @@ from functools import total_ordering
 #     I always had the hunch that using blinker could help to straighten out
 #     that delayed auto registration hack via partial functions. Maybe this
 #     could be a good starting point for this.
-#   * Finally get rid of `Entity`.
 #
 
 
