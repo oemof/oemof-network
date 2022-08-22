@@ -397,7 +397,17 @@ class Edge(Entity):
 
 
 class Node(Entity):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._location = kwargs.get("location", None)
+
+    @property
+    def location(self):
+        return self._location
+
+    @location.setter
+    def location(self, loc):
+        self._location = loc
 
 
 class Bus(Node):
