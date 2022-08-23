@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -34,14 +35,6 @@ class TestsEnergySystem:
         bus = Bus(label="test bus")
         ensys = es.EnergySystem(entities=[bus])
         assert ensys.groups[bus.label] is bus
-
-    def test_that_nodes_is_a_proper_alias_for_entities(self):
-        b1, b2 = Bus(label="B1"), Bus(label="B2")
-        self.es.add(b1, b2)
-        assert self.es.nodes == [b1, b2]
-        empty = []
-        self.es.nodes = empty
-        assert self.es.entities is empty
 
     def test_that_none_is_not_a_valid_group(self):
         def by_uid(n):

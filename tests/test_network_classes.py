@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -351,11 +352,11 @@ class TestsEnergySystemNodesIntegration:
     def test_entity_registration(self):
         assert Entity.registry == self.es
         b1 = Bus(label="<B1>")
-        assert self.es.entities[0] == b1
+        assert self.es.nodes[0] == b1
         b2 = Bus(label="<B2>")
-        assert self.es.entities[1] == b2
+        assert self.es.nodes[1] == b2
         t1 = Transformer(label="<TF1>", inputs=[b1], outputs=[b2])
-        assert t1 in self.es.entities
+        assert t1 in self.es.nodes
 
     def test_registry_modification_decorator(self):
         Entity("registered")

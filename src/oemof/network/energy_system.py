@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -129,9 +130,9 @@ class EnergySystem:
     """A dictionary of blinker_ signals emitted by energy systems.
 
     Currently only one signal is supported. This signal is emitted whenever a
-    `Entity <oemof.network.Entity>` is `add`ed to an energy system. The
-    signal's `sender` is set to the `node <oemof.network.Entity>` that got
-    added to the energy system so that `nodes <oemof.network.Entity>` have an
+    `node <oemof.network.Node>` is `add`ed to an energy system. The
+    signal's `sender` is set to the `node <oemof.network.Node>` that got
+    added to the energy system so that `node <oemof.network.Node>` have an
     easy way to only receive signals for when they themselves get added to an
     energy system.
 
@@ -145,7 +146,7 @@ class EnergySystem:
             g if isinstance(g, Grouping) else Entities(g)
             for g in kwargs.get("groupings", [])
         ]
-        self.entities = []
+        self._nodes = []
 
         self.results = kwargs.get("results")
 
@@ -158,7 +159,7 @@ class EnergySystem:
         self.add(*kwargs.get("entities", ()))
 
     def add(self, *nodes):
-        """Add :class:`nodes <oemof.network.Entity>` to this energy system."""
+        """Add :class:`nodes <oemof.network.Node>` to this energy system."""
         self.nodes.extend(nodes)
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
@@ -181,11 +182,11 @@ class EnergySystem:
 
     @property
     def nodes(self):
-        return self.entities
+        return self._nodes
 
     @nodes.setter
     def nodes(self, value):
-        self.entities = value
+        self._nodes = value
 
     def flows(self):
         return {
