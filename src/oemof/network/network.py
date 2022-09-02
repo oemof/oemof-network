@@ -252,7 +252,7 @@ class Node(metaclass=Metaclass):
         """
         If this node was given a `label` on construction, this
         attribute holds the actual object passed as a parameter. Otherwise
-        :py:`node.label` is a synonym for :py:`str(node)`.
+        `node.label` is a synonym for `str(node)`.
         """
         return (
             self._label
@@ -342,7 +342,7 @@ class Edge(Node):
           * If `o` is a `Mapping`, the instance is created by calling
             `cls(**o)`,
           * In all other cases, `o` will be used as the `values` keyword
-            argument to `Edge`s constructor.
+            argument to `Edge`'s constructor.
         """
         if isinstance(o, Edge):
             return o
