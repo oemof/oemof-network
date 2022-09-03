@@ -136,7 +136,7 @@ class EnergySystem:
     easy way to only receive signals for when they themselves get added to an
     energy system.
 
-    .. _blinker: https://pythonhosted.org/blinker/
+    .. _blinker: https://blinker.readthedocs.io/en/stable/
     """
 
     def __init__(self, **kwargs):
