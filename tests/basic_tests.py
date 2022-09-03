@@ -19,10 +19,10 @@ from itertools import chain
 from pprint import pformat
 
 from oemof.network import energy_system as es
+from oemof.network.groupings import Entities
 from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
 from oemof.network.groupings import Grouping
-from oemof.network.groupings import Entities
 from oemof.network.network import Bus
 from oemof.network.network import Node
 

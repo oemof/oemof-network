@@ -23,8 +23,8 @@ import blinker
 import dill as pickle
 
 from oemof.network.groupings import DEFAULT as BY_UID
-from oemof.network.groupings import Grouping
 from oemof.network.groupings import Entities
+from oemof.network.groupings import Grouping
 
 
 class EnergySystem:
