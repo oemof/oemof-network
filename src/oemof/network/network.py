@@ -432,18 +432,3 @@ def registry_changed_to(r):
     Entity.registry = r
     yield
     Entity.registry = backup
-
-
-def temporarily_modifies_registry(f):
-    """Decorator that disables `Entity` registration during `f`'s execution.
-
-    It does so by setting `Entity.registry` to `None` while `f` is executing,
-    so `f` can freely set `Entity.registry` to something else.
-    The registration's original value is restored afterwards.
-    """
-
-    def result(*xs, **ks):
-        with registry_changed_to(None):
-            return f(*xs, **ks)
-
-    return result
