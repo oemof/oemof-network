@@ -25,8 +25,8 @@ version = release = "0.4.0"
 pygments_style = "trac"
 templates_path = ["."]
 extlinks = {
-    "issue": ("https://github.com/oemof/oemof.network/issues/%s", "#"),
-    "pr": ("https://github.com/oemof/oemof.network/pull/%s", "PR #"),
+    "issue": ("https://github.com/oemof/oemof-network/issues/%s", "#%s"),
+    "pr": ("https://github.com/oemof/oemof-network/pull/%s", "PR #%s"),
 }
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
