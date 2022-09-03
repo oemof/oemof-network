@@ -18,12 +18,10 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-License-Identifier: MIT
 """
 
-import warnings
 from collections import UserDict
 from collections import namedtuple
 from collections.abc import Mapping
 from collections.abc import MutableMapping
-from contextlib import contextmanager
 from functools import total_ordering
 
 
@@ -254,8 +252,8 @@ class Edge(Entity):
     :class:`Bus`es/:class:`Component`s are always connected by an
     :class:`Edge`.
 
-    :class:`Edge`s connect a single :class:`Node` with another. They
-    are directed and have a (sequence of) value(s) attached to them, so they can
+    :class:`Edge`s connect a single :class:`Node` with another. They are
+    directed and have a (sequence of) value(s) attached to them, so they can
     be used to represent a flow from a source/an input to a target/an output.
 
     Parameters
