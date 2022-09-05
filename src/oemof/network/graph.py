@@ -8,6 +8,7 @@ available from its original location oemof/oemof/graph.py
 
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeld@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -23,7 +24,7 @@ def create_nx_graph(
     remove_edges=None,
 ):
     """
-    Create a `networkx.DiGraph` for the passed energy system and plot it.
+    Create a `networkx.DiGraph` for the passed energy system.
     See http://networkx.readthedocs.io/en/latest/ for more information.
 
     Parameters
@@ -135,3 +136,51 @@ def create_nx_graph(
         nx.write_graphml(grph, filename)
 
     return grph
+
+
+def positions(energy_system, nx_graph=None):
+    """
+    Get locations to draw nodes of `oemof.network.EnergySystem`.
+
+
+    Parameters
+    ----------
+    energy_system : `oemof.solph.network.EnergySystem`
+
+    nx_graph : `networkx.DiGraph` (optional)
+        Existing `networkx.DiGraph` that can be used to optimise
+        the locations of `Node`s that are not already set.
+        If there are `Node`s without a given position and nx_graph
+        is not given, a temporary `networkx.DiGraph` will be created.
+    """
+    fixed_positions = dict()
+
+    nodes_with_location = list()
+    for node in energy_system.nodes:
+        location = node.location
+        if location is not None:
+            fixed_positions[str(node)] = location
+            nodes_with_location.append(str(node))
+
+    if len(nodes_with_location) == len(energy_system.nodes):
+        all_positions = fixed_positions
+    else:  # use networkx to optimise non-set locations
+        # networkx.spring_layout cannot work with empty dicts
+        if len(nodes_with_location) == 0:
+            nodes_with_location = None
+        if nx_graph is None:
+            nx_graph = create_nx_graph(energy_system=energy_system)
+
+        # There need to be positions for all Nodes.
+        # We use them as basis for a graph considering fixed positions
+        all_positions = nx.spring_layout(nx_graph)
+
+        if fixed_positions:
+            all_positions.update(fixed_positions)
+
+            # we run this twice to get good positions based on the fixed ones
+            all_positions = nx.spring_layout(
+                nx_graph, pos=all_positions, fixed=nodes_with_location
+            )
+
+    return all_positions
