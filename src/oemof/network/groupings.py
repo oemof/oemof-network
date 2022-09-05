@@ -8,6 +8,7 @@ available from its original location oemof/oemof/groupings.py
 
 SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -30,18 +31,18 @@ from oemof.network.network import Edge
 
 class Grouping:
     """
-    Used to aggregate :class:`entities <oemof.core.network.Entity>` in an
-    :class:`energy system <oemof.core.energy_system.EnergySystem>` into
-    :attr:`groups <oemof.core.energy_system.EnergySystem.groups>`.
+    Used to aggregate :class:`entities <oemof.network.Entity>` in an
+    :class:`energy system <oemof.energy_system.EnergySystem>` into
+    :attr:`groups <oemof.energy_system.EnergySystem.groups>`.
 
     The way :class:`Groupings <Grouping>` work is that each :class:`Grouping`
     :obj:`g` of an energy system is called whenever an :class:`entity
-    <oemof.core.network.Entity>` is added to the energy system (and for each
-    :class:`entity <oemof.core.network.Entity>` already present, if the energy
+    <oemof.network.Entity>` is added to the energy system (and for each
+    :class:`entity <oemof.network.Entity>` already present, if the energy
     system is created with existing enties).
     The call :obj:`g(e, groups)`, where :obj:`e` is an :class:`entity
-    <oemof.core.network.Entity>` and :attr:`groups
-    <oemof.core.energy_system.EnergySystem.groups>` is a dictionary mapping
+    <oemof.network.Entity>` and :attr:`groups
+    <oemof.energy_system.EnergySystem.groups>` is a dictionary mapping
     group keys to groups, then uses the three functions :meth:`key
     <Grouping.key>`, :meth:`value <Grouping.value>` and :meth:`merge
     <Grouping.merge>` in the following way:
@@ -80,8 +81,8 @@ class Grouping:
     key: callable or hashable
 
         Specifies (if not callable) or extracts (if callable) a :meth:`key
-        <Grouping.key>` for each :class:`entity <oemof.core.network.Entity>` of
-        the :class:`energy system <oemof.core.energy_system.EnergySystem>`.
+        <Grouping.key>` for each :class:`entity <oemof.network.Entity>` of
+        the :class:`energy system <oemof.energy_system.EnergySystem>`.
 
     constant_key: hashable (optional)
 
@@ -131,7 +132,7 @@ class Grouping:
         You have to supply this method yourself using the :obj:`key` parameter
         when creating :class:`Grouping` instances.
 
-        Called for every :class:`node <oemof.core.network.Entity>` of the
+        Called for every :class:`node <oemof.network.Entity>` of the
         energy system. Expected to return the key (i.e. a valid
         :class:`hashable`) under which the group
         :meth:`value(node) <Grouping.value>` will be
@@ -160,7 +161,7 @@ class Grouping:
         <Grouping.value>`. Otherwise :meth:`merge(value(e), groups[key(e)])
         <Grouping.merge>` is called.
 
-        The default returns the :class:`entity <oemof.core.network.Entity>`
+        The default returns the :class:`entity <oemof.network.Entity>`
         itself.
         """
         return e
@@ -325,10 +326,10 @@ DEFAULT = Grouping(_uid_or_str)
 """ The default :class:`Grouping`.
 
 This one is always present in an :class:`energy system
-<oemof.core.energy_system.EnergySystem>`. It stores every :class:`entity
-<oemof.core.network.Entity>` under its :attr:`uid
-<oemof.core.network.Entity.uid>` and raises an error if another :class:`entity
-<oemof.core.network.Entity>` with the same :attr:`uid
-<oemof.core.network.Entity.uid>` get's added to the :class:`energy system
-<oemof.core.energy_system.EnergySystem>`.
+<oemof.energy_system.EnergySystem>`. It stores every :class:`entity
+<oemof.network.Entity>` under its :attr:`uid
+<oemof.network.Entity.uid>` and raises an error if another :class:`entity
+<oemof.network.Entity>` with the same :attr:`uid
+<oemof.network.Entity.uid>` get's added to the :class:`energy system
+<oemof.energy_system.EnergySystem>`.
 """
