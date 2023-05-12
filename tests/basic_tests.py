@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -18,10 +19,10 @@ from itertools import chain
 from pprint import pformat
 
 from oemof.network import energy_system as es
+from oemof.network.groupings import Entities
 from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
 from oemof.network.groupings import Grouping
-from oemof.network.groupings import Nodes
 from oemof.network.network import Bus
 from oemof.network.network import Node
 
@@ -34,14 +35,6 @@ class TestsEnergySystem:
         bus = Bus(label="test bus")
         ensys = es.EnergySystem(entities=[bus])
         assert ensys.groups[bus.label] is bus
-
-    def test_that_nodes_is_a_proper_alias_for_entities(self):
-        b1, b2 = Bus(label="B1"), Bus(label="B2")
-        self.es.add(b1, b2)
-        assert self.es.nodes == [b1, b2]
-        empty = []
-        self.es.nodes = empty
-        assert self.es.entities is empty
 
     def test_that_none_is_not_a_valid_group(self):
         def by_uid(n):
@@ -98,7 +91,7 @@ class TestsEnergySystem:
             key=lambda e: "The Special One",
             filter=lambda e: "special" in str(e),
         )
-        g2 = Nodes(
+        g2 = Entities(
             key=lambda e: "A Subset", filter=lambda e: "subset" in str(e)
         )
         ensys = es.EnergySystem(groupings=[g1, g2])
@@ -118,7 +111,7 @@ class TestsEnergySystem:
         retained.
         This test makes sure that the bug doesn't resurface again.
         """
-        g = Nodes(
+        g = Entities(
             key="group",
             value=lambda _: {1, 2, 3, 4},
             filter=lambda x: x % 2 == 0,
@@ -129,11 +122,11 @@ class TestsEnergySystem:
         assert ensys.groups["group"] == {2, 4}
 
     def test_non_callable_group_keys(self):
-        collect_everything = Nodes(key="everything")
+        collect_everything = Entities(key="everything")
         g1 = Grouping(
             key="The Special One", filter=lambda e: "special" in e.label
         )
-        g2 = Nodes(key="A Subset", filter=lambda e: "subset" in e.label)
+        g2 = Entities(key="A Subset", filter=lambda e: "subset" in e.label)
         ensys = es.EnergySystem(groupings=[g1, g2, collect_everything])
         special = Node(label="special")
         subset = set(Node(label="subset: {}".format(i)) for i in range(2))
@@ -153,7 +146,7 @@ class TestsEnergySystem:
         energy system is accessed.
         """
         group = "Group"
-        g = Nodes(key=group, filter=lambda n: getattr(n, "group", False))
+        g = Entities(key=group, filter=lambda n: getattr(n, "group", False))
         self.es = es.EnergySystem(groupings=[g])
         buses = [Bus("Grouped"), Bus("Ungrouped one"), Bus("Ungrouped two")]
         self.es.add(buses[0])
@@ -187,7 +180,7 @@ class TestsEnergySystem:
         def everything():
             return "everything"
 
-        collect_everything = Nodes(constant_key=everything)
+        collect_everything = Entities(constant_key=everything)
         ensys = es.EnergySystem(groupings=[collect_everything])
         node = Node(label="A Node")
         ensys.add(node)

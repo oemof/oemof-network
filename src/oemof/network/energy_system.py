@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -22,8 +23,8 @@ import blinker
 import dill as pickle
 
 from oemof.network.groupings import DEFAULT as BY_UID
+from oemof.network.groupings import Entities
 from oemof.network.groupings import Grouping
-from oemof.network.groupings import Nodes
 
 
 class EnergySystem:
@@ -108,8 +109,8 @@ class EnergySystem:
     For simple user defined groupings, you can just supply a function that
     computes a key from an :class:`entity <oemof.core.network.Entity>` and the
     resulting groups will be sets of :class:`entities
-    <oemof.core.network.Entity>` stored under the returned keys, like in this
-    example, where :class:`entities <oemof.core.network.Entity>` are grouped by
+    <oemof.network.Entity>` stored under the returned keys, like in this
+    example, where :class:`entities <oemof.network.Entity>` are grouped by
     their `type`:
 
     >>> es = EnergySystem(groupings=[type])
@@ -129,10 +130,11 @@ class EnergySystem:
     """A dictionary of blinker_ signals emitted by energy systems.
 
     Currently only one signal is supported. This signal is emitted whenever a
-    `Node <oemof.network.Node>` is `add`ed to an energy system. The signal's
-    `sender` is set to the `node <oemof.network.Node>` that got added to the
-    energy system so that `nodes <oemof.network.Node>` have an easy way to only
-    receive signals for when they themselves get added to an energy system.
+    `node <oemof.network.Node>` is `add`ed to an energy system. The
+    signal's `sender` is set to the `node <oemof.network.Node>` that got
+    added to the energy system so that `node <oemof.network.Node>` have an
+    easy way to only receive signals for when they themselves get added to an
+    energy system.
 
     .. _blinker: https://blinker.readthedocs.io/en/stable/
     """
@@ -141,10 +143,10 @@ class EnergySystem:
         self._first_ungrouped_node_index_ = 0
         self._groups = {}
         self._groupings = [BY_UID] + [
-            g if isinstance(g, Grouping) else Nodes(g)
+            g if isinstance(g, Grouping) else Entities(g)
             for g in kwargs.get("groupings", [])
         ]
-        self.entities = []
+        self._nodes = []
 
         self.results = kwargs.get("results")
 
@@ -180,11 +182,11 @@ class EnergySystem:
 
     @property
     def nodes(self):
-        return self.entities
+        return self._nodes
 
     @nodes.setter
     def nodes(self, value):
-        self.entities = value
+        self._nodes = value
 
     def flows(self):
         return {

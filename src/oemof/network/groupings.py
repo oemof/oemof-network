@@ -8,6 +8,7 @@ available from its original location oemof/oemof/groupings.py
 
 SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -15,7 +16,7 @@ SPDX-License-Identifier: MIT
 from collections.abc import Hashable
 from collections.abc import Iterable
 from collections.abc import Mapping
-from collections.abc import MutableMapping as MuMa
+from collections.abc import MutableMapping
 from itertools import chain
 from itertools import filterfalse
 
@@ -30,18 +31,18 @@ from oemof.network.network import Edge
 
 class Grouping:
     """
-    Used to aggregate :class:`entities <oemof.core.network.Entity>` in an
-    :class:`energy system <oemof.core.energy_system.EnergySystem>` into
-    :attr:`groups <oemof.core.energy_system.EnergySystem.groups>`.
+    Used to aggregate :class:`entities <oemof.network.Entity>` in an
+    :class:`energy system <oemof.energy_system.EnergySystem>` into
+    :attr:`groups <oemof.energy_system.EnergySystem.groups>`.
 
     The way :class:`Groupings <Grouping>` work is that each :class:`Grouping`
     :obj:`g` of an energy system is called whenever an :class:`entity
-    <oemof.core.network.Entity>` is added to the energy system (and for each
-    :class:`entity <oemof.core.network.Entity>` already present, if the energy
+    <oemof.network.Entity>` is added to the energy system (and for each
+    :class:`entity <oemof.network.Entity>` already present, if the energy
     system is created with existing enties).
     The call :obj:`g(e, groups)`, where :obj:`e` is an :class:`entity
-    <oemof.core.network.Entity>` and :attr:`groups
-    <oemof.core.energy_system.EnergySystem.groups>` is a dictionary mapping
+    <oemof.network.Entity>` and :attr:`groups
+    <oemof.energy_system.EnergySystem.groups>` is a dictionary mapping
     group keys to groups, then uses the three functions :meth:`key
     <Grouping.key>`, :meth:`value <Grouping.value>` and :meth:`merge
     <Grouping.merge>` in the following way:
@@ -60,7 +61,7 @@ class Grouping:
           <Grouping.merge>`.
 
     Instead of trying to use this class directly, have a look at its
-    subclasses, like :class:`Nodes`, which should cater for most use cases.
+    subclasses, like :class:`Entities`, which should cater for most use cases.
 
     Notes
     -----
@@ -80,8 +81,8 @@ class Grouping:
     key: callable or hashable
 
         Specifies (if not callable) or extracts (if callable) a :meth:`key
-        <Grouping.key>` for each :class:`entity <oemof.core.network.Entity>` of
-        the :class:`energy system <oemof.core.energy_system.EnergySystem>`.
+        <Grouping.key>` for each :class:`entity <oemof.network.Entity>` of
+        the :class:`energy system <oemof.energy_system.EnergySystem>`.
 
     constant_key: hashable (optional)
 
@@ -131,9 +132,10 @@ class Grouping:
         You have to supply this method yourself using the :obj:`key` parameter
         when creating :class:`Grouping` instances.
 
-        Called for every :class:`node <oemof.core.network.Node>` of the energy
-        system. Expected to return the key (i.e. a valid :class:`hashable`)
-        under which the group :meth:`value(node) <Grouping.value>` will be
+        Called for every :class:`node <oemof.network.Entity>` of the
+        energy system. Expected to return the key (i.e. a valid
+        :class:`hashable`) under which the group
+        :meth:`value(node) <Grouping.value>` will be
         stored. If it should be added to more than one group, return a
         :class:`list` (or any other non-:class:`hashable <Hashable>`,
         :class:`iterable`) containing the group keys.
@@ -159,7 +161,7 @@ class Grouping:
         <Grouping.value>`. Otherwise :meth:`merge(value(e), groups[key(e)])
         <Grouping.merge>` is called.
 
-        The default returns the :class:`entity <oemof.core.network.Entity>`
+        The default returns the :class:`entity <oemof.network.Entity>`
         itself.
         """
         return e
@@ -214,7 +216,7 @@ class Grouping:
         if k is None:
             return
         v = self.value(e)
-        if isinstance(v, MuMa):
+        if isinstance(v, MutableMapping):
             for k in list(filterfalse(self.filter, v)):
                 v.pop(k)
         elif isinstance(v, Mapping):
@@ -233,16 +235,17 @@ class Grouping:
             d[group] = self.merge(v, d[group]) if group in d else v
 
 
-class Nodes(Grouping):
+class Entities(Grouping):
     """
-    Specialises :class:`Grouping` to group :class:`nodes <oemof.network.Node>`
+    Specialises :class:`Grouping` to group
+    :class:`entities <oemof.network.Entity>`
     into :class:`sets <set>`.
     """
 
     def value(self, e):
         """
         Returns a :class:`set` containing only :obj:`e`, so groups are
-        :class:`sets <set>` of :class:`node <oemof.network.Node>`.
+        :class:`sets <set>` of :class:`entity <oemof.network.Entity>`.
         """
         return {e}
 
@@ -254,10 +257,10 @@ class Nodes(Grouping):
         return old.union(new)
 
 
-class Flows(Nodes):
+class Flows(Entities):
     """
     Specialises :class:`Grouping` to group the flows connected to :class:`nodes
-    <oemof.network.Node>` into :class:`sets <set>`.
+    <oemof.network.Entity>` into :class:`sets <set>`.
     Note that this specifically means that the :meth:`key <Flows.key>`, and
     :meth:`value <Flows.value>` functions act on a set of flows.
     """
@@ -278,7 +281,7 @@ class Flows(Nodes):
         super().__call__(flows, d)
 
 
-class FlowsWithNodes(Nodes):
+class FlowsWithNodes(Entities):
     """
     Specialises :class:`Grouping` to act on the flows connected to
     :class:`nodes <oemof.network.Node>` and create :class:`sets <set>` of
@@ -309,7 +312,9 @@ class FlowsWithNodes(Nodes):
 
 
 def _uid_or_str(node_or_entity):
-    """Helper function to support the transition from `Entitie`s to `Node`s."""
+    """
+    Helper function to support the transition from `Entitie`s to `Entity`s.
+    """
     return (
         node_or_entity.uid
         if hasattr(node_or_entity, "uid")
@@ -321,10 +326,10 @@ DEFAULT = Grouping(_uid_or_str)
 """ The default :class:`Grouping`.
 
 This one is always present in an :class:`energy system
-<oemof.core.energy_system.EnergySystem>`. It stores every :class:`entity
-<oemof.core.network.Entity>` under its :attr:`uid
-<oemof.core.network.Entity.uid>` and raises an error if another :class:`entity
-<oemof.core.network.Entity>` with the same :attr:`uid
-<oemof.core.network.Entity.uid>` get's added to the :class:`energy system
-<oemof.core.energy_system.EnergySystem>`.
+<oemof.energy_system.EnergySystem>`. It stores every :class:`entity
+<oemof.network.Entity>` under its :attr:`uid
+<oemof.network.Entity.uid>` and raises an error if another :class:`entity
+<oemof.network.Entity>` with the same :attr:`uid
+<oemof.network.Entity.uid>` get's added to the :class:`energy system
+<oemof.energy_system.EnergySystem>`.
 """
