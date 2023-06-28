@@ -10,7 +10,7 @@ Overview
     * - docs
       - |docs|
     * - tests
-      - | |tox-pytest| |tox-checks| |coveralls|
+      - | |tox-pytest| |tox-checks|
         | |scrutinizer| |codacy| |codeclimate|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
@@ -28,14 +28,6 @@ Overview
 .. |docs| image:: https://readthedocs.org/projects/oemof-network/badge/?style=flat
     :target: https://readthedocs.org/projects/oemof-network
     :alt: Documentation Status
-
-.. |travis| image:: https://api.travis-ci.org/oemof/oemof-network.svg?branch=master
-    :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/oemof/oemof-network
-
-.. |coveralls| image:: https://coveralls.io/repos/oemof/oemof-network/badge.svg?branch=dev&service=github
-    :alt: Coverage Status
-    :target: https://coveralls.io/r/oemof/oemof-network?branch=dev
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
     :target: https://www.codacy.com/gh/oemof/oemof-network?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=oemof/oemof.network&amp;utm_campaign=Badge_Grade
