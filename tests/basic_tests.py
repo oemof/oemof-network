@@ -28,7 +28,7 @@ from oemof.network.network import Node
 
 
 class TestsEnergySystem:
-    def setup(self):
+    def setup_method(self):
         self.es = es.EnergySystem()
 
     def test_entity_grouping_on_construction(self):
