@@ -54,10 +54,8 @@ def test_mutable_mapping_groups():
     groups = {}
     expected = {3: {"o": 2, "f": 1}}
     g("foo", groups)
-    eq_(
-        groups,
-        expected,
-        "\n  Expected: {} \n  Got     : {}".format(expected, groups),
+    assert groups == expected, (
+        "\n  Expected: {} \n  Got     : {}".format(expected, groups)
     )
 
 
@@ -69,8 +67,6 @@ def test_immutable_mapping_groups():
     groups = {}
     expected = {3: MaProTy({"o": 2, "f": 1})}
     g("foo", groups)
-    eq_(
-        groups,
-        expected,
-        "\n  Expected: {} \n  Got     : {}".format(expected, groups),
+    assert groups == expected, (
+        "\n  Expected: {} \n  Got     : {}".format(expected, groups)
     )
