@@ -24,7 +24,9 @@ def test_initialization_argument_checks():
     with pytest.raises(TypeError, match=message):
         Grouping()
 
-    message = "Grouping arguments `key` and `constant_key` are  mutually exclusive."
+    message = (
+        "Grouping arguments `key` and `constant_key` are  mutually exclusive."
+    )
     with pytest.raises(TypeError, match=message):
         Grouping(key=lambda x: x, constant_key="key")
 
