@@ -28,7 +28,7 @@ from oemof.network.network import Transformer
 
 
 class TestsNode:
-    def setup(self):
+    def setup_method(self):
         self.energysystem = EnSys()
 
     def test_that_attributes_cannot_be_added(self):
@@ -268,7 +268,7 @@ class TestsNode:
 
 
 class TestsEdge:
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_edge_construction_side_effects(self):
@@ -329,7 +329,7 @@ class TestsEdge:
 
 
 class TestsEnergySystemNodesIntegration:
-    def setup(self):
+    def setup_method(self):
         self.es = EnSys()
 
     def test_entity_registration(self):
