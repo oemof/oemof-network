@@ -242,16 +242,12 @@ class TestsNode:
 
     def test_entity_input_output_type_assertions(self):
         """
-        `'Entity'` should only accept `Entity` instances
+        `'Node'` should only accept `Node` instances
         as input/output targets.
         """
         with pytest.raises(ValueError):
-            Entity(
-                "An entity with an output", outputs={"Not an Entity": "A Flow"}
-            )
-            Entity(
-                "An entity with an input", inputs={"Not an Entity": "A Flow"}
-            )
+            Node("An entity with an output", outputs={"Not a Node": "A Flow"})
+            Node("An entity with an input", inputs={"Not a Node": "A Flow"})
 
     def test_node_label_without_private_attribute(self):
         """

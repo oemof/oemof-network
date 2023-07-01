@@ -11,11 +11,42 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-License-Identifier: MIT
 """
 
+from .edge import Edge
 from .entity import Entity
 
 
 class Node(Entity):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._in_edges = set()
+        for i in kwargs.get("inputs", {}):
+            if not isinstance(i, Node):
+                msg = (
+                    "Input {!r} of {!r} not an instance of Node but of {}."
+                ).format(i, self, type(i))
+                raise ValueError(msg)
+            self._in_edges.add(i)
+            try:
+                flow = kwargs["inputs"].get(i)
+            except AttributeError:
+                flow = None
+            edge = Edge.from_object(flow)
+            edge.input = i
+            edge.output = self
+        for o in kwargs.get("outputs", {}):
+            if not isinstance(o, Node):
+                msg = (
+                    "Output {!r} of {!r} not an instance of Node but of {}."
+                ).format(o, self, type(o))
+                raise ValueError(msg)
+            try:
+                flow = kwargs["outputs"].get(o)
+            except AttributeError:
+                flow = None
+            edge = Edge.from_object(flow)
+            edge.input = self
+            edge.output = o
 
 
 class Bus(Node):

@@ -77,60 +77,6 @@ class Entity:
             else:
                 if args:
                     setattr(self, "_" + optional, args.pop())
-        self._in_edges = set()
-        for i in kwargs.get("inputs", {}):
-            if not isinstance(i, Entity):
-                msg = (
-                    "Input {!r} of {!r} not an instance of Entity but of {}."
-                ).format(i, self, type(i))
-                raise ValueError(msg)
-            self._in_edges.add(i)
-            try:
-                flow = kwargs["inputs"].get(i)
-            except AttributeError:
-                flow = None
-            edge = globals()["Edge"].from_object(flow)
-            edge.input = i
-            edge.output = self
-        for o in kwargs.get("outputs", {}):
-            if not isinstance(o, Entity):
-                msg = (
-                    "Output {!r} of {!r} not an instance of Entity but of {}."
-                ).format(o, self, type(o))
-                raise ValueError(msg)
-            try:
-                flow = kwargs["outputs"].get(o)
-            except AttributeError:
-                flow = None
-            edge = globals()["Edge"].from_object(flow)
-            edge.input = self
-            edge.output = o
-        """
-        This could be slightly more efficient than the loops above, but doesn't
-        play well with the assertions:
-
-        inputs = kwargs.get('inputs', {})
-        self.in_edges = {
-            Edge(
-                input=i,
-                output=self,
-                flow=None if not isinstance(inputs, MutableMapping)
-                          else inputs[i]
-            )
-            for i in inputs
-        }
-
-        outputs = kwargs.get('outputs', {})
-        self.out_edges = {
-            Edge(
-                input=self,
-                output=o,
-                flow=None if not isinstance(outputs, MutableMapping)
-                          else outputs[o]
-            )
-            for o in outputs}
-        self.edges = self.in_edges.union(self.out_edges)
-        """
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -188,8 +134,3 @@ class Entity:
         value.
         """
         return self._outputs
-
-
-# Need to import in the end to avoid circular import.
-# (Above, a string representation is used to allow this late import.)
-from .edge import Edge  # noqa: F401, E402
