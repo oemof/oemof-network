@@ -21,10 +21,10 @@ import pytest
 
 from oemof.network.energy_system import EnergySystem as EnSys
 from oemof.network.network import Bus
-from oemof.network.network import Edge
-from oemof.network.network import Entity
-from oemof.network.network import Node
 from oemof.network.network import Transformer
+from oemof.network.network.edge import Edge
+from oemof.network.network.entity import Entity
+from oemof.network.network.nodes import Node
 
 
 class TestsNode:
