@@ -279,7 +279,7 @@ class TestsEdge:
         """
         source = Node(label="source")
         target = Node(label="target")
-        edge = Edge(input=source, output=target)
+        edge = Edge(input_node=source, output_node=target)
         assert target in source.outputs, (
             "{} not in {} after constructing {}.".format(
                 target, source.outputs, edge
@@ -312,7 +312,7 @@ class TestsEdge:
         i, o, f = (Node("input"), Node("output"), "flow")
         with pytest.raises(ValueError):
             Edge.from_object({"flow": i, "values": o})
-        edge = Edge.from_object({"input": i, "output": o, "flow": f})
+        edge = Edge.from_object({"input_node": i, "output_node": o, "flow": f})
         assert edge.input == i
         assert edge.output == o
         assert edge.values == f

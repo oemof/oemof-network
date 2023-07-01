@@ -44,7 +44,12 @@ class Edge(Entity):
     Label = EdgeLabel
 
     def __init__(
-        self, input=None, output=None, flow=None, values=None, **kwargs
+        self,
+        input_node=None,
+        output_node=None,
+        flow=None,
+        values=None,
+        **kwargs,
     ):
         if flow is not None and values is not None:
             raise ValueError(
@@ -55,10 +60,10 @@ class Edge(Entity):
                 + "    `values`: {}\n".format(values)
                 + "Choose one."
             )
-        super().__init__(label=Edge.Label(input, output))
+        super().__init__(label=Edge.Label(input_node, output_node))
         self.values = values if values is not None else flow
-        if input is not None and output is not None:
-            input.outputs[output] = self
+        if input_node is not None and output_node is not None:
+            input_node.outputs[output_node] = self
 
     @classmethod
     def from_object(cls, o):
