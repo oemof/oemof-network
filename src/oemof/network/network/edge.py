@@ -53,11 +53,11 @@ class Edge(Entity):
     ):
         if flow is not None and values is not None:
             raise ValueError(
-                f"\n\n`Edge`'s `flow` and `values` keyword arguments are "
+                "\n\n`Edge`'s `flow` and `values` keyword arguments are "
                 "aliases of each other,\nso they're mutually exclusive.\n"
                 "You supplied:\n"
-                "    `flow`  : {flow}\n"
-                "    `values`: {values}\n"
+                f"    `flow`  : {flow}\n"
+                f"    `values`: {values}\n"
                 "Choose one."
             )
         super().__init__(label=Edge.Label(input_node, output_node))
