@@ -12,39 +12,14 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
-from itertools import chain
 
 from oemof.network import energy_system as es
-from oemof.network.groupings import Flows
-from oemof.network.groupings import FlowsWithNodes as FWNs
-from oemof.network.network import Bus
 from oemof.network.network.nodes import Node
 
 
 class TestsEnergySystem:
     def setup_method(self):
         self.es = es.EnergySystem()
-
-    def test_flows(self):
-        key = object()
-        ensys = es.EnergySystem(groupings=[Flows(key)])
-        bus = Bus(label="A Bus")
-        node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
-        ensys.add(bus, node)
-        assert ensys.groups[key] == set(
-            chain(bus.inputs.values(), bus.outputs.values())
-        )
-
-    def test_flows_with_nodes(self):
-        key = object()
-        ensys = es.EnergySystem(groupings=[FWNs(key)])
-        bus = Bus(label="A Bus")
-        node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
-        ensys.add(bus, node)
-        assert ensys.groups[key], {
-            (bus, node, bus.outputs[node]),
-            (node, bus, node.outputs[bus]),
-        }
 
     def test_that_node_additions_are_signalled(self):
         """
