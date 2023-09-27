@@ -15,17 +15,19 @@ from .edge import Edge
 from .entity import Entity
 
 
+
+
 class Node(Entity):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._in_edges = set()
+
+        msg = "{} {!r} of {!r} not an instance of Node but of {}."
+
         for i in kwargs.get("inputs", {}):
             if not isinstance(i, Node):
-                msg = (
-                    "Input {!r} of {!r} not an instance of Node but of {}."
-                ).format(i, self, type(i))
-                raise ValueError(msg)
+                raise ValueError(msg.format("Input", i, self, type(i)))
             self._in_edges.add(i)
             try:
                 flow = kwargs["inputs"].get(i)
@@ -36,10 +38,7 @@ class Node(Entity):
             edge.output = self
         for o in kwargs.get("outputs", {}):
             if not isinstance(o, Node):
-                msg = (
-                    "Output {!r} of {!r} not an instance of Node but of {}."
-                ).format(o, self, type(o))
-                raise ValueError(msg)
+                raise ValueError(msg.format("Output", o, self, type(o)))
             try:
                 flow = kwargs["outputs"].get(o)
             except AttributeError:
