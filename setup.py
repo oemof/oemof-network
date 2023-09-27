@@ -77,7 +77,7 @@ setup(
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
     python_requires=">=3.7",
-    install_requires=["pandas", "blinker", "dill", "networkx"],
+    install_requires=["pandas", "dill", "networkx"],
     extras_require={
         "dev": ["pytest"],
         # eg:

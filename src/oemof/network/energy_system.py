@@ -19,7 +19,6 @@ import logging
 import os
 from collections import deque
 
-import blinker
 import dill as pickle
 
 from oemof.network.groupings import DEFAULT as BY_UID
@@ -121,19 +120,6 @@ class EnergySystem:
 
     """
 
-    signals = {}
-    """A dictionary of blinker_ signals emitted by energy systems.
-
-    Currently only one signal is supported. This signal is emitted whenever a
-    `node <oemof.network.Node>` is `add`ed to an energy system. The
-    signal's `sender` is set to the `node <oemof.network.Node>` that got
-    added to the energy system so that `node <oemof.network.Node>` have an
-    easy way to only receive signals for when they themselves get added to an
-    energy system.
-
-    .. _blinker: https://blinker.readthedocs.io/en/stable/
-    """
-
     def __init__(self, **kwargs):
         self._first_ungrouped_node_index_ = 0
         self._groups = {}
@@ -156,10 +142,6 @@ class EnergySystem:
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
         self.nodes.extend(nodes)
-        for n in nodes:
-            self.signals[type(self).add].send(n, EnergySystem=self)
-
-    signals[add] = blinker.signal(add)
 
     @property
     def groups(self):
