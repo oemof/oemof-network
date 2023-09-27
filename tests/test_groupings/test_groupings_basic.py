@@ -23,9 +23,10 @@ from oemof.network.network.nodes import Node
 
 
 def test_entity_grouping_on_construction():
-        bus = Bus(label="test bus")
-        ensys = es.EnergySystem(entities=[bus])
-        assert ensys.groups[bus.label] is bus
+    bus = Bus(label="test bus")
+    ensys = es.EnergySystem(entities=[bus])
+    assert ensys.groups[bus.label] is bus
+
 
 def test_that_none_is_not_a_valid_group():
     def by_uid(n):
@@ -36,9 +37,7 @@ def test_that_none_is_not_a_valid_group():
 
     ensys = es.EnergySystem(groupings=[by_uid])
 
-    ungrouped = [
-        Node(uid="Not in 'Group': {}".format(i)) for i in range(10)
-    ]
+    ungrouped = [Node(uid="Not in 'Group': {}".format(i)) for i in range(10)]
     grouped = [Node(uid="In 'Group': {}".format(i)) for i in range(10)]
     assert None not in ensys.groups
     for g in ensys.groups.values():
@@ -48,6 +47,7 @@ def test_that_none_is_not_a_valid_group():
         for e in grouped:
             if isinstance(g, Iterable) and not isinstance(g, str):
                 assert e in g
+
 
 def test_defining_multiple_groupings_with_one_function():
     def assign_to_multiple_groups_in_one_go(n):
@@ -77,6 +77,7 @@ def test_defining_multiple_groupings_with_one_function():
             sorted([e.label for e in ensy.groups[group]]),
         )
 
+
 def test_grouping_filter_parameter():
     g1 = Grouping(
         key=lambda e: "The Special One",
@@ -93,6 +94,7 @@ def test_grouping_filter_parameter():
     ensys.add(*others)
     assert ensys.groups["The Special One"] == special
     assert ensys.groups["A Subset"] == subset
+
 
 def test_proper_filtering():
     """`Grouping.filter` should not be "all or nothing".
@@ -112,11 +114,10 @@ def test_proper_filtering():
     ensys.add(special)
     assert ensys.groups["group"] == {2, 4}
 
+
 def test_non_callable_group_keys():
     collect_everything = Entities(key="everything")
-    g1 = Grouping(
-        key="The Special One", filter=lambda e: "special" in e.label
-    )
+    g1 = Grouping(key="The Special One", filter=lambda e: "special" in e.label)
     g2 = Entities(key="A Subset", filter=lambda e: "subset" in e.label)
     ensys = es.EnergySystem(groupings=[g1, g2, collect_everything])
     special = Node(label="special")
@@ -128,6 +129,7 @@ def test_non_callable_group_keys():
     assert ensys.groups["The Special One"] == special
     assert ensys.groups["A Subset"] == subset
     assert ensys.groups["everything"] == everything
+
 
 def test_grouping_laziness():
     """Energy system `groups` should be fully lazy.
@@ -159,6 +161,7 @@ def test_grouping_laziness():
             "\n   ".join(pformat(ensys.groups[group]).split("\n")),
         ),
     )
+
 
 def test_constant_group_keys():
     """Callable keys passed in as `constant_key` should not be called.
