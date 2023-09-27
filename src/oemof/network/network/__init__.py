@@ -1,6 +1,6 @@
+from .edge import Edge
 from .nodes import Bus
 from .nodes import Component
-from .edge import Edge
 from .nodes import Sink
 from .nodes import Source
 from .nodes import Transformer
