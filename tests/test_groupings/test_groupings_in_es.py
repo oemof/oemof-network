@@ -19,6 +19,7 @@ from oemof.network.groupings import Flows, FlowsWithNodes
 from oemof.network.network import Bus
 from oemof.network.network.nodes import Node
 
+
 def test_flows():
     key = object()
     ensys = es.EnergySystem(groupings=[Flows(key)])
@@ -28,6 +29,7 @@ def test_flows():
     assert ensys.groups[key] == set(
         chain(bus.inputs.values(), bus.outputs.values())
     )
+
 
 def test_flows_with_nodes():
     key = object()
