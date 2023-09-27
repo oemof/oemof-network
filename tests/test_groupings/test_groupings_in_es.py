@@ -15,7 +15,8 @@ SPDX-License-Identifier: MIT
 from itertools import chain
 
 from oemof.network import energy_system as es
-from oemof.network.groupings import Flows, FlowsWithNodes
+from oemof.network.groupings import Flows
+from oemof.network.groupings import FlowsWithNodes
 from oemof.network.network import Bus
 from oemof.network.network.nodes import Node
 
