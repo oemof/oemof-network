@@ -15,8 +15,6 @@ from .edge import Edge
 from .entity import Entity
 
 
-
-
 class Node(Entity):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
