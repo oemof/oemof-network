@@ -140,7 +140,7 @@ def create_nx_graph(
 
 def positions(energy_system, nx_graph=None):
     """
-    Get locations to draw nodes of `oemof.network.EnergySystem`.
+    Get positions to draw nodes of `oemof.network.EnergySystem`.
 
 
     Parameters
@@ -149,25 +149,25 @@ def positions(energy_system, nx_graph=None):
 
     nx_graph : `networkx.DiGraph` (optional)
         Existing `networkx.DiGraph` that can be used to optimise
-        the locations of `Node`s that are not already set.
+        the positions of `Node`s that are not already set.
         If there are `Node`s without a given position and nx_graph
         is not given, a temporary `networkx.DiGraph` will be created.
     """
     fixed_positions = dict()
 
-    nodes_with_location = list()
+    nodes_with_position = list()
     for node in energy_system.nodes:
-        location = node.location
-        if location is not None:
-            fixed_positions[str(node)] = location
-            nodes_with_location.append(str(node))
+        position = node.position
+        if position is not None:
+            fixed_positions[str(node)] = position
+            nodes_with_position.append(str(node))
 
-    if len(nodes_with_location) == len(energy_system.nodes):
+    if len(nodes_with_position) == len(energy_system.nodes):
         all_positions = fixed_positions
-    else:  # use networkx to optimise non-set locations
+    else:  # use networkx to optimise non-set positions
         # networkx.spring_layout cannot work with empty dicts
-        if len(nodes_with_location) == 0:
-            nodes_with_location = None
+        if len(nodes_with_position) == 0:
+            nodes_with_position = None
         if nx_graph is None:
             nx_graph = create_nx_graph(energy_system=energy_system)
 
@@ -180,7 +180,7 @@ def positions(energy_system, nx_graph=None):
 
             # we run this twice to get good positions based on the fixed ones
             all_positions = nx.spring_layout(
-                nx_graph, pos=all_positions, fixed=nodes_with_location
+                nx_graph, pos=all_positions, fixed=nodes_with_position
             )
 
     return all_positions

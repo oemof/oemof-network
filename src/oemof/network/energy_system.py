@@ -61,12 +61,7 @@ class EnergySystem:
     ----------
     entities : list of :class:`Entity <oemof.core.network.Entity>`
         A list containing the :class:`Entities <oemof.core.network.Entity>`
-        that comprise the energy system. If this :class:`EnergySystem` is
-        set as the :attr:`registry <oemof.core.network.Entity.registry>`
-        attribute, which is done automatically on :class:`EnergySystem`
-        construction, newly created :class:`Entities
-        <oemof.core.network.Entity>` are automatically added to this list on
-        construction.
+        that comprise the energy system.
     groups : dict
     results : dictionary
         A dictionary holding the results produced by the energy system.
@@ -104,7 +99,7 @@ class EnergySystem:
     >>> bus is es.groups['electricity']
     False
     >>> es.groups['electricity']
-    "<oemof.network.network.Bus: 'electricity'>"
+    "<oemof.network.network.nodes.Bus: 'electricity'>"
 
     For simple user defined groupings, you can just supply a function that
     computes a key from an :class:`entity <oemof.core.network.Entity>` and the

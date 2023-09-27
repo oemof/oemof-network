@@ -22,11 +22,11 @@ pp_gas = Transformer(label=('pp', 'gas'),
 line_to2 = Transformer(label='line_to2',
                        inputs=[bel1],
                        outputs=[bel2],
-                       location=(0, -3))
+                       position=(0, -3))
 line_from2 = Transformer(label='line_from2',
                          inputs=[bel2],
                          outputs=[bel1],
-                         location=(0, 3))
+                         position=(0, 3))
 es.add(b_gas, bel1, demand_el, pp_gas, bel2, line_to2, line_from2)
 my_graph = on_graph.create_nx_graph(es)
 positions = on_graph.positions(es, my_graph)

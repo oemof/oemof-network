@@ -20,7 +20,7 @@ from collections.abc import MutableMapping
 from itertools import chain
 from itertools import filterfalse
 
-from oemof.network.network import Edge
+from oemof.network.network.edge import Edge
 
 # TODO: Update docstrings.
 #

@@ -29,10 +29,6 @@ Overview
     :target: https://readthedocs.org/projects/oemof-network
     :alt: Documentation Status
 
-.. |travis| image:: https://api.travis-ci.org/oemof/oemof-network.svg?branch=master
-    :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/oemof/oemof-network
-
 .. |coveralls| image:: https://coveralls.io/repos/oemof/oemof-network/badge.svg?branch=dev&service=github
     :alt: Coverage Status
     :target: https://coveralls.io/r/oemof/oemof-network?branch=dev

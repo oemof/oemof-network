@@ -24,11 +24,11 @@ from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
 from oemof.network.groupings import Grouping
 from oemof.network.network import Bus
-from oemof.network.network import Node
+from oemof.network.network.nodes import Node
 
 
 class TestsEnergySystem:
-    def setup(self):
+    def setup_method(self):
         self.es = es.EnergySystem()
 
     def test_entity_grouping_on_construction(self):
