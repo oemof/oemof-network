@@ -24,7 +24,7 @@ from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes as FWNs
 from oemof.network.groupings import Grouping
 from oemof.network.network import Bus
-from oemof.network.network import Node
+from oemof.network.network.nodes import Node
 
 
 class TestsEnergySystem:

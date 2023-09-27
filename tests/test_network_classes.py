@@ -21,10 +21,10 @@ import pytest
 
 from oemof.network.energy_system import EnergySystem as EnSys
 from oemof.network.network import Bus
-from oemof.network.network import Edge
-from oemof.network.network import Entity
-from oemof.network.network import Node
 from oemof.network.network import Transformer
+from oemof.network.network.edge import Edge
+from oemof.network.network.entity import Entity
+from oemof.network.network.nodes import Node
 
 
 class TestsNode:
@@ -242,16 +242,12 @@ class TestsNode:
 
     def test_entity_input_output_type_assertions(self):
         """
-        `'Entity'` should only accept `Entity` instances
+        `'Node'` should only accept `Node` instances
         as input/output targets.
         """
         with pytest.raises(ValueError):
-            Entity(
-                "An entity with an output", outputs={"Not an Entity": "A Flow"}
-            )
-            Entity(
-                "An entity with an input", inputs={"Not an Entity": "A Flow"}
-            )
+            Node("An entity with an output", outputs={"Not a Node": "A Flow"})
+            Node("An entity with an input", inputs={"Not a Node": "A Flow"})
 
     def test_node_label_without_private_attribute(self):
         """
@@ -279,7 +275,7 @@ class TestsEdge:
         """
         source = Node(label="source")
         target = Node(label="target")
-        edge = Edge(input=source, output=target)
+        edge = Edge(input_node=source, output_node=target)
         assert target in source.outputs, (
             "{} not in {} after constructing {}.".format(
                 target, source.outputs, edge
@@ -312,7 +308,7 @@ class TestsEdge:
         i, o, f = (Node("input"), Node("output"), "flow")
         with pytest.raises(ValueError):
             Edge.from_object({"flow": i, "values": o})
-        edge = Edge.from_object({"input": i, "output": o, "flow": f})
+        edge = Edge.from_object({"input_node": i, "output_node": o, "flow": f})
         assert edge.input == i
         assert edge.output == o
         assert edge.values == f

@@ -99,7 +99,7 @@ class EnergySystem:
     >>> bus is es.groups['electricity']
     False
     >>> es.groups['electricity']
-    "<oemof.network.network.Bus: 'electricity'>"
+    "<oemof.network.network.nodes.Bus: 'electricity'>"
 
     For simple user defined groupings, you can just supply a function that
     computes a key from an :class:`entity <oemof.core.network.Entity>` and the
