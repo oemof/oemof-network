@@ -16,12 +16,14 @@ from .entity import Entity
 
 
 def _convert_to_dict(arg):
-        if type(arg) is dict:
-            return arg
-        else:
-            return dict.fromkeys(arg)
+    if type(arg) is dict:
+        return arg
+    else:
+        return dict.fromkeys(arg)
+
 
 _msg = "{} {!r} of {!r} not an instance of Node but of {}."
+
 
 class Node(Entity):
     def __init__(self, *args, **kwargs):
@@ -33,14 +35,14 @@ class Node(Entity):
         outputs = kwargs.get("outputs", {})
         self.add_inputs(inputs)
         self.add_outputs(outputs)
- 
+
     def add_inputs(self, inputs):
         input_dict = _convert_to_dict(inputs)
         for i, e in input_dict.items():
             if not isinstance(i, Node):
                 raise ValueError(_msg.format("Input", i, self, type(i)))
             self._in_edges.add(i)
-            
+
             edge = Edge.from_object(e)
             edge.input = i
             edge.output = self
@@ -52,11 +54,6 @@ class Node(Entity):
                 o.add_inputs({self: f})
             else:
                 raise ValueError(_msg.format("Input", o, self, type(o)))
-
-
-        
-        
-
 
 
 class Bus(Node):
