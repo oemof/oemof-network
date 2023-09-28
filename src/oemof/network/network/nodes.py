@@ -16,7 +16,7 @@ from .entity import Entity
 
 
 def _convert_to_dict(arg):
-    if type(arg) is dict:
+    if isinstance(arg, dict):
         return arg
     else:
         return dict.fromkeys(arg)
