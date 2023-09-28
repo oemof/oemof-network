@@ -15,35 +15,48 @@ from .edge import Edge
 from .entity import Entity
 
 
+def _convert_to_dict(arg):
+        if type(arg) is dict:
+            return arg
+        else:
+            return dict.fromkeys(arg)
+
+_msg = "{} {!r} of {!r} not an instance of Node but of {}."
+
 class Node(Entity):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._in_edges = set()
 
-        msg = "{} {!r} of {!r} not an instance of Node but of {}."
-
-        for i in kwargs.get("inputs", {}):
+        inputs = kwargs.get("inputs", {})
+        outputs = kwargs.get("outputs", {})
+        self.add_inputs(inputs)
+        self.add_outputs(outputs)
+ 
+    def add_inputs(self, inputs):
+        input_dict = _convert_to_dict(inputs)
+        for i, e in input_dict.items():
             if not isinstance(i, Node):
-                raise ValueError(msg.format("Input", i, self, type(i)))
+                raise ValueError(_msg.format("Input", i, self, type(i)))
             self._in_edges.add(i)
-            try:
-                flow = kwargs["inputs"].get(i)
-            except AttributeError:
-                flow = None
-            edge = Edge.from_object(flow)
+            
+            edge = Edge.from_object(e)
             edge.input = i
             edge.output = self
-        for o in kwargs.get("outputs", {}):
-            if not isinstance(o, Node):
-                raise ValueError(msg.format("Output", o, self, type(o)))
-            try:
-                flow = kwargs["outputs"].get(o)
-            except AttributeError:
-                flow = None
-            edge = Edge.from_object(flow)
-            edge.input = self
-            edge.output = o
+
+    def add_outputs(self, outputs):
+        output_dict = _convert_to_dict(outputs)
+        for o, f in output_dict.items():
+            if isinstance(o, Node):
+                o.add_inputs({self: f})
+            else:
+                raise ValueError(_msg.format("Input", o, self, type(o)))
+
+
+        
+        
+
 
 
 class Bus(Node):
