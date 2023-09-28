@@ -58,7 +58,6 @@ class TestsEnergySystem:
         node2.add_outputs({node1: Edge()})
         assert (node2, node1) in self.es.flows().keys()
 
-
     def test_that_node_additions_are_signalled(self):
         """
         When a node gets `add`ed, a corresponding signal should be emitted.
