@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 
 from functools import total_ordering
 
+
 @total_ordering
 class Entity:
     """Represents an Entity in an energy system graph.
