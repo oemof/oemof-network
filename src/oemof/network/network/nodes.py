@@ -11,6 +11,8 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-License-Identifier: MIT
 """
 
+import warnings
+
 from .edge import Edge
 from .entity import Entity
 
@@ -59,12 +61,26 @@ class Node(Entity):
             edge.output = o
 
 
+_deprecation_warning = (
+    "Usage of {} is deprecated. Use oemof.network.Node instead."
+)
+
 class Bus(Node):
-    pass
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecation_warning.format(type(self)),
+            FutureWarning,
+        )
+        super().__init__(*args, **kwargs)
 
 
 class Component(Node):
-    pass
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecation_warning.format(type(self)),
+            FutureWarning,
+        )
+        super().__init__(*args, **kwargs)
 
 
 class Sink(Component):
