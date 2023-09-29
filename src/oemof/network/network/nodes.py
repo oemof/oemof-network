@@ -65,6 +65,7 @@ _deprecation_warning = (
     "Usage of {} is deprecated. Use oemof.network.Node instead."
 )
 
+
 class Bus(Node):
     def __init__(self, *args, **kwargs):
         warnings.warn(

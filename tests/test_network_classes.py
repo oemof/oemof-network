@@ -341,6 +341,7 @@ class TestsEnergySystemNodesIntegration:
         self.es.add(n3)
         assert n3 in self.es.nodes
 
+
 def test_deprecated_classes():
     with pytest.warns(FutureWarning):
         Bus()
