@@ -13,6 +13,8 @@ SPDX-License-Identifier: MIT
 
 from .edge import Edge
 from .entity import Entity
+from .helpers import Inputs
+from .helpers import Outputs
 
 
 class Node(Entity):
@@ -29,9 +31,13 @@ class Node(Entity):
         output nodes to corresponding outflows (i.e. output values).
     """
 
+    __slots__ = ["_in_edges", "_inputs", "_outputs"]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self._inputs = Inputs(self)
+        self._outputs = Outputs(self)
         self._in_edges = set()
 
         msg = "{} {!r} of {!r} not an instance of Node but of {}."
@@ -57,6 +63,27 @@ class Node(Entity):
             edge = Edge.from_object(flow)
             edge.input = self
             edge.output = o
+
+    @property
+    def inputs(self):
+        """dict:
+        Dictionary mapping input :class:`Entities <Entity>` :obj:`n` to
+        :class:`Edge`s from :obj:`n` into :obj:`self`.
+        If :obj:`self` is an :class:`Edge`, returns a dict containing the
+        :class:`Edge`'s single input node as the key and the flow as the value.
+        """
+        return self._inputs
+
+    @property
+    def outputs(self):
+        """dict:
+        Dictionary mapping output :class:`Entities <Entity>` :obj:`n` to
+        :class:`Edges` from :obj:`self` into :obj:`n`.
+        If :obj:`self` is an :class:`Edge`, returns a dict containing the
+        :class:`Edge`'s single output node as the key and the flow as the
+        value.
+        """
+        return self._outputs
 
 
 class Bus(Node):

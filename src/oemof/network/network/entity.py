@@ -14,10 +14,6 @@ SPDX-License-Identifier: MIT
 
 from functools import total_ordering
 
-from .helpers import Inputs
-from .helpers import Outputs
-
-
 @total_ordering
 class Entity:
     """Represents an Entity in an energy system graph.
@@ -50,12 +46,10 @@ class Entity:
         information.
     """
 
-    __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
+    __slots__ = ["_label"]
 
     def __init__(self, *args, **kwargs):
         args = list(args)
-        self._inputs = Inputs(self)
-        self._outputs = Outputs(self)
         for optional in ["label"]:
             if optional in kwargs:
                 if args:
@@ -107,24 +101,3 @@ class Entity:
     @label.setter
     def label(self, label):
         self._label = label
-
-    @property
-    def inputs(self):
-        """dict:
-        Dictionary mapping input :class:`Entities <Entity>` :obj:`n` to
-        :class:`Edge`s from :obj:`n` into :obj:`self`.
-        If :obj:`self` is an :class:`Edge`, returns a dict containing the
-        :class:`Edge`'s single input node as the key and the flow as the value.
-        """
-        return self._inputs
-
-    @property
-    def outputs(self):
-        """dict:
-        Dictionary mapping output :class:`Entities <Entity>` :obj:`n` to
-        :class:`Edges` from :obj:`self` into :obj:`n`.
-        If :obj:`self` is an :class:`Edge`, returns a dict containing the
-        :class:`Edge`'s single output node as the key and the flow as the
-        value.
-        """
-        return self._outputs
