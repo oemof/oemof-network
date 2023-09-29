@@ -16,6 +16,19 @@ from .entity import Entity
 
 
 class Node(Entity):
+    r"""A Node of an energy system graph.
+
+    Parameters
+    ----------
+    label : (See documentation of class `Entity`)
+    inputs: list or dict, optional
+        Either a list of this nodes' input nodes or a dictionary mapping input
+        nodes to corresponding inflows (i.e. input values).
+    outputs: list or dict, optional
+        Either a list of this nodes' output nodes or a dictionary mapping
+        output nodes to corresponding outflows (i.e. output values).
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
