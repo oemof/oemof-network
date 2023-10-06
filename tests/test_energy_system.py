@@ -42,7 +42,7 @@ class TestsEnergySystem:
         assert node2 in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
 
-    def test_add_flow(self):
+    def test_add_flow_assignment(self):
         assert not self.es.nodes
 
         node0 = Node(label="node0")
@@ -50,13 +50,18 @@ class TestsEnergySystem:
         node2 = Node(label="node2", inputs={node0: Edge()})
 
         self.es.add(node0, node1, node2)
-        node2.add_inputs({node1: Edge()})
+
+        assert (node0, node2) in self.es.flows().keys()
+        assert (node1, node2) not in self.es.flows().keys()
+        assert (node2, node1) not in self.es.flows().keys()
+
+        node2.inputs[node1] = Edge()
 
         assert (node0, node2) in self.es.flows().keys()
         assert (node1, node2) in self.es.flows().keys()
         assert (node2, node1) not in self.es.flows().keys()
 
-        node2.add_outputs({node1: Edge()})
+        node2.outputs[node1] = Edge()
         assert (node0, node2) in self.es.flows().keys()
         assert (node1, node2) in self.es.flows().keys()
         assert (node2, node1) in self.es.flows().keys()

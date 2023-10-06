@@ -22,9 +22,6 @@ def _convert_to_dict(arg):
         return dict.fromkeys(arg)
 
 
-_msg = "{} {!r} of {!r} not an instance of Node but of {}."
-
-
 class Node(Entity):
     r"""A Node of an energy system graph.
 
@@ -44,29 +41,29 @@ class Node(Entity):
 
         self._in_edges = set()
 
-        inputs = kwargs.get("inputs", {})
-        outputs = kwargs.get("outputs", {})
-        self.add_inputs(inputs)
-        self.add_outputs(outputs)
+        msg = "{} {!r} of {!r} not an instance of Node but of {}."
 
-    def add_inputs(self, inputs):
-        input_dict = _convert_to_dict(inputs)
-        for i, e in input_dict.items():
+        for i in kwargs.get("inputs", {}):
             if not isinstance(i, Node):
-                raise ValueError(_msg.format("Input", i, self, type(i)))
+                raise ValueError(msg.format("Input", i, self, type(i)))
             self._in_edges.add(i)
-
-            edge = Edge.from_object(e)
+            try:
+                flow = kwargs["inputs"].get(i)
+            except AttributeError:
+                flow = None
+            edge = Edge.from_object(flow)
             edge.input = i
             edge.output = self
-
-    def add_outputs(self, outputs):
-        output_dict = _convert_to_dict(outputs)
-        for o, f in output_dict.items():
-            if isinstance(o, Node):
-                o.add_inputs({self: f})
-            else:
-                raise ValueError(_msg.format("Input", o, self, type(o)))
+        for o in kwargs.get("outputs", {}):
+            if not isinstance(o, Node):
+                raise ValueError(msg.format("Output", o, self, type(o)))
+            try:
+                flow = kwargs["outputs"].get(o)
+            except AttributeError:
+                flow = None
+            edge = Edge.from_object(flow)
+            edge.input = self
+            edge.output = o
 
 
 class Bus(Node):
