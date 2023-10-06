@@ -15,13 +15,6 @@ from .edge import Edge
 from .entity import Entity
 
 
-def _convert_to_dict(arg):
-    if isinstance(arg, dict):
-        return arg
-    else:
-        return dict.fromkeys(arg)
-
-
 class Node(Entity):
     r"""A Node of an energy system graph.
 
