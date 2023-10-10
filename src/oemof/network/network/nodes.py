@@ -34,7 +34,7 @@ class Node(Entity):
     ----------
     inputs: dict
         A dictionary mapping input nodes to corresponding inflows.
-    outputs: list or dict, optional
+    outputs: dict
         A dictionary mapping output nodes to corresponding outflows.
     """
 
