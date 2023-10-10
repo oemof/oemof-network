@@ -41,12 +41,6 @@ class Entity:
         node belongs to. If this parameter is not supplied, the string
         representation of this node will instead be generated based on this
         nodes `class` and `id`.
-    inputs: list or dict, optional
-        Either a list of this nodes' input nodes or a dictionary mapping input
-        nodes to corresponding inflows (i.e. input values).
-    outputs: list or dict, optional
-        Either a list of this nodes' output nodes or a dictionary mapping
-        output nodes to corresponding outflows (i.e. output values).
 
     Attributes
     ----------
