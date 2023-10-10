@@ -1,4 +1,4 @@
-__version__ = "0.5.0a2"
+__version__ = "0.5.0a3"
 
 from . import energy_system
 from . import graph
