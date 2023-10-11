@@ -32,7 +32,7 @@ long_description = "%s" % (
 
 setup(
     name="oemof.network",
-    version="0.5.0a4",
+    version="0.5.0a5",
     license="MIT",
     description="The network/graph submodules of oemof.",
     long_description=long_description,
