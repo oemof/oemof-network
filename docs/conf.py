@@ -20,7 +20,7 @@ project = "oemof.network"
 year = "2023"
 author = "oemof developer group"
 copyright = "{0}, {1}".format(year, author)
-version = release = "0.5.0a5"
+version = release = "0.5.0a6"
 
 pygments_style = "trac"
 templates_path = ["."]
