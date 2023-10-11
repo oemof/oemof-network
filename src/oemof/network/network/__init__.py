@@ -1,4 +1,5 @@
 from .edge import Edge
+from .entity import Entity
 from .nodes import Bus
 from .nodes import Component
 from .nodes import Node
@@ -10,6 +11,7 @@ __all__ = [
     "Bus",
     "Component",
     "Edge",
+    "Entity",
     "Node",
     "Sink",
     "Source",
