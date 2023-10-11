@@ -7,6 +7,7 @@ from . import network
 from .network import Bus
 from .network import Component
 from .network import Edge
+from .network import Node
 from .network import Sink
 from .network import Source
 from .network import Transformer
@@ -19,6 +20,7 @@ __all__ = [
     "graph",
     "groupings",
     "network",
+    "Node",
     "Sink",
     "Source",
     "Transformer",
