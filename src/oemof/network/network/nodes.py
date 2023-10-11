@@ -78,7 +78,7 @@ _deprecation_warning = (
 class Bus(Node):
     def __init__(self, *args, **kwargs):
         warnings.warn(
-            _deprecation_warning.format(type(self)),
+            _deprecation_warning.format("oemof.network.Bus"),
             FutureWarning,
         )
         super().__init__(*args, **kwargs)
@@ -87,7 +87,7 @@ class Bus(Node):
 class Component(Node):
     def __init__(self, *args, **kwargs):
         warnings.warn(
-            _deprecation_warning.format(type(self)),
+            _deprecation_warning.format("oemof.network.Component"),
             FutureWarning,
         )
         super().__init__(*args, **kwargs)
