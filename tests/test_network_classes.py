@@ -253,11 +253,10 @@ class TestsNode:
 
     def test_node_label_without_private_attribute(self):
         """
-        A `Node` with no explicit `label` doesn't have a `_label` attribute.
+        A `Node` without `label` doesn't have the `_label` attribute set.
         """
         n = Node()
-        with pytest.raises(AttributeError):
-            n._label
+        assert not n._label
 
     def test_node_label_if_its_not_explicitly_specified(self):
         """If not explicitly given, a `Node`'s label is based on its `id`."""

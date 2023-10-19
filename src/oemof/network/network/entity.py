@@ -52,25 +52,10 @@ class Entity:
 
     __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
 
-    def __init__(self, *args, **kwargs):
-        args = list(args)
+    def __init__(self, label=None, **kwargs):
+        self._label = label
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
-        for optional in ["label"]:
-            if optional in kwargs:
-                if args:
-                    raise (
-                        TypeError(
-                            (
-                                "{}.__init__()\n"
-                                "  got multiple values for argument '{}'"
-                            ).format(type(self), optional)
-                        )
-                    )
-                setattr(self, "_" + optional, kwargs[optional])
-            else:
-                if args:
-                    setattr(self, "_" + optional, args.pop())
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -100,7 +85,7 @@ class Entity:
         """
         return (
             self._label
-            if hasattr(self, "_label")
+            if self._label
             else "<{} #0x{:x}>".format(type(self).__name__, id(self))
         )
 
