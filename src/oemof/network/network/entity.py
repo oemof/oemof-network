@@ -58,7 +58,7 @@ class Entity:
         "custom_properties",
     ]
 
-    def __init__(self, label=None, custom_properties=None, **kwargs):
+    def __init__(self, label=None, *, custom_properties=None, **kwargs):
         self._label = label
         if custom_properties is None:
             custom_properties = {}
