@@ -42,6 +42,10 @@ class Entity:
         representation of this node will instead be generated based on this
         nodes `class` and `id`.
 
+    custom_properties: `dict`
+        This dictionary that can be used to store information that can be used
+        to easily attach custom information to any Entity.
+
     Attributes
     ----------
     __slots__: str or iterable of str
