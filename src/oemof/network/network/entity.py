@@ -60,7 +60,7 @@ class Entity:
 
     def __init__(self, label=None, custom_properties=None, **kwargs):
         self._label = label
-        if custom_properties == None:
+        if custom_properties is None:
             custom_properties = {}
         self.custom_properties = custom_properties
         self._inputs = Inputs(self)
