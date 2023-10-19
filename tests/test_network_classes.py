@@ -350,3 +350,18 @@ def test_deprecated_classes():
         Source()
     with pytest.warns(FutureWarning):
         Transformer()
+
+
+def test_custom_properties():
+    node0 = Node()
+
+    assert not node0.custom_properties
+
+    node1 = Node(
+        custom_properties={
+            "foo": "bar",
+            1: 2,
+        }
+    )
+    assert node1.custom_properties["foo"] == "bar"
+    assert node1.custom_properties[1] == 2

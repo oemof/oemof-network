@@ -50,10 +50,19 @@ class Entity:
         information.
     """
 
-    __slots__ = ["_label", "_in_edges", "_inputs", "_outputs"]
+    __slots__ = [
+        "_label",
+        "_in_edges",
+        "_inputs",
+        "_outputs",
+        "custom_properties",
+    ]
 
-    def __init__(self, label=None, **kwargs):
+    def __init__(self, label=None, custom_properties=None, **kwargs):
         self._label = label
+        if custom_properties == None:
+            custom_properties = {}
+        self.custom_properties = custom_properties
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
 
