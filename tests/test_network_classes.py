@@ -365,3 +365,11 @@ def test_custom_properties():
     )
     assert node1.custom_properties["foo"] == "bar"
     assert node1.custom_properties[1] == 2
+
+def test_comparision():
+    node0 = Node(label=0)
+    node1 = Node(label=2)
+    node2 = Node(label=-5)
+
+    assert node0 < node1
+    assert node0 > node2
