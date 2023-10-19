@@ -94,7 +94,7 @@ class Entity:
         """
         return (
             self._label
-            if self._label
+            if self._label is not None
             else "<{} #0x{:x}>".format(type(self).__name__, id(self))
         )
 
