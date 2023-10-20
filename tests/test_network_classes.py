@@ -253,11 +253,10 @@ class TestsNode:
 
     def test_node_label_without_private_attribute(self):
         """
-        A `Node` with no explicit `label` doesn't have a `_label` attribute.
+        A `Node` without `label` doesn't have the `_label` attribute set.
         """
         n = Node()
-        with pytest.raises(AttributeError):
-            n._label
+        assert not n._label
 
     def test_node_label_if_its_not_explicitly_specified(self):
         """If not explicitly given, a `Node`'s label is based on its `id`."""
@@ -351,3 +350,27 @@ def test_deprecated_classes():
         Source()
     with pytest.warns(FutureWarning):
         Transformer()
+
+
+def test_custom_properties():
+    node0 = Node()
+
+    assert not node0.custom_properties
+
+    node1 = Node(
+        custom_properties={
+            "foo": "bar",
+            1: 2,
+        }
+    )
+    assert node1.custom_properties["foo"] == "bar"
+    assert node1.custom_properties[1] == 2
+
+
+def test_comparision():
+    node0 = Node(label=0)
+    node1 = Node(label=2)
+    node2 = Node(label=-5)
+
+    assert node0 < node1
+    assert node0 > node2
