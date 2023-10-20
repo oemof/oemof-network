@@ -21,6 +21,8 @@ import pytest
 
 from oemof.network.energy_system import EnergySystem as EnSys
 from oemof.network.network import Bus
+from oemof.network.network import Sink
+from oemof.network.network import Source
 from oemof.network.network import Transformer
 from oemof.network.network.edge import Edge
 from oemof.network.network.entity import Entity
@@ -124,7 +126,7 @@ class TestsNode:
         """
         flow = object()
         old = Node(label="A reused label")
-        bus = Bus(label="bus", inputs={old: flow})
+        bus = Node(label="bus", inputs={old: flow})
         assert bus.inputs[old].flow == flow, (
             ("\n  Expected: {0}" + "\n  Got     : {1} instead").format(
                 flow, bus.inputs[old].flow
@@ -172,7 +174,7 @@ class TestsNode:
     def test_modifying_inputs_after_construction(self):
         """One should be able to add and delete inputs of a node."""
         node = Node("N1")
-        bus = Bus("N2")
+        bus = Node("N2")
         flow = "flow"
 
         assert node.inputs == {}, (
@@ -251,11 +253,10 @@ class TestsNode:
 
     def test_node_label_without_private_attribute(self):
         """
-        A `Node` with no explicit `label` doesn't have a `_label` attribute.
+        A `Node` without `label` doesn't have the `_label` attribute set.
         """
         n = Node()
-        with pytest.raises(AttributeError):
-            n._label
+        assert not n._label
 
     def test_node_label_if_its_not_explicitly_specified(self):
         """If not explicitly given, a `Node`'s label is based on its `id`."""
@@ -329,12 +330,47 @@ class TestsEnergySystemNodesIntegration:
         self.es = EnSys()
 
     def test_entity_registration(self):
-        b1 = Bus(label="<B1>")
-        self.es.add(b1)
-        assert self.es.nodes[0] == b1
-        b2 = Bus(label="<B2>")
-        self.es.add(b2)
-        assert self.es.nodes[1] == b2
-        t1 = Transformer(label="<TF1>", inputs=[b1], outputs=[b2])
-        self.es.add(t1)
-        assert t1 in self.es.nodes
+        n1 = Node(label="<B1>")
+        self.es.add(n1)
+        assert self.es.nodes[0] == n1
+        n2 = Node(label="<B2>")
+        self.es.add(n2)
+        assert self.es.nodes[1] == n2
+        n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
+        self.es.add(n3)
+        assert n3 in self.es.nodes
+
+
+def test_deprecated_classes():
+    with pytest.warns(FutureWarning):
+        Bus()
+    with pytest.warns(FutureWarning):
+        Sink()
+    with pytest.warns(FutureWarning):
+        Source()
+    with pytest.warns(FutureWarning):
+        Transformer()
+
+
+def test_custom_properties():
+    node0 = Node()
+
+    assert not node0.custom_properties
+
+    node1 = Node(
+        custom_properties={
+            "foo": "bar",
+            1: 2,
+        }
+    )
+    assert node1.custom_properties["foo"] == "bar"
+    assert node1.custom_properties[1] == 2
+
+
+def test_comparision():
+    node0 = Node(label=0)
+    node1 = Node(label=2)
+    node2 = Node(label=-5)
+
+    assert node0 < node1
+    assert node0 > node2

@@ -20,4 +20,4 @@ Changelog
 -----
 
 * Improved code quality
-
+* Add Entity.custom_properties

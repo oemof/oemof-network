@@ -39,6 +39,10 @@ class Entity:
         representation of this node will instead be generated based on this
         nodes `class` and `id`.
 
+    custom_properties: `dict`
+        This dictionary that can be used to store information that can be used
+        to easily attach custom information to any Entity.
+
     Attributes
     ----------
     __slots__: str or iterable of str
@@ -47,25 +51,16 @@ class Entity:
         information.
     """
 
-    __slots__ = ["_label"]
+    __slots__ = [
+        "_label",
+        "custom_properties",
+    ]
 
-    def __init__(self, *args, **kwargs):
-        args = list(args)
-        for optional in ["label"]:
-            if optional in kwargs:
-                if args:
-                    raise (
-                        TypeError(
-                            (
-                                "{}.__init__()\n"
-                                "  got multiple values for argument '{}'"
-                            ).format(type(self), optional)
-                        )
-                    )
-                setattr(self, "_" + optional, kwargs[optional])
-            else:
-                if args:
-                    setattr(self, "_" + optional, args.pop())
+    def __init__(self, label=None, *, custom_properties=None, **kwargs):
+        self._label = label
+        if custom_properties is None:
+            custom_properties = {}
+        self.custom_properties = custom_properties
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -95,7 +90,7 @@ class Entity:
         """
         return (
             self._label
-            if hasattr(self, "_label")
+            if self._label is not None
             else "<{} #0x{:x}>".format(type(self).__name__, id(self))
         )
 

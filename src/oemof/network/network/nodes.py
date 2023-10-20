@@ -11,6 +11,8 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-License-Identifier: MIT
 """
 
+import warnings
+
 from .edge import Edge
 from .entity import Entity
 from .helpers import Inputs
@@ -26,9 +28,18 @@ class Node(Entity):
     inputs: list or dict, optional
         Either a list of this nodes' input nodes or a dictionary mapping input
         nodes to corresponding inflows (i.e. input values).
+        List will be converted to dictionary with values set to None.
     outputs: list or dict, optional
         Either a list of this nodes' output nodes or a dictionary mapping
         output nodes to corresponding outflows (i.e. output values).
+        List will be converted to dictionary with values set to None.
+
+    Attributes
+    ----------
+    inputs: dict
+        A dictionary mapping input nodes to corresponding inflows.
+    outputs: dict
+        A dictionary mapping output nodes to corresponding outflows.
     """
 
     __slots__ = ["_in_edges", "_inputs", "_outputs"]
@@ -86,12 +97,27 @@ class Node(Entity):
         return self._outputs
 
 
+_deprecation_warning = (
+    "Usage of {} is deprecated. Use oemof.network.Node instead."
+)
+
+
 class Bus(Node):
-    pass
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecation_warning.format("oemof.network.Bus"),
+            FutureWarning,
+        )
+        super().__init__(*args, **kwargs)
 
 
 class Component(Node):
-    pass
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecation_warning.format("oemof.network.Component"),
+            FutureWarning,
+        )
+        super().__init__(*args, **kwargs)
 
 
 class Sink(Component):
