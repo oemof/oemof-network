@@ -98,12 +98,12 @@ def create_nx_graph(
     grph = nx.DiGraph()
 
     # add nodes
-    for n in energy_system.nodes:
-        grph.add_node(str(n.label), label=str(n.label))
+    for label in energy_system.nodes.keys():
+        grph.add_node(str(label), label=str(label))
 
     # add labeled flows on directed edge if an optimization_model has been
     # passed or undirected edge otherwise
-    for n in energy_system.nodes:
+    for n in energy_system.nodes.values():
         for i in n.inputs.keys():
             weight = getattr(
                 energy_system.flows()[(i, n)], "nominal_value", None
@@ -125,7 +125,9 @@ def create_nx_graph(
     if remove_nodes_with_substrings is not None:
         for i in remove_nodes_with_substrings:
             remove_nodes = [
-                str(v.label) for v in energy_system.nodes if i in str(v.label)
+                str(label)
+                for label in energy_system.nodes.keys()
+                if i in str(label)
             ]
             grph.remove_nodes_from(remove_nodes)
 
