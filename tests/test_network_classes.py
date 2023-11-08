@@ -372,5 +372,18 @@ def test_comparision():
     node1 = Node(label=2)
     node2 = Node(label=-5)
 
+    assert node0 == 0
+    assert 2 == node1
     assert node0 < node1
     assert node0 > node2
+
+
+def test_dict_access():
+    node0 = Node(label="label_0")
+    test_dict = {node0: 5}
+    assert test_dict[node0] == 5
+    assert test_dict["label_0"] == 5
+
+    test_dict = {"label_0": 5}
+    assert test_dict[node0] == 5
+    assert test_dict["label_0"] == 5

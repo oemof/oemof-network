@@ -71,7 +71,10 @@ class Entity:
         self._outputs = Outputs(self)
 
     def __eq__(self, other):
-        return id(self) == id(other)
+        try:
+            return self.label == other.label
+        except AttributeError:
+            return self.label == other
 
     def __lt__(self, other):
         return str(self) < str(other)
