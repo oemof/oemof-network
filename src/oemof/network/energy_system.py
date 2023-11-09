@@ -168,9 +168,7 @@ class EnergySystem:
             (
                 g(n, gs)
                 for g in self._groupings
-                for n in list(self.nodes)[
-                    self._first_ungrouped_node_index_ :
-                ]
+                for n in list(self.nodes)[self._first_ungrouped_node_index_ :]
             ),
             maxlen=0,
         )
