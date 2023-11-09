@@ -28,7 +28,7 @@ class TestsEnergySystem:
         node1 = Node(label="node1")
         self.es.add(node1)
         assert self.es.nodes
-        assert node1 in self.es.nodes.values()
+        assert node1 in self.es.nodes
         assert not self.es.flows()
 
         # Note that node2 is not added, but the Flow is already
@@ -39,7 +39,7 @@ class TestsEnergySystem:
 
         # When both nodes are registred, also the Flow needs to be there.
         self.es.add(node2)
-        assert node2 in self.es.nodes.values()
+        assert node2 in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
 
     def test_add_flow_assignment(self):

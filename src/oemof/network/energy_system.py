@@ -155,7 +155,7 @@ class EnergySystem:
 
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
-        self.nodes.update({node.label: node for node in nodes})
+        self._nodes.update({node.label: node for node in nodes})
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
 
@@ -168,7 +168,7 @@ class EnergySystem:
             (
                 g(n, gs)
                 for g in self._groupings
-                for n in list(self.nodes.values())[
+                for n in list(self.nodes)[
                     self._first_ungrouped_node_index_ :
                 ]
             ),
@@ -178,8 +178,12 @@ class EnergySystem:
         return self._groups
 
     @property
-    def nodes(self):
+    def node(self):
         return self._nodes
+
+    @property
+    def nodes(self):
+        return self._nodes.values()
 
     @nodes.setter
     def nodes(self, value):
@@ -188,7 +192,7 @@ class EnergySystem:
     def flows(self):
         return {
             (source, target): source.outputs[target]
-            for source in self.nodes.values()
+            for source in self.nodes
             for target in source.outputs
         }
 
