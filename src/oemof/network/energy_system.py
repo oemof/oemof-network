@@ -17,12 +17,11 @@ SPDX-License-Identifier: MIT
 
 import logging
 import os
+import warnings
 from collections import deque
 
 import blinker
 import dill as pickle
-
-import warnings
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
