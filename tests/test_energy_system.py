@@ -13,9 +13,21 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-License-Identifier: MIT
 """
 
+import pytest
+
 from oemof.network import energy_system as es
 from oemof.network.network import Edge
 from oemof.network.network.nodes import Node
+
+
+def test_ensys_init():
+    node = Node("label")
+    ensys = es.EnergySystem(nodes=[node])
+    assert node in ensys.nodes
+
+    with pytest.warns(FutureWarning):
+        ensys = es.EnergySystem(entities=[node])
+        assert node in ensys.nodes
 
 
 class TestsEnergySystem:
