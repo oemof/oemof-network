@@ -33,10 +33,9 @@ class TestsNode:
     def setup_method(self):
         self.energysystem = EnSys()
 
-    def test_that_attributes_cannot_be_added(self):
-        entity = Entity()
-        with pytest.raises(AttributeError):
-            entity.foo = "bar"
+    def test_entity_initialisation(self):
+        entity = Entity(label="foo")
+        assert entity.label == "foo"
 
     def test_symmetric_input_output_assignment(self):
         n1 = Node(label="<N1>")
