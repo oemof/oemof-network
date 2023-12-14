@@ -183,10 +183,6 @@ class EnergySystem:
     def nodes(self):
         return self._nodes.values()
 
-    @nodes.setter
-    def nodes(self, value):
-        self._nodes = value
-
     def flows(self):
         return {
             (source, target): source.outputs[target]
