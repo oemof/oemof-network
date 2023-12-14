@@ -248,6 +248,8 @@ class TestsNode:
         """
         with pytest.raises(ValueError):
             Node("An entity with an output", outputs={"Not a Node": "A Flow"})
+
+        with pytest.raises(ValueError):
             Node("An entity with an input", inputs={"Not a Node": "A Flow"})
 
     def test_node_label_without_private_attribute(self):
