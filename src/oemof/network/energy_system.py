@@ -141,7 +141,7 @@ class EnergySystem:
             g if isinstance(g, Grouping) else Entities(g)
             for g in kwargs.get("groupings", [])
         ]
-        self._nodes = []
+        self._nodes = {}
 
         self.results = kwargs.get("results")
 
@@ -155,7 +155,7 @@ class EnergySystem:
 
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
-        self.nodes.extend(nodes)
+        self._nodes.update({node.label: node for node in nodes})
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
 
@@ -168,7 +168,7 @@ class EnergySystem:
             (
                 g(n, gs)
                 for g in self._groupings
-                for n in self.nodes[self._first_ungrouped_node_index_ :]
+                for n in list(self.nodes)[self._first_ungrouped_node_index_ :]
             ),
             maxlen=0,
         )
@@ -176,12 +176,12 @@ class EnergySystem:
         return self._groups
 
     @property
-    def nodes(self):
+    def node(self):
         return self._nodes
 
-    @nodes.setter
-    def nodes(self, value):
-        self._nodes = value
+    @property
+    def nodes(self):
+        return self._nodes.values()
 
     def flows(self):
         return {
