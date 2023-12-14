@@ -42,8 +42,6 @@ class Node(Entity):
         A dictionary mapping output nodes to corresponding outflows.
     """
 
-    __slots__ = ["_in_edges", "_inputs", "_outputs"]
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

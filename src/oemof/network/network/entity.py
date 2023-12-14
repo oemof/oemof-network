@@ -42,19 +42,8 @@ class Entity:
     custom_properties: `dict`
         This dictionary that can be used to store information that can be used
         to easily attach custom information to any Entity.
-
-    Attributes
-    ----------
-    __slots__: str or iterable of str
-        See the Python documentation on `__slots__
-        <https://docs.python.org/3/reference/datamodel.html#slots>`_ for more
-        information.
     """
 
-    __slots__ = [
-        "_label",
-        "custom_properties",
-    ]
 
     def __init__(self, label=None, *, custom_properties=None, **kwargs):
         self._label = label
