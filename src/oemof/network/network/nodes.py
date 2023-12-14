@@ -42,31 +42,43 @@ class Node(Entity):
         A dictionary mapping output nodes to corresponding outflows.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        label=None,
+        *,
+        inputs=None,
+        outputs=None,
+        custom_properties=None,
+    ):
+        super().__init__(label=label, custom_properties=custom_properties)
 
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
         self._in_edges = set()
 
+        if inputs is None:
+            inputs = {}
+        if outputs is None:
+            outputs = {}
+
         msg = "{} {!r} of {!r} not an instance of Node but of {}."
 
-        for i in kwargs.get("inputs", {}):
+        for i in inputs:
             if not isinstance(i, Node):
                 raise ValueError(msg.format("Input", i, self, type(i)))
             self._in_edges.add(i)
             try:
-                flow = kwargs["inputs"].get(i)
+                flow = inputs.get(i)
             except AttributeError:
                 flow = None
             edge = Edge.from_object(flow)
             edge.input = i
             edge.output = self
-        for o in kwargs.get("outputs", {}):
+        for o in outputs:
             if not isinstance(o, Node):
                 raise ValueError(msg.format("Output", o, self, type(o)))
             try:
-                flow = kwargs["outputs"].get(o)
+                flow = outputs.get(o)
             except AttributeError:
                 flow = None
             edge = Edge.from_object(flow)

@@ -24,7 +24,7 @@ from oemof.network.network.nodes import Node
 
 def test_entity_grouping_on_construction():
     bus = Bus(label="test bus")
-    ensys = es.EnergySystem(entities=[bus])
+    ensys = es.EnergySystem(nodes=[bus])
     assert ensys.groups[bus.label] is bus
 
 
@@ -37,8 +37,8 @@ def test_that_none_is_not_a_valid_group():
 
     ensys = es.EnergySystem(groupings=[by_uid])
 
-    ungrouped = [Node(uid="Not in 'Group': {}".format(i)) for i in range(10)]
-    grouped = [Node(uid="In 'Group': {}".format(i)) for i in range(10)]
+    ungrouped = [Node(label="Not in 'Group': {}".format(i)) for i in range(10)]
+    grouped = [Node(label="In 'Group': {}".format(i)) for i in range(10)]
     assert None not in ensys.groups
     for g in ensys.groups.values():
         for e in ungrouped:

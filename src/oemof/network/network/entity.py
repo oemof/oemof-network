@@ -44,7 +44,7 @@ class Entity:
         to easily attach custom information to any Entity.
     """
 
-    def __init__(self, label=None, *, custom_properties=None, **kwargs):
+    def __init__(self, label=None, *, custom_properties=None):
         self._label = label
         if custom_properties is None:
             custom_properties = {}

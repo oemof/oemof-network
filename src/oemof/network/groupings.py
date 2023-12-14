@@ -122,7 +122,7 @@ class Grouping:
                 + "one of `key` or `constant_key`."
             )
         self.filter = filter
-        for kw in ["value", "merge", "filter"]:
+        for kw in ["value", "merge"]:
             if kw in kwargs:
                 setattr(self, kw, kwargs[kw])
 

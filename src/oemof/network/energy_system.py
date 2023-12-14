@@ -22,6 +22,8 @@ from collections import deque
 import blinker
 import dill as pickle
 
+import warnings
+
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
 from oemof.network.groupings import Grouping
@@ -134,24 +136,41 @@ class EnergySystem:
     .. _blinker: https://blinker.readthedocs.io/en/stable/
     """
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        *,
+        groupings=None,
+        results=None,
+        timeindex=None,
+        timeincrement=None,
+        temporal=None,
+        nodes=None,
+        entities=None,
+    ):
+        if groupings is None:
+            groupings = []
+        if entities is not None:
+            warnings.warn(
+                "Parameter 'entities' is deprecated, use 'nodes'"
+                + " instead. Will overwrite nodes.",
+                FutureWarning,
+            )
+            nodes = entities
+        if nodes is None:
+            nodes = []
+
         self._first_ungrouped_node_index_ = 0
         self._groups = {}
         self._groupings = [BY_UID] + [
-            g if isinstance(g, Grouping) else Entities(g)
-            for g in kwargs.get("groupings", [])
+            g if isinstance(g, Grouping) else Entities(g) for g in groupings
         ]
         self._nodes = {}
 
-        self.results = kwargs.get("results")
-
-        self.timeindex = kwargs.get("timeindex")
-
-        self.timeincrement = kwargs.get("timeincrement", None)
-
-        self.temporal = kwargs.get("temporal")
-
-        self.add(*kwargs.get("entities", ()))
+        self.results = results
+        self.timeindex = timeindex
+        self.timeincrement = timeincrement
+        self.temporal = temporal
+        self.add(*nodes)
 
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
