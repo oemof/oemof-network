@@ -14,9 +14,6 @@ SPDX-License-Identifier: MIT
 
 from functools import total_ordering
 
-from .helpers import Inputs
-from .helpers import Outputs
-
 
 @total_ordering
 class Entity:
@@ -56,9 +53,6 @@ class Entity:
 
     __slots__ = [
         "_label",
-        "_in_edges",
-        "_inputs",
-        "_outputs",
         "custom_properties",
     ]
 
@@ -67,8 +61,6 @@ class Entity:
         if custom_properties is None:
             custom_properties = {}
         self.custom_properties = custom_properties
-        self._inputs = Inputs(self)
-        self._outputs = Outputs(self)
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -105,24 +97,3 @@ class Entity:
     @label.setter
     def label(self, label):
         self._label = label
-
-    @property
-    def inputs(self):
-        """dict:
-        Dictionary mapping input :class:`Entities <Entity>` :obj:`n` to
-        :class:`Edge`s from :obj:`n` into :obj:`self`.
-        If :obj:`self` is an :class:`Edge`, returns a dict containing the
-        :class:`Edge`'s single input node as the key and the flow as the value.
-        """
-        return self._inputs
-
-    @property
-    def outputs(self):
-        """dict:
-        Dictionary mapping output :class:`Entities <Entity>` :obj:`n` to
-        :class:`Edges` from :obj:`self` into :obj:`n`.
-        If :obj:`self` is an :class:`Edge`, returns a dict containing the
-        :class:`Edge`'s single output node as the key and the flow as the
-        value.
-        """
-        return self._outputs
