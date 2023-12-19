@@ -78,7 +78,7 @@ class Entity:
         """
         try:
             return self._label if self._label is not None else self._id_label
-        except AttributeError:
+        except AttributeError:  # Workaround for problems with pickle/dill
             return hash(self._id_label)
 
     @property
