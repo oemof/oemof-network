@@ -18,12 +18,11 @@ from pprint import pformat
 from oemof.network import energy_system as es
 from oemof.network.groupings import Entities
 from oemof.network.groupings import Grouping
-from oemof.network.network import Bus
 from oemof.network.network.nodes import Node
 
 
 def test_entity_grouping_on_construction():
-    bus = Bus(label="test bus")
+    bus = Node(label="test bus")
     ensys = es.EnergySystem(nodes=[bus])
     assert ensys.groups[bus.label] is bus
 
@@ -141,7 +140,7 @@ def test_grouping_laziness():
     group = "Group"
     g = Entities(key=group, filter=lambda n: getattr(n, "group", False))
     ensys = es.EnergySystem(groupings=[g])
-    buses = [Bus("Grouped"), Bus("Ungrouped one"), Bus("Ungrouped two")]
+    buses = [Node("Grouped"), Node("Ungrouped one"), Node("Ungrouped two")]
     ensys.add(buses[0])
     buses[0].group = True
     ensys.add(*buses[1:])

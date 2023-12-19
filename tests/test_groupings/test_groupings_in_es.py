@@ -17,14 +17,13 @@ from itertools import chain
 from oemof.network import energy_system as es
 from oemof.network.groupings import Flows
 from oemof.network.groupings import FlowsWithNodes
-from oemof.network.network import Bus
 from oemof.network.network.nodes import Node
 
 
 def test_flows():
     key = object()
     ensys = es.EnergySystem(groupings=[Flows(key)])
-    bus = Bus(label="A Bus")
+    bus = Node(label="A Bus")
     node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
     ensys.add(bus, node)
     assert ensys.groups[key] == set(
@@ -35,7 +34,7 @@ def test_flows():
 def test_flows_with_nodes():
     key = object()
     ensys = es.EnergySystem(groupings=[FlowsWithNodes(key)])
-    bus = Bus(label="A Bus")
+    bus = Node(label="A Bus")
     node = Node(label="A Node", inputs={bus: None}, outputs={bus: None})
     ensys.add(bus, node)
     assert ensys.groups[key], {
