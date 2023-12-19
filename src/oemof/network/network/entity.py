@@ -44,7 +44,7 @@ class Entity:
         to easily attach custom information to any Entity.
     """
 
-    def __init__(self, label=None, *, custom_properties=None, **kwargs):
+    def __init__(self, label=None, *, custom_properties=None):
         self._label = label
         if custom_properties is None:
             custom_properties = {}
@@ -76,11 +76,14 @@ class Entity:
         attribute holds the actual object passed as a parameter. Otherwise
         `node.label` is a synonym for `str(node)`.
         """
-        return (
-            self._label
-            if self._label is not None
-            else "<{} #0x{:x}>".format(type(self).__name__, id(self))
-        )
+        try:
+            return self._label if self._label is not None else self._id_label
+        except AttributeError:
+            return hash(self._id_label)
+
+    @property
+    def _id_label(self):
+        return "<{} #0x{:x}>".format(type(self).__name__, id(self))
 
     @label.setter
     def label(self, label):

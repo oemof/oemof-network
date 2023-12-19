@@ -17,8 +17,6 @@ from collections.abc import Mapping
 
 from .entity import Entity
 
-EdgeLabel = namedtuple("EdgeLabel", ["input", "output"])
-
 
 class Edge(Entity):
     """
@@ -41,7 +39,7 @@ class Edge(Entity):
     name.
     """
 
-    Label = EdgeLabel
+    Label = namedtuple("EdgeLabel", ["input", "output"])
 
     def __init__(
         self,
@@ -49,7 +47,8 @@ class Edge(Entity):
         output_node=None,
         flow=None,
         values=None,
-        **kwargs,
+        *,
+        custom_properties=None,
     ):
         if flow is not None and values is not None:
             raise ValueError(
@@ -60,7 +59,10 @@ class Edge(Entity):
                 f"    `values`: {values}\n"
                 "Choose one."
             )
-        super().__init__(label=Edge.Label(input_node, output_node))
+        super().__init__(
+            label=Edge.Label(input_node, output_node),
+            custom_properties=custom_properties,
+        )
         self.values = values if values is not None else flow
         if input_node is not None and output_node is not None:
             input_node.outputs[output_node] = self

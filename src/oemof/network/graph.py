@@ -52,14 +52,13 @@ def create_nx_graph(
     >>> import oemof.network.graph as grph
     >>> datetimeindex = pd.date_range('1/1/2017', periods=3, freq='H')
     >>> es = EnergySystem(timeindex=datetimeindex)
-    >>> b_gas = Bus(label='b_gas', balanced=False)
+    >>> b_gas = Bus(label='b_gas')
     >>> bel1 = Bus(label='bel1')
     >>> bel2 = Bus(label='bel2')
     >>> demand_el = Sink(label='demand_el', inputs = [bel1])
     >>> pp_gas = Transformer(label=('pp', 'gas'),
     ...                      inputs=[b_gas],
-    ...                      outputs=[bel1],
-    ...                      conversion_factors={bel1: 0.5})
+    ...                      outputs=[bel1])
     >>> line_to2 = Transformer(label='line_to2', inputs=[bel1], outputs=[bel2])
     >>> line_from2 = Transformer(label='line_from2',
     ...                          inputs=[bel2], outputs=[bel1])
