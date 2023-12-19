@@ -363,7 +363,7 @@ def test_custom_properties():
         custom_properties={
             "foo": "bar",
             1: 2,
-        }
+        },
     )
     assert node1.custom_properties["foo"] == "bar"
     assert node1.custom_properties[1] == 2
