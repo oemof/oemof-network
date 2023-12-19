@@ -59,6 +59,7 @@ class Entity:
     def __hash__(self):
         return hash(self.label)
 
+
     def __str__(self):
         return str(self.label)
 
@@ -76,11 +77,18 @@ class Entity:
         attribute holds the actual object passed as a parameter. Otherwise
         `node.label` is a synonym for `str(node)`.
         """
-        return (
-            self._label
-            if self._label is not None
-            else "<{} #0x{:x}>".format(type(self).__name__, id(self))
-        )
+        try:
+            return (
+                self._label
+                if self._label is not None
+                else self._id_label
+            )
+        except AttributeError:
+            return hash(self._id_label)
+
+    @property
+    def _id_label(self):
+        return "<{} #0x{:x}>".format(type(self).__name__, id(self))
 
     @label.setter
     def label(self, label):
