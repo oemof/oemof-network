@@ -60,7 +60,7 @@ class TestsNode:
         )
 
     def test_accessing_outputs_of_a_node_without_output_flows(self):
-        n = Node()
+        n = Node(label="node")
         exception = None
         outputs = None
         try:
@@ -79,7 +79,7 @@ class TestsNode:
         )
 
     def test_accessing_inputs_of_a_node_without_input_flows(self):
-        n = Node()
+        n = Node(label="node")
         exception = None
         inputs = None
         try:
@@ -98,7 +98,7 @@ class TestsNode:
         )
 
     def test_that_the_outputs_attribute_of_a_node_is_a_mapping(self):
-        n = Node()
+        n = Node(label="node")
         exception = None
         try:
             n.outputs.values()
@@ -252,16 +252,16 @@ class TestsNode:
         with pytest.raises(ValueError):
             Node("An entity with an input", inputs={"Not a Node": "A Flow"})
 
-    def test_node_label_without_private_attribute(self):
+    def test_node_requires_label(self):
         """
-        A `Node` without `label` doesn't have the `_label` attribute set.
+        A `Node` without `label` cannot be constructed.
         """
-        n = Node()
-        assert not n._label
+        with pytest.raises(TypeError):
+            _ = Node()
 
     def test_node_label_if_its_not_explicitly_specified(self):
         """If not explicitly given, a `Node`'s label is based on its `id`."""
-        n = Node()
+        n = Node(label=None)
         assert "0x{:x}>".format(id(n)) in n.label
 
 
@@ -344,21 +344,22 @@ class TestsEnergySystemNodesIntegration:
 
 def test_deprecated_classes():
     with pytest.warns(FutureWarning):
-        Bus()
+        Bus("bus")
     with pytest.warns(FutureWarning):
-        Sink()
+        Sink("sink")
     with pytest.warns(FutureWarning):
-        Source()
+        Source("source")
     with pytest.warns(FutureWarning):
-        Transformer()
+        Transformer("transformer")
 
 
 def test_custom_properties():
-    node0 = Node()
+    node0 = Node("n0")
 
     assert not node0.custom_properties
 
     node1 = Node(
+        "n1",
         custom_properties={
             "foo": "bar",
             1: 2,

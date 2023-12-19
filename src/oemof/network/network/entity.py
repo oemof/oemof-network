@@ -44,7 +44,7 @@ class Entity:
         to easily attach custom information to any Entity.
     """
 
-    def __init__(self, label=None, *, custom_properties=None):
+    def __init__(self, label, *, custom_properties=None):
         self._label = label
         if custom_properties is None:
             custom_properties = {}
@@ -84,7 +84,3 @@ class Entity:
     @property
     def _id_label(self):
         return "<{} #0x{:x}>".format(type(self).__name__, id(self))
-
-    @label.setter
-    def label(self, label):
-        self._label = label

@@ -44,7 +44,7 @@ class Node(Entity):
 
     def __init__(
         self,
-        label=None,
+        label,
         *,
         inputs=None,
         outputs=None,

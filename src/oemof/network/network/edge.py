@@ -102,7 +102,7 @@ class Edge(Entity):
     @input.setter
     def input(self, i):
         old_input = self.input
-        self.label = Edge.Label(i, self.label.output)
+        self._label = Edge.Label(i, self.label.output)
         if old_input is None and i is not None and self.output is not None:
             i.outputs[self.output] = self
 
@@ -113,6 +113,6 @@ class Edge(Entity):
     @output.setter
     def output(self, o):
         old_output = self.output
-        self.label = Edge.Label(self.label.input, o)
+        self._label = Edge.Label(self.label.input, o)
         if old_output is None and o is not None and self.input is not None:
             o.inputs[self.input] = self
