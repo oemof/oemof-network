@@ -59,7 +59,6 @@ class Entity:
     def __hash__(self):
         return hash(self.label)
 
-
     def __str__(self):
         return str(self.label)
 
@@ -78,11 +77,7 @@ class Entity:
         `node.label` is a synonym for `str(node)`.
         """
         try:
-            return (
-                self._label
-                if self._label is not None
-                else self._id_label
-            )
+            return self._label if self._label is not None else self._id_label
         except AttributeError:
             return hash(self._id_label)
 
