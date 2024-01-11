@@ -331,17 +331,17 @@ class TestsEnergySystemNodesIntegration:
         self.es = EnergySystem()
 
     def test_entity_registration(self):
-        n1 = Node(label="<B1>")
-        self.es.add(n1)
-        assert self.es.node["<B1>"] == n1
-        n2 = Node(label="<B2>")
-        self.es.add(n2)
-        assert self.es.node["<B2>"] == n2
-        n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
-        self.es.add(n3)
         with pytest.warns(
             match="API to access nodes by label is experimental"
         ):
+            n1 = Node(label="<B1>")
+            self.es.add(n1)
+            assert self.es.node["<B1>"] == n1
+            n2 = Node(label="<B2>")
+            self.es.add(n2)
+            assert self.es.node["<B2>"] == n2
+            n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
+            self.es.add(n3)
             assert self.es.node["<TF1>"] == n3
 
 

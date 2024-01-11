@@ -91,9 +91,7 @@ class TestsEnergySystem:
 
         subscriber.called = False
 
-        EnergySystem.signals[EnergySystem.add].connect(
-            subscriber, sender=node
-        )
+        EnergySystem.signals[EnergySystem.add].connect(subscriber, sender=node)
         self.es.add(node)
         assert subscriber.called, (
             "\nExpected `subscriber.called` to be `True`.\n"
