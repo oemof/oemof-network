@@ -54,6 +54,14 @@ class TestsEnergySystem:
         assert node2 in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
 
+    def test_node_access_warning(self):
+        node_label = "label"
+        self.es.add(Node(node_label))
+        with pytest.warns(
+            match='API to access nodes by label is experimental'
+        ):
+            _ = es.node[node_label]
+
     def test_add_flow_assignment(self):
         assert not self.es.nodes
 
