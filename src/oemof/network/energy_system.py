@@ -22,6 +22,7 @@ from collections import deque
 
 import blinker
 import dill as pickle
+from oemof.tools import debugging
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
@@ -86,9 +87,9 @@ class EnergySystem:
     <oemof.core.network.Entity>` will always be grouped by their :attr:`uid
     <oemof.core.network.Entity.uid>`:
 
-    >>> from oemof.network.network import Bus, Sink
+    >>> from oemof.network.network import Node
     >>> es = EnergySystem()
-    >>> bus = Bus(label='electricity')
+    >>> bus = Node(label='electricity')
     >>> es.add(bus)
     >>> bus is es.groups['electricity']
     True
@@ -100,7 +101,7 @@ class EnergySystem:
     >>> bus is es.groups['electricity']
     False
     >>> es.groups['electricity']
-    "<oemof.network.network.nodes.Bus: 'electricity'>"
+    "<oemof.network.network.nodes.Node: 'electricity'>"
 
     For simple user defined groupings, you can just supply a function that
     computes a key from an :class:`entity <oemof.core.network.Entity>` and the
@@ -110,12 +111,14 @@ class EnergySystem:
     their `type`:
 
     >>> es = EnergySystem(groupings=[type])
-    >>> buses = set(Bus(label="Bus {}".format(i)) for i in range(9))
+    >>> buses = set(Node(label="Node {}".format(i)) for i in range(9))
     >>> es.add(*buses)
+    >>> class Sink(Node):
+    ...     pass
     >>> components = set(Sink(label="Component {}".format(i))
     ...                   for i in range(9))
     >>> es.add(*components)
-    >>> buses == es.groups[Bus]
+    >>> buses == es.groups[Node]
     True
     >>> components == es.groups[Sink]
     True
@@ -195,6 +198,11 @@ class EnergySystem:
 
     @property
     def node(self):
+        msg = (
+            "The API to access nodes by label is experimental"
+            " and might change without prior notice."
+        )
+        warnings.warn(msg, debugging.ExperimentalFeatureWarning)
         return self._nodes
 
     @property

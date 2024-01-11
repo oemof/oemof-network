@@ -15,24 +15,24 @@ SPDX-License-Identifier: MIT
 
 import pytest
 
-from oemof.network import energy_system as es
+from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Edge
 from oemof.network.network.nodes import Node
 
 
 def test_ensys_init():
     node = Node("label")
-    ensys = es.EnergySystem(nodes=[node])
+    ensys = EnergySystem(nodes=[node])
     assert node in ensys.nodes
 
     with pytest.warns(FutureWarning):
-        ensys = es.EnergySystem(entities=[node])
+        ensys = EnergySystem(entities=[node])
         assert node in ensys.nodes
 
 
 class TestsEnergySystem:
     def setup_method(self):
-        self.es = es.EnergySystem()
+        self.es = EnergySystem()
 
     def test_add_nodes(self):
         assert not self.es.nodes
@@ -91,9 +91,7 @@ class TestsEnergySystem:
 
         subscriber.called = False
 
-        es.EnergySystem.signals[es.EnergySystem.add].connect(
-            subscriber, sender=node
-        )
+        EnergySystem.signals[EnergySystem.add].connect(subscriber, sender=node)
         self.es.add(node)
         assert subscriber.called, (
             "\nExpected `subscriber.called` to be `True`.\n"
