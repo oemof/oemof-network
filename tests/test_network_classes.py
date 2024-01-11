@@ -19,7 +19,7 @@ from traceback import format_exception_only as feo
 
 import pytest
 
-from oemof.network.energy_system import EnergySystem as EnSys
+from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Bus
 from oemof.network.network import Sink
 from oemof.network.network import Source
@@ -31,7 +31,7 @@ from oemof.network.network.nodes import Node
 
 class TestsNode:
     def setup_method(self):
-        self.energysystem = EnSys()
+        self.energysystem = EnergySystem()
 
     def test_entity_initialisation(self):
         entity = Entity(label="foo")
@@ -328,7 +328,7 @@ class TestsEdge:
 
 class TestsEnergySystemNodesIntegration:
     def setup_method(self):
-        self.es = EnSys()
+        self.es = EnergySystem()
 
     def test_entity_registration(self):
         n1 = Node(label="<B1>")
@@ -339,7 +339,10 @@ class TestsEnergySystemNodesIntegration:
         assert self.es.node["<B2>"] == n2
         n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
         self.es.add(n3)
-        assert self.es.node["<TF1>"] == n3
+        with pytest.warns(
+            match="API to access nodes by label is experimental"
+        ):
+            assert self.es.node["<TF1>"] == n3
 
 
 def test_deprecated_classes():
