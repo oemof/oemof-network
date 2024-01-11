@@ -22,7 +22,6 @@ from collections import deque
 
 import blinker
 import dill as pickle
-
 from oemof.tools import debugging
 
 from oemof.network.groupings import DEFAULT as BY_UID

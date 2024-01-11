@@ -58,7 +58,7 @@ class TestsEnergySystem:
         node_label = "label"
         self.es.add(Node(node_label))
         with pytest.warns(
-            match='API to access nodes by label is experimental'
+            match="API to access nodes by label is experimental"
         ):
             _ = es.node[node_label]
 
