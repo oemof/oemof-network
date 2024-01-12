@@ -12,6 +12,8 @@ SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-License-Identifier: MIT
 """
 
+import warnings
+
 import networkx as nx
 
 
@@ -47,22 +49,21 @@ def create_nx_graph(
     --------
     >>> import os
     >>> import pandas as pd
-    >>> from oemof.network.network import Bus, Sink, Transformer
+    >>> from oemof.network.network import Node
     >>> from oemof.network.energy_system import EnergySystem
     >>> import oemof.network.graph as grph
     >>> datetimeindex = pd.date_range('1/1/2017', periods=3, freq='H')
     >>> es = EnergySystem(timeindex=datetimeindex)
-    >>> b_gas = Bus(label='b_gas', balanced=False)
-    >>> bel1 = Bus(label='bel1')
-    >>> bel2 = Bus(label='bel2')
-    >>> demand_el = Sink(label='demand_el', inputs = [bel1])
-    >>> pp_gas = Transformer(label=('pp', 'gas'),
-    ...                      inputs=[b_gas],
-    ...                      outputs=[bel1],
-    ...                      conversion_factors={bel1: 0.5})
-    >>> line_to2 = Transformer(label='line_to2', inputs=[bel1], outputs=[bel2])
-    >>> line_from2 = Transformer(label='line_from2',
-    ...                          inputs=[bel2], outputs=[bel1])
+    >>> b_gas = Node(label='b_gas')
+    >>> bel1 = Node(label='bel1')
+    >>> bel2 = Node(label='bel2')
+    >>> demand_el = Node(label='demand_el', inputs = [bel1])
+    >>> pp_gas = Node(label=('pp', 'gas'),
+    ...               inputs=[b_gas],
+    ...               outputs=[bel1])
+    >>> line_to2 = Node(label='line_to2', inputs=[bel1], outputs=[bel2])
+    >>> line_from2 = Node(label='line_from2',
+    ...                   inputs=[bel2], outputs=[bel1])
     >>> es.add(b_gas, bel1, demand_el, pp_gas, bel2, line_to2, line_from2)
     >>> my_graph = grph.create_nx_graph(es)
     >>> # export graph as .graphml for programs like Yed where it can be
@@ -94,44 +95,52 @@ def create_nx_graph(
     Needs graphviz and networkx (>= v.1.11) to work properly.
     Tested on Ubuntu 16.04 x64 and solydxk (debian 9).
     """
-    # construct graph from nodes and flows
-    grph = nx.DiGraph()
+    with warnings.catch_warnings():
+        # suppress ExperimentalFeatureWarnungs
+        warnings.simplefilter("ignore")
 
-    # add nodes
-    for n in energy_system.nodes:
-        grph.add_node(str(n.label), label=str(n.label))
+        # construct graph from nodes and flows
+        grph = nx.DiGraph()
 
-    # add labeled flows on directed edge if an optimization_model has been
-    # passed or undirected edge otherwise
-    for n in energy_system.nodes:
-        for i in n.inputs.keys():
-            weight = getattr(
-                energy_system.flows()[(i, n)], "nominal_value", None
-            )
-            if weight is None:
-                grph.add_edge(str(i.label), str(n.label))
-            else:
-                grph.add_edge(
-                    str(i.label), str(n.label), weigth=format(weight, ".2f")
+        # add nodes
+        for label in energy_system.node.keys():
+            grph.add_node(str(label), label=str(label))
+
+        # add labeled flows on directed edge if an optimization_model has been
+        # passed or undirected edge otherwise
+        for n in energy_system.nodes:
+            for i in n.inputs.keys():
+                weight = getattr(
+                    energy_system.flows()[(i, n)], "nominal_value", None
                 )
+                if weight is None:
+                    grph.add_edge(str(i.label), str(n.label))
+                else:
+                    grph.add_edge(
+                        str(i.label),
+                        str(n.label),
+                        weigth=format(weight, ".2f"),
+                    )
 
-    # remove nodes and edges based on precise labels
-    if remove_nodes is not None:
-        grph.remove_nodes_from(remove_nodes)
-    if remove_edges is not None:
-        grph.remove_edges_from(remove_edges)
-
-    # remove nodes based on substrings
-    if remove_nodes_with_substrings is not None:
-        for i in remove_nodes_with_substrings:
-            remove_nodes = [
-                str(v.label) for v in energy_system.nodes if i in str(v.label)
-            ]
+        # remove nodes and edges based on precise labels
+        if remove_nodes is not None:
             grph.remove_nodes_from(remove_nodes)
+        if remove_edges is not None:
+            grph.remove_edges_from(remove_edges)
 
-    if filename is not None:
-        if filename[-8:] != ".graphml":
-            filename = filename + ".graphml"
-        nx.write_graphml(grph, filename)
+        # remove nodes based on substrings
+        if remove_nodes_with_substrings is not None:
+            for i in remove_nodes_with_substrings:
+                remove_nodes = [
+                    str(label)
+                    for label in energy_system.node.keys()
+                    if i in str(label)
+                ]
+                grph.remove_nodes_from(remove_nodes)
 
-    return grph
+        if filename is not None:
+            if filename[-8:] != ".graphml":
+                filename = filename + ".graphml"
+            nx.write_graphml(grph, filename)
+
+        return grph

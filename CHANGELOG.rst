@@ -15,3 +15,10 @@ Changelog
 * Improved testing
 * Explicitly defined API
 
+
+0.5.0
+-----
+
+* Improved code quality
+* Add Entity.custom_properties
+* Simplify node access (experimental: energy_system.node[label])

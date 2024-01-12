@@ -19,22 +19,23 @@ from traceback import format_exception_only as feo
 
 import pytest
 
-from oemof.network.energy_system import EnergySystem as EnSys
+from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Bus
-from oemof.network.network import Edge
-from oemof.network.network import Entity
-from oemof.network.network import Node
+from oemof.network.network import Sink
+from oemof.network.network import Source
 from oemof.network.network import Transformer
+from oemof.network.network.edge import Edge
+from oemof.network.network.entity import Entity
+from oemof.network.network.nodes import Node
 
 
 class TestsNode:
-    def setup(self):
-        self.energysystem = EnSys()
+    def setup_method(self):
+        self.energysystem = EnergySystem()
 
-    def test_that_attributes_cannot_be_added(self):
-        entity = Entity()
-        with pytest.raises(AttributeError):
-            entity.foo = "bar"
+    def test_entity_initialisation(self):
+        entity = Entity(label="foo")
+        assert entity.label == "foo"
 
     def test_symmetric_input_output_assignment(self):
         n1 = Node(label="<N1>")
@@ -59,7 +60,7 @@ class TestsNode:
         )
 
     def test_accessing_outputs_of_a_node_without_output_flows(self):
-        n = Node()
+        n = Node(label="node")
         exception = None
         outputs = None
         try:
@@ -78,7 +79,7 @@ class TestsNode:
         )
 
     def test_accessing_inputs_of_a_node_without_input_flows(self):
-        n = Node()
+        n = Node(label="node")
         exception = None
         inputs = None
         try:
@@ -97,7 +98,7 @@ class TestsNode:
         )
 
     def test_that_the_outputs_attribute_of_a_node_is_a_mapping(self):
-        n = Node()
+        n = Node(label="node")
         exception = None
         try:
             n.outputs.values()
@@ -124,7 +125,7 @@ class TestsNode:
         """
         flow = object()
         old = Node(label="A reused label")
-        bus = Bus(label="bus", inputs={old: flow})
+        bus = Node(label="bus", inputs={old: flow})
         assert bus.inputs[old].flow == flow, (
             ("\n  Expected: {0}" + "\n  Got     : {1} instead").format(
                 flow, bus.inputs[old].flow
@@ -172,7 +173,7 @@ class TestsNode:
     def test_modifying_inputs_after_construction(self):
         """One should be able to add and delete inputs of a node."""
         node = Node("N1")
-        bus = Bus("N2")
+        bus = Node("N2")
         flow = "flow"
 
         assert node.inputs == {}, (
@@ -242,33 +243,30 @@ class TestsNode:
 
     def test_entity_input_output_type_assertions(self):
         """
-        `'Entity'` should only accept `Entity` instances
+        `'Node'` should only accept `Node` instances
         as input/output targets.
         """
         with pytest.raises(ValueError):
-            Entity(
-                "An entity with an output", outputs={"Not an Entity": "A Flow"}
-            )
-            Entity(
-                "An entity with an input", inputs={"Not an Entity": "A Flow"}
-            )
+            Node("An entity with an output", outputs={"Not a Node": "A Flow"})
 
-    def test_node_label_without_private_attribute(self):
+        with pytest.raises(ValueError):
+            Node("An entity with an input", inputs={"Not a Node": "A Flow"})
+
+    def test_node_requires_label(self):
         """
-        A `Node` with no explicit `label` doesn't have a `_label` attribute.
+        A `Node` without `label` cannot be constructed.
         """
-        n = Node()
-        with pytest.raises(AttributeError):
-            n._label
+        with pytest.raises(TypeError):
+            _ = Node()
 
     def test_node_label_if_its_not_explicitly_specified(self):
         """If not explicitly given, a `Node`'s label is based on its `id`."""
-        n = Node()
+        n = Node(label=None)
         assert "0x{:x}>".format(id(n)) in n.label
 
 
 class TestsEdge:
-    def setup(self):
+    def setup_method(self):
         pass
 
     def test_edge_construction_side_effects(self):
@@ -279,7 +277,7 @@ class TestsEdge:
         """
         source = Node(label="source")
         target = Node(label="target")
-        edge = Edge(input=source, output=target)
+        edge = Edge(input_node=source, output_node=target)
         assert target in source.outputs, (
             "{} not in {} after constructing {}.".format(
                 target, source.outputs, edge
@@ -312,7 +310,7 @@ class TestsEdge:
         i, o, f = (Node("input"), Node("output"), "flow")
         with pytest.raises(ValueError):
             Edge.from_object({"flow": i, "values": o})
-        edge = Edge.from_object({"input": i, "output": o, "flow": f})
+        edge = Edge.from_object({"input_node": i, "output_node": o, "flow": f})
         assert edge.input == i
         assert edge.output == o
         assert edge.values == f
@@ -329,16 +327,55 @@ class TestsEdge:
 
 
 class TestsEnergySystemNodesIntegration:
-    def setup(self):
-        self.es = EnSys()
+    def setup_method(self):
+        self.es = EnergySystem()
 
     def test_entity_registration(self):
-        b1 = Bus(label="<B1>")
-        self.es.add(b1)
-        assert self.es.nodes[0] == b1
-        b2 = Bus(label="<B2>")
-        self.es.add(b2)
-        assert self.es.nodes[1] == b2
-        t1 = Transformer(label="<TF1>", inputs=[b1], outputs=[b2])
-        self.es.add(t1)
-        assert t1 in self.es.nodes
+        with pytest.warns(
+            match="API to access nodes by label is experimental"
+        ):
+            n1 = Node(label="<B1>")
+            self.es.add(n1)
+            assert self.es.node["<B1>"] == n1
+            n2 = Node(label="<B2>")
+            self.es.add(n2)
+            assert self.es.node["<B2>"] == n2
+            n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
+            self.es.add(n3)
+            assert self.es.node["<TF1>"] == n3
+
+
+def test_deprecated_classes():
+    with pytest.warns(FutureWarning):
+        Bus("bus")
+    with pytest.warns(FutureWarning):
+        Sink("sink")
+    with pytest.warns(FutureWarning):
+        Source("source")
+    with pytest.warns(FutureWarning):
+        Transformer("transformer")
+
+
+def test_custom_properties():
+    node0 = Node("n0")
+
+    assert not node0.custom_properties
+
+    node1 = Node(
+        "n1",
+        custom_properties={
+            "foo": "bar",
+            1: 2,
+        },
+    )
+    assert node1.custom_properties["foo"] == "bar"
+    assert node1.custom_properties[1] == 2
+
+
+def test_comparision():
+    node0 = Node(label=0)
+    node1 = Node(label=2)
+    node2 = Node(label=-5)
+
+    assert node0 < node1
+    assert node0 > node2
