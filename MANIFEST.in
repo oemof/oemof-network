@@ -10,6 +10,7 @@ include .editorconfig
 
 include AUTHORS.rst
 include CHANGELOG.rst
+include CITATION.cff
 include CONTRIBUTING.rst
 include LICENSE
 include README.rst
@@ -18,6 +19,7 @@ recursive-include docs *.rst
 recursive-include tests *.py
 
 
-include tox.ini .travis.yml .appveyor.yml .readthedocs.yml
+include tox.ini
+include *.yml
 
 global-exclude *.py[cod] __pycache__/* *.so *.dylib *.swp

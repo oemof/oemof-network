@@ -32,7 +32,7 @@ long_description = "%s" % (
 
 setup(
     name="oemof.network",
-    version="0.4.0",
+    version="0.5.0",
     license="MIT",
     description="The network/graph submodules of oemof.",
     long_description=long_description,
@@ -77,7 +77,7 @@ setup(
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
     python_requires=">=3.7",
-    install_requires=["pandas", "blinker", "dill", "networkx"],
+    install_requires=["pandas", "blinker", "dill", "networkx", "oemof.tools"],
     extras_require={
         "dev": ["pytest"],
         # eg:

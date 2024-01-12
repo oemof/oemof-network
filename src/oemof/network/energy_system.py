@@ -10,20 +10,23 @@ SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
+SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
 """
 
 import logging
 import os
+import warnings
 from collections import deque
 
 import blinker
 import dill as pickle
+from oemof.tools import debugging
 
 from oemof.network.groupings import DEFAULT as BY_UID
+from oemof.network.groupings import Entities
 from oemof.network.groupings import Grouping
-from oemof.network.groupings import Nodes
 
 
 class EnergySystem:
@@ -60,12 +63,7 @@ class EnergySystem:
     ----------
     entities : list of :class:`Entity <oemof.core.network.Entity>`
         A list containing the :class:`Entities <oemof.core.network.Entity>`
-        that comprise the energy system. If this :class:`EnergySystem` is
-        set as the :attr:`registry <oemof.core.network.Entity.registry>`
-        attribute, which is done automatically on :class:`EnergySystem`
-        construction, newly created :class:`Entities
-        <oemof.core.network.Entity>` are automatically added to this list on
-        construction.
+        that comprise the energy system.
     groups : dict
     results : dictionary
         A dictionary holding the results produced by the energy system.
@@ -89,9 +87,9 @@ class EnergySystem:
     <oemof.core.network.Entity>` will always be grouped by their :attr:`uid
     <oemof.core.network.Entity.uid>`:
 
-    >>> from oemof.network.network import Bus, Sink
+    >>> from oemof.network.network import Node
     >>> es = EnergySystem()
-    >>> bus = Bus(label='electricity')
+    >>> bus = Node(label='electricity')
     >>> es.add(bus)
     >>> bus is es.groups['electricity']
     True
@@ -103,22 +101,24 @@ class EnergySystem:
     >>> bus is es.groups['electricity']
     False
     >>> es.groups['electricity']
-    "<oemof.network.network.Bus: 'electricity'>"
+    "<oemof.network.network.nodes.Node: 'electricity'>"
 
     For simple user defined groupings, you can just supply a function that
     computes a key from an :class:`entity <oemof.core.network.Entity>` and the
     resulting groups will be sets of :class:`entities
-    <oemof.core.network.Entity>` stored under the returned keys, like in this
-    example, where :class:`entities <oemof.core.network.Entity>` are grouped by
+    <oemof.network.Entity>` stored under the returned keys, like in this
+    example, where :class:`entities <oemof.network.Entity>` are grouped by
     their `type`:
 
     >>> es = EnergySystem(groupings=[type])
-    >>> buses = set(Bus(label="Bus {}".format(i)) for i in range(9))
+    >>> buses = set(Node(label="Node {}".format(i)) for i in range(9))
     >>> es.add(*buses)
+    >>> class Sink(Node):
+    ...     pass
     >>> components = set(Sink(label="Component {}".format(i))
     ...                   for i in range(9))
     >>> es.add(*components)
-    >>> buses == es.groups[Bus]
+    >>> buses == es.groups[Node]
     True
     >>> components == es.groups[Sink]
     True
@@ -129,36 +129,54 @@ class EnergySystem:
     """A dictionary of blinker_ signals emitted by energy systems.
 
     Currently only one signal is supported. This signal is emitted whenever a
-    `Node <oemof.network.Node>` is `add`ed to an energy system. The signal's
-    `sender` is set to the `node <oemof.network.Node>` that got added to the
-    energy system so that `nodes <oemof.network.Node>` have an easy way to only
-    receive signals for when they themselves get added to an energy system.
+    `node <oemof.network.Node>` is `add`ed to an energy system. The
+    signal's `sender` is set to the `node <oemof.network.Node>` that got
+    added to the energy system so that `node <oemof.network.Node>` have an
+    easy way to only receive signals for when they themselves get added to an
+    energy system.
 
-    .. _blinker: https://pythonhosted.org/blinker/
+    .. _blinker: https://blinker.readthedocs.io/en/stable/
     """
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        *,
+        groupings=None,
+        results=None,
+        timeindex=None,
+        timeincrement=None,
+        temporal=None,
+        nodes=None,
+        entities=None,
+    ):
+        if groupings is None:
+            groupings = []
+        if entities is not None:
+            warnings.warn(
+                "Parameter 'entities' is deprecated, use 'nodes'"
+                + " instead. Will overwrite nodes.",
+                FutureWarning,
+            )
+            nodes = entities
+        if nodes is None:
+            nodes = []
+
         self._first_ungrouped_node_index_ = 0
         self._groups = {}
         self._groupings = [BY_UID] + [
-            g if isinstance(g, Grouping) else Nodes(g)
-            for g in kwargs.get("groupings", [])
+            g if isinstance(g, Grouping) else Entities(g) for g in groupings
         ]
-        self.entities = []
+        self._nodes = {}
 
-        self.results = kwargs.get("results")
-
-        self.timeindex = kwargs.get("timeindex")
-
-        self.timeincrement = kwargs.get("timeincrement", None)
-
-        self.temporal = kwargs.get("temporal")
-
-        self.add(*kwargs.get("entities", ()))
+        self.results = results
+        self.timeindex = timeindex
+        self.timeincrement = timeincrement
+        self.temporal = temporal
+        self.add(*nodes)
 
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
-        self.nodes.extend(nodes)
+        self._nodes.update({node.label: node for node in nodes})
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
 
@@ -171,7 +189,7 @@ class EnergySystem:
             (
                 g(n, gs)
                 for g in self._groupings
-                for n in self.nodes[self._first_ungrouped_node_index_ :]
+                for n in list(self.nodes)[self._first_ungrouped_node_index_ :]
             ),
             maxlen=0,
         )
@@ -179,12 +197,17 @@ class EnergySystem:
         return self._groups
 
     @property
-    def nodes(self):
-        return self.entities
+    def node(self):
+        msg = (
+            "The API to access nodes by label is experimental"
+            " and might change without prior notice."
+        )
+        warnings.warn(msg, debugging.ExperimentalFeatureWarning)
+        return self._nodes
 
-    @nodes.setter
-    def nodes(self, value):
-        self.entities = value
+    @property
+    def nodes(self):
+        return self._nodes.values()
 
     def flows(self):
         return {
