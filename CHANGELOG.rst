@@ -16,9 +16,12 @@ Changelog
 * Explicitly defined API
 
 
-0.5.0
------
+0.5.0 (2024-01-12)
+------------------
 
 * Improved code quality
 * Add Entity.custom_properties
 * Simplify node access (experimental: energy_system.node[label])
+
+0.5.1
+-----
