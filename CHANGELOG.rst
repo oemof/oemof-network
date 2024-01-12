@@ -21,4 +21,4 @@ Changelog
 
 * Improved code quality
 * Add Entity.custom_properties
-* Simplify node access (energy_system.nodes[label])
+* Simplify node access (experimental: energy_system.node[label])
