@@ -57,11 +57,11 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/oemof-network
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof-network/v0.4.0/dev
+.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof-network/v0.5.0/dev
     :alt: Commits since latest release
     :target: https://github.com/oemof/oemof-network/compare/master...dev
 
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof-network/master.svg
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof-network/dev.svg
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/oemof/oemof-network/
 
