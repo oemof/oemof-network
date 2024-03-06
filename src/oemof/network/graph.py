@@ -26,7 +26,7 @@ def create_nx_graph(
 ):
     """
     Create a `networkx.DiGraph` for the passed energy system and plot it.
-    See http://networkx.readthedocs.io/en/latest/ for more information.
+    See https://networkx.org/documentation/ for more information.
 
     Parameters
     ----------

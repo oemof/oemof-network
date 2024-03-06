@@ -39,7 +39,7 @@ setup(
     long_description_content_type="text/x-rst",
     author="oemof developer group",
     author_email="contact@oemof.org",
-    url="https://github.com/oemof/oemof.network",
+    url="https://github.com/oemof/oemof-network",
     packages=["oemof"] + ["oemof." + p for p in find_packages("src/oemof")],
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
@@ -69,9 +69,9 @@ setup(
     project_urls={
         "Documentation": "https://oemofnetwork.readthedocs.io/",
         "Changelog": (
-            "https://oemofnetwork.readthedocs.io/en/latest/changelog.html"
+            "https://oemof-network.readthedocs.io/en/latest/changelog.html"
         ),
-        "Issue Tracker": "https://github.com/oemof/oemof.network/issues",
+        "Issue Tracker": "https://github.com/oemof/oemof-network/issues",
     },
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
