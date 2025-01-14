@@ -216,43 +216,57 @@ class EnergySystem:
             for target in source.outputs
         }
 
+    # Begin: to be removed in a future version
     @staticmethod
-    def _deprecated_path_handling(dpath, filename):
-        if dpath is None:
-            bpath = os.path.join(os.path.expanduser("~"), ".oemof")
-            if not os.path.isdir(bpath):
-                os.mkdir(bpath)
-            dpath = os.path.join(bpath, "dumps")
-            if not os.path.isdir(dpath):
-                os.mkdir(dpath)
+    def _deprecated_path_handling(dpath, filename, consider_dpath):
+        if consider_dpath:
+            if dpath is None:
+                bpath = os.path.join(os.path.expanduser("~"), ".oemof")
+                if not os.path.isdir(bpath):
+                    os.mkdir(bpath)
+                dpath = os.path.join(bpath, "dumps")
+                if not os.path.isdir(dpath):
+                    os.mkdir(dpath)
 
-            warnings.warn(
-                "Default directory for oemof dumps will change"
-                + "from ~/.oemof/dumps/ to ./ in a future version."
-                + " Set 'consider_dpath' to False to already use"
-                + " the new default.",
-                FutureWarning,
-            )
+                warnings.warn(
+                    "Default directory for oemof dumps will change"
+                    + "from ~/.oemof/dumps/ to ./ in a future version."
+                    + " Set 'consider_dpath' to False to already use"
+                    + " the new default.",
+                    FutureWarning,
+                )
+            else:
+                warnings.warn(
+                    "Parameter 'dpath' will be removed in a future"
+                    + " version. You can give the directory as part"
+                    + " of the filename and set 'consider_dpath' to"
+                    + " False to suppress this waring.",
+                    FutureWarning,
+                )
+            if filename is None:
+                filename = "es_dump.oemof"
+
+            filename = os.path.join(dpath, filename)
         else:
-            warnings.warn(
-                "Parameter 'dpath' will be removed in a future"
-                + " version. You can give the directory as part"
-                + " of the filename and set 'consider_dpath' to"
-                + " False to suppress this waring.",
-                FutureWarning,
-            )
+            if dpath is not None:
+                if filename is None:
+                    # Interpret dpath as intended to be filename,
+                    # as it might be given as positional argument.
+                    filename = dpath
+                else:
+                    raise ValueError(
+                        "You set filename and dpath but told that"
+                        + " dpath should be ignored."
+                    )
 
-        if filename is None:
-            filename = "es_dump.oemof"
-
-        return os.path.join(dpath, filename)
+        return filename
+        # End: to be removed in a future version
 
     def dump(self, dpath=None, filename=None, consider_dpath=True):
         r"""Dump an EnergySystem instance."""
-        if consider_dpath:
-            filename = self._deprecated_path_handling(dpath, filename)
-        elif filename is None:
-            filename = "./es_dump.oemof"
+        filename = self._deprecated_path_handling(
+            dpath, filename, consider_dpath
+        )
 
         pickle.dump(self.__dict__, open(filename, "wb"))
 
@@ -260,15 +274,21 @@ class EnergySystem:
         logging.debug(msg)
         return msg
 
-    def restore(self, dpath=None, filename=None, consider_dpath=True):
+    def restore(
+        self,
+        dpath=None,  # to be removed in a future version
+        filename=None,
+        consider_dpath=True,  # to be removed in a future version
+    ):
         r"""Restore an EnergySystem instance."""
         logging.info(
             "Restoring attributes will overwrite existing attributes."
         )
-        if consider_dpath:
-            filename = self._deprecated_path_handling(dpath, filename)
-        elif filename is None:
-            filename = "./es_dump.oemof"
+        # Start: to be removed in a future version
+        filename = self._deprecated_path_handling(
+            dpath, filename, consider_dpath
+        )
+        # End: to be removed in a future version
 
         self.__dict__ = pickle.load(open(filename, "rb"))
 
