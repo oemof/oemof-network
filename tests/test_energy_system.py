@@ -78,6 +78,38 @@ class TestsEnergySystem:
         assert (node1, node2) in self.es.flows().keys()
         assert (node2, node1) in self.es.flows().keys()
 
+    def test_check_method(self):
+        node0 = Node(label="node0")
+        node1 = Node(label="node1")
+        node2 = Node(label="node2")
+        node3 = Node(label="node3", inputs={node2: Edge()})
+        self.es.check()  # empty, no problem
+
+        self.es.add(node0)
+        self.es.check()  # single node, no problem
+
+        node0.outputs[node1] = Edge()
+        with pytest.raises(RuntimeError, match="not part of EnergySystem"):
+            self.es.check()  # node1 needs to be added
+
+        self.es.add(node1)
+        self.es.check()  # consistent graph added, no problem
+
+        # The check method is not needed for these cases.
+        # I still add them to the test for completeness.
+        with pytest.raises(KeyError):
+            node2.outputs[node1]  # not allowed anyway
+        with pytest.raises(KeyError):
+            node1.inputs[node2]  # also not allowed
+        self.es.check()  # graph still consistent
+
+        self.es.add(node2)
+        with pytest.raises(RuntimeError, match="not part of EnergySystem"):
+            self.es.check()  # if node 2 is present, node3 also needs to be
+
+        self.es.add(node3)
+        self.es.check()  # Now, everything is fine.
+
     def test_that_node_additions_are_signalled(self):
         """
         When a node gets `add`ed, a corresponding signal should be emitted.
