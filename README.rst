@@ -16,10 +16,10 @@ Overview
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since| |packaging|
 
-.. |tox-pytest| image:: https://github.com/oemof/oemof-network/workflows/tox%20pytests/badge.svg?branch=dev
+.. |tox-pytest| image:: https://github.com/oemof/oemof-network/workflows/tox_pytests.yml/badge.svg?branch=dev
      :target: https://github.com/oemof/oemof-network/actions?query=workflow%3A%22tox+checks%22
 
-.. |tox-checks| image:: https://github.com/oemof/oemof-network/workflows/tox%20checks/badge.svg?branch=dev
+.. |tox-checks| image:: https://github.com/oemof/oemof-network/workflows/tox_checks.yml/badge.svg?branch=dev
      :target: https://github.com/oemof/oemof-network/actions?query=workflow%3A%22tox+checks%22
 
 .. |packaging| image:: https://github.com/oemof/oemof-network/workflows/packaging/badge.svg?branch=dev
