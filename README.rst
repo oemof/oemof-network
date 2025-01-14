@@ -22,7 +22,7 @@ Overview
 .. |tox-checks| image:: https://github.com/oemof/oemof-network/actions/workflows/tox_checks.yml/badge.svg?branch=dev
      :target: https://github.com/oemof/oemof-network/actions?query=workflow%3A%22tox+checks%22
 
-.. |packaging| image:: https://github.com/oemof/oemof-network/workflows/packaging/badge.svg?branch=dev
+.. |packaging| image:: https://github.com/oemof/oemof-network/actions/workflows/packaging.yml/badge.svg?branch=dev)
      :target: https://github.com/oemof/oemof-network/actions?query=workflow%3Apackaging
 
 .. |docs| image:: https://readthedocs.org/projects/oemof-network/badge/?style=flat
