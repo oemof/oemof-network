@@ -219,16 +219,16 @@ class EnergySystem:
     def check(self):
         error_message = (
             "Node {n} not part of EnergySystem "
-            + "but Flow ({n}, {o}) exists."
+            + "but Flow ({i}, {o}) exists."
         )
 
         for n in self.nodes:
             for o in n.outputs.keys():
                 if o not in self.nodes:
-                    raise RuntimeError(error_message.format(n=n, o=o))
+                    raise RuntimeError(error_message.format(n=n, i=n, o=o))
             for i in n.inputs.keys():
                 if i not in self.nodes:
-                    raise RuntimeError(error_message.format(n=i, o=n))
+                    raise RuntimeError(error_message.format(n=n, i=i, o=n))
 
     def dump(self, dpath=None, filename=None):
         r"""Dump an EnergySystem instance."""
