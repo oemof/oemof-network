@@ -19,7 +19,22 @@ from .helpers import Inputs
 from .helpers import Outputs
 
 
-class Node(Entity):
+class NetworkNode(Entity):
+    def __init__(self, label, *, custom_properties=None):
+        super().__init__(label=label, custom_properties=custom_properties)
+
+
+class SubNetwork(NetworkNode):
+    def __init__(self, label, *, custom_properties=None):
+        super().__init__(label=label, custom_properties=custom_properties)
+        self.something = None
+
+    def add_subnode(self, node):
+        """add an AtomicNode into the subnetwork"""
+        pass
+
+
+class Node(NetworkNode):
     r"""A Node of an energy system graph.
 
     Parameters
