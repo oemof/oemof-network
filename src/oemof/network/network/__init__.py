@@ -6,6 +6,7 @@ from .nodes import Node
 from .nodes import Sink
 from .nodes import Source
 from .nodes import Transformer
+from .nodes import SubNetwork
 
 __all__ = [
     "Bus",
@@ -16,4 +17,5 @@ __all__ = [
     "Sink",
     "Source",
     "Transformer",
+    "SubNetwork",
 ]
