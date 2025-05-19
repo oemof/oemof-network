@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 """
 
 import warnings
+from collections import deque
 
 from .edge import Edge
 from .entity import Entity
@@ -29,9 +30,11 @@ class SubNetwork(NetworkNode):
         super().__init__(label=label, custom_properties=custom_properties)
         self.something = None
 
-    def add_subnode(self, node):
+    def add_subnode(self, node, **kwargs):
         """add an AtomicNode into the subnetwork"""
-        pass
+        deque(
+            (kwargs["EnergySystem"].add(sn) for sn in node.subnodes), maxlen=0
+        )
 
 
 class Node(NetworkNode):
