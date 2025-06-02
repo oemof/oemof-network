@@ -28,12 +28,28 @@ class NetworkNode(Entity):
 class SubNetwork(NetworkNode):
     def __init__(self, label, *, custom_properties=None):
         super().__init__(label=label, custom_properties=custom_properties)
-        self.something = None
 
-    def add_subnode(self, node, **kwargs):
-        """add an AtomicNode into the subnetwork"""
+        self.subnodes = []
+
+        # TODO: Try to avoid this local `import`.
+        from ..energy_system import EnergySystem
+
+        EnergySystem.signals[EnergySystem.add].connect(
+            self.add_subnodes, sender=self
+        )
+
+    def add_subnodes(self, node, **kwargs):
+        """Add subnodes to an EnergySystem.
+
+        This is meant to be used as an event callback that is called when this
+        node is added to an EnergySystem, to add the child nodes to the
+        EnergySystem, too.
+        """
+        # TODO:
+        #    Explain why the `node` argument is necessary.
+        assert self is node
         deque(
-            (kwargs["EnergySystem"].add(sn) for sn in node.subnodes), maxlen=0
+            (kwargs["EnergySystem"].add(sn) for sn in self.subnodes), maxlen=0
         )
 
 
