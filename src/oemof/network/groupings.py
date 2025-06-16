@@ -21,6 +21,7 @@ from itertools import chain
 from itertools import filterfalse
 
 from oemof.network.network.edge import Edge
+from oemof.network.network.nodes import Node
 
 # TODO: Update docstrings.
 #
@@ -298,6 +299,8 @@ class FlowsWithNodes(Entities):
         return set(tuples)
 
     def __call__(self, n, d):
+        if not isinstance(n, Node):
+            return
         tuples = (
             {(n.input, n.output, n)}
             if isinstance(n, Edge)

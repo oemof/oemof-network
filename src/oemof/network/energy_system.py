@@ -27,6 +27,7 @@ from oemof.tools import debugging
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
 from oemof.network.groupings import Grouping
+from oemof.network.network.nodes import Node
 
 
 class EnergySystem:
@@ -213,6 +214,7 @@ class EnergySystem:
         return {
             (source, target): source.outputs[target]
             for source in self.nodes
+            if isinstance(source, Node)
             for target in source.outputs
         }
 
