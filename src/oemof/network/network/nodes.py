@@ -20,6 +20,27 @@ from .helpers import Inputs
 from .helpers import Outputs
 
 
+class SubNetworkLabel:
+    def __init__(self, sub_label, parent, interface):
+        """
+
+        Parameters
+        ----------
+        sub_label : hashable
+        parent : oemof.network.subnetwork
+        interface : bool
+        """
+        self.label = sub_label
+        self.parent = parent
+        self.interface = interface
+
+    def __repr__(self):
+        return repr(self.parent.label) + repr(self.label)
+
+    def __str__(self):
+        return str(self.parent.label) + str(self.label)
+
+
 class NetworkNode(Entity):
     def __init__(self, label, *, custom_properties=None):
         super().__init__(label=label, custom_properties=custom_properties)
@@ -36,6 +57,15 @@ class SubNetwork(NetworkNode):
 
         EnergySystem.signals[EnergySystem.add].connect(
             self.add_subnodes, sender=self
+        )
+
+    def sub_component_labelling(self, sub_label, interface=False):
+        """
+        Method to always keep the Facade instance label in its subcomponents
+        """
+
+        return SubNetworkLabel(
+            sub_label=sub_label, parent=self, interface=interface
         )
 
     def append_subnodes(self, *args):
