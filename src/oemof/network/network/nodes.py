@@ -24,12 +24,24 @@ class SubNetworkLabel:
     # TODO: Find a better place for the `interface` parameter/attribute.
     #       (See the `git blame` of these lines for details.)
     def __init__(self, label, parent):
-        """
+        """Create a special label for subnodes of a `SubNetwork`.
+
+        In order to identify nodes which are part of a `SubNetwork`
+        just by looking at the nodes, such nodes need to have special
+        information attached. In order to create a uniform way of
+        storing this information, a special `SubNetworkLabel` is used to
+        `label` those nodes.
 
         Parameters
         ----------
         label : hashable
+            The original label of the node. This is what would've been
+            used to `label` the node if the node would not have been
+            part of a `SubNetwork`.
         parent : oemof.network.SubNetwork
+            The `SubNetwork` of which the node to which this label
+            attached to is a part of.
+
         """
         self.label = label
         self.parent = parent
