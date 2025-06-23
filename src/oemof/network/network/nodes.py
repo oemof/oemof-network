@@ -71,15 +71,6 @@ class SubNetwork(NetworkNode):
             self.add_subnodes, sender=self
         )
 
-    def sub_component_labelling(self, sub_label, interface=False):
-        """
-        Method to always keep the Facade instance label in its subcomponents
-        """
-
-        return SubNetworkLabel(
-            sub_label=sub_label, parent=self, interface=interface
-        )
-
     def append_subnodes(self, *args):
         for sub_component in args:
             self.subnodes.append(sub_component)
@@ -97,6 +88,35 @@ class SubNetwork(NetworkNode):
         deque(
             (kwargs["EnergySystem"].add(sn) for sn in self.subnodes), maxlen=0
         )
+
+    def subnode(self, class_, label, *args, **kwargs):
+        """Create a subnode and add it to this `SubNetwork`.
+
+        Create a subnode by calling `class_(label, *args, **kwargs)` and
+        `append` the result to `self.subnodes`.
+        The purpose of this wrapper is to make sure that subnodes are
+        always `label`led with a `SubNetworkLabel`. While not as
+        convenient as simply instantiating nodes and adding them to a
+        `SubNetwork` yourself, using this is as easy as replacing e.g.
+        the sequence
+
+        ..code:: python
+            bus = Bus("bus", inputs={input: x}, outputs={output: y})
+            subnetwork.subnodes.append(bus)
+
+        with
+
+        ..code:: python
+            subnetwork.subnode(
+                Bus, "bus", inputs={input: x}, outputs={output: y}
+            )
+
+        """
+        subnode = class_(
+            label=SubNetworkLabel(label=label, parent=self), *args, **kwargs
+        )
+        self.subnodes.append(subnode)
+        return subnode
 
 
 class Node(NetworkNode):
