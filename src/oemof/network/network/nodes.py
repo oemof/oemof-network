@@ -21,16 +21,16 @@ from .helpers import Outputs
 
 
 class SubNetworkLabel:
-    def __init__(self, sub_label, parent, interface):
+    def __init__(self, label, parent, interface):
         """
 
         Parameters
         ----------
-        sub_label : hashable
+        label : hashable
         parent : oemof.network.SubNetwork
         interface : bool
         """
-        self.label = sub_label
+        self.label = label
         self.parent = parent
         self.interface = interface
 
