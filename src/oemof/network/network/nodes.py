@@ -21,18 +21,18 @@ from .helpers import Outputs
 
 
 class SubNetworkLabel:
-    def __init__(self, label, parent, interface):
+    # TODO: Find a better place for the `interface` parameter/attribute.
+    #       (See the `git blame` of these lines for details.)
+    def __init__(self, label, parent):
         """
 
         Parameters
         ----------
         label : hashable
         parent : oemof.network.SubNetwork
-        interface : bool
         """
         self.label = label
         self.parent = parent
-        self.interface = interface
 
     def __repr__(self):
         return repr(self.parent.label) + repr(self.label)
