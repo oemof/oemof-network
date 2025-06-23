@@ -27,7 +27,7 @@ class SubNetworkLabel:
         Parameters
         ----------
         sub_label : hashable
-        parent : oemof.network.subnetwork
+        parent : oemof.network.SubNetwork
         interface : bool
         """
         self.label = sub_label
