@@ -15,6 +15,7 @@ from collections import deque
 
 from .nodes import Node
 
+
 class HierachicalLabel:
     # TODO: Find a better place for the `interface` parameter/attribute.
     #       (See the `git blame` of these lines for details.)
@@ -53,6 +54,7 @@ class HierachicalLabel:
         else:
             return str(self.label)
 
+
 class AtomicNode(Node):
     def __init__(
         self,
@@ -66,19 +68,20 @@ class AtomicNode(Node):
         if not isinstance(label, HierachicalLabel):
             label = HierachicalLabel(label=label, parent=parent_node)
         super().__init__(
-            label = label,
+            label=label,
             inputs=inputs,
             outputs=outputs,
             custom_properties=custom_properties,
         )
 
+
 class SubNetwork(Node):
     def __init__(
-            self,
-            label,
-            *,
-            parent_node=None,
-            custom_properties=None,
+        self,
+        label,
+        *,
+        parent_node=None,
+        custom_properties=None,
     ):
         if not isinstance(label, HierachicalLabel):
             label = HierachicalLabel(label=label, parent=parent_node)
@@ -88,6 +91,7 @@ class SubNetwork(Node):
 
         # TODO: Try to avoid this local `import`.
         from ..energy_system import EnergySystem
+
         EnergySystem.signals[EnergySystem.add].connect(
             self.add_subnodes, sender=self
         )
