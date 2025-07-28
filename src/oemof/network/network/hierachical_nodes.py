@@ -155,16 +155,16 @@ class SubNetwork(Node):
         >>> input = output = Node("input")
         >>>
         >>> # Create a subnode of type `Node` using this convenience function
-        >>> bus = subnetwork.subnode(
-        >>>     Node, "bus", inputs={input: Edge()}, outputs={output: Edge()}
-        >>> )
+        ... bus = subnetwork.subnode(
+        ...     Node, "bus", inputs={input: Edge()}, outputs={output: Edge()}
+        ... )
         >>>
         >>> # Alternatively, do the same manually
         >>> bus2 = Node(
-        >>>     HierachicalLabel("bus2", parent=subnetwork),
-        >>>     inputs={input: Edge()},
-        >>>     outputs={output: Edge()},
-        >>> )
+        ...     HierachicalLabel("bus2", parent=subnetwork),
+        ...     inputs={input: Edge()},
+        ...     outputs={output: Edge()},
+        ... )
         >>> subnetwork.subnodes.append(bus)
 
         """
