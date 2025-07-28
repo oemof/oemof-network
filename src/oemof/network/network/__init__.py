@@ -6,9 +6,11 @@ from .nodes import Node
 from .nodes import Sink
 from .nodes import Source
 from .nodes import Transformer
-from .nodes import SubNetwork
+from .hierachical_nodes import AtomicNode
+from .hierachical_nodes import SubNetwork
 
 __all__ = [
+    "AtomicNode",
     "Bus",
     "Component",
     "Edge",
