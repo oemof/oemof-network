@@ -262,8 +262,23 @@ class EnergySystem:
         return filename
         # End: to be removed in a future version
 
-    def dump(self, dpath=None, filename=None, consider_dpath=True):
-        r"""Dump an EnergySystem instance."""
+    def dump(
+        self,
+        dpath=None,  # to be removed in a future version
+        filename=None,
+        consider_dpath=True,  # to be removed in a future version
+    ):
+        """Dump an EnergySystem instance.
+
+        Parameters
+        ----------
+        dpath : str
+            Path to write your dump in.
+        filename : str
+            Filename to write your dump to.
+        consider_dpath : bool
+            Use separate parameters for path (defualt: ~/.oemof/) and filename.
+        """
         filename = self._deprecated_path_handling(
             dpath, filename, consider_dpath
         )
@@ -280,7 +295,17 @@ class EnergySystem:
         filename=None,
         consider_dpath=True,  # to be removed in a future version
     ):
-        r"""Restore an EnergySystem instance."""
+        """Restore an EnergySystem instance.
+
+        Parameters
+        ----------
+        dpath : str
+            Path to write your dump in.
+        filename : str
+            Filename to write your dump to.
+        consider_dpath : bool
+            Use separate parameters for path (defualt: ~/.oemof/) and filename.
+        """
         logging.info(
             "Restoring attributes will overwrite existing attributes."
         )
