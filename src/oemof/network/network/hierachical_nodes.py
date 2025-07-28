@@ -42,17 +42,18 @@ class HierachicalLabel:
         self.label = label
         self.parent = parent
 
-    def __repr__(self):
-        if self.parent is not None:
-            return repr(self.parent.label) + repr(self.label)
+        if parent is not None:
+            self.depth = parent.label.depth + 1
+            self.flat_label = parent.label.flat_label + (label,)
         else:
-            return repr(self.label)
+            self.depth = 1
+            self.flat_label = (label,)
+
+    def __repr__(self):
+        return repr(self.flat_label)
 
     def __str__(self):
-        if self.parent is not None:
-            return str(self.parent.label) + str(self.label)
-        else:
-            return str(self.label)
+        return str(self.flat_label)
 
 
 class AtomicNode(Node):
