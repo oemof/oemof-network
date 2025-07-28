@@ -10,8 +10,8 @@ Overview
     * - docs
       - |docs|
     * - tests
-      - | |tox-pytest| |tox-checks| |coveralls|
-        | |scrutinizer| |codacy| |codeclimate|
+      - | |tox-pytest| |tox-checks|
+        | |coveralls| |scrutinizer| |codacy|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since| |packaging|
@@ -36,10 +36,6 @@ Overview
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
     :target: https://app.codacy.com/gh/oemof/oemof-network
     :alt: Codacy Code Quality Status
-
-.. |codeclimate| image:: https://codeclimate.com/github/oemof/oemof-network/badges/gpa.svg
-   :target: https://codeclimate.com/github/oemof/oemof-network
-   :alt: CodeClimate Quality Status
 
 .. |version| image:: https://img.shields.io/pypi/v/oemof.network.svg
     :alt: PyPI Package latest release
