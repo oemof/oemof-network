@@ -119,7 +119,7 @@ def create_nx_graph(
                     grph.add_edge(
                         str(i.label),
                         str(n.label),
-                        weigth=format(weight, ".2f"),
+                        weight=format(weight, ".2f"),
                     )
 
         # remove nodes and edges based on precise labels

@@ -25,3 +25,5 @@ Changelog
 
 0.5.1
 -----
+
+* Added EnergySystem.check() to check graph for sanity

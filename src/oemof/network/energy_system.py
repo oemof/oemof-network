@@ -216,6 +216,20 @@ class EnergySystem:
             for target in source.outputs
         }
 
+    def check(self):
+        error_message = (
+            "Node {n} not part of EnergySystem "
+            + "but Flow ({i}, {o}) exists."
+        )
+
+        for n in self.nodes:
+            for o in n.outputs.keys():
+                if o not in self.nodes:
+                    raise RuntimeError(error_message.format(n=n, i=n, o=o))
+            for i in n.inputs.keys():
+                if i not in self.nodes:
+                    raise RuntimeError(error_message.format(n=n, i=i, o=n))
+
     # Begin: to be removed in a future version
     @staticmethod
     def _deprecated_path_handling(dpath, filename, consider_dpath):

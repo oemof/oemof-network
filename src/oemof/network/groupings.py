@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" All you need to create groups of stuff in your energy system.
+"""All you need to create groups of stuff in your energy system.
 
 This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
@@ -323,7 +323,7 @@ def _uid_or_str(node_or_entity):
 
 
 DEFAULT = Grouping(_uid_or_str)
-""" The default :class:`Grouping`.
+"""The default :class:`Grouping`.
 
 This one is always present in an :class:`energy system
 <oemof.energy_system.EnergySystem>`. It stores every :class:`entity
