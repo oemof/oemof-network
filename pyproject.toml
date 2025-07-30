@@ -19,6 +19,7 @@ include = [
     ".readthedocs.yml",
     "ci/",
     "tox.ini",
+    ".flake8",
 ]
 exclude = ["docs/_build"]
 
