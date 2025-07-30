@@ -15,6 +15,8 @@ SPDX-License-Identifier: MIT
 
 import pytest
 
+import random
+
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Edge
 from oemof.network.network.nodes import Node
@@ -28,6 +30,138 @@ def test_ensys_init():
     with pytest.warns(FutureWarning):
         ensys = EnergySystem(entities=[node])
         assert node in ensys.nodes
+
+
+class TestDumpRestore:
+    def setup_method(self):
+        self.es = EnergySystem()
+
+        node0 = Node(label="node0")
+        node1 = Node(label="node1", inputs={node0: Edge()})
+        self.es.add(node0, node1)
+
+    def test_dump_restore_cwd(self):
+        """Test dumping and restoring to and from current working directory."""
+
+        filename = "./es_test_dump.oemof"
+
+        msg = self.es.dump(
+            filename=filename,
+            consider_dpath=False,
+        )
+
+        assert filename in msg
+
+        es = EnergySystem()
+        msg = es.restore(
+            filename=filename,
+            consider_dpath=False,
+        )
+
+        assert filename in msg
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
+    def test_dump_restore_dpath_remapping(self):
+        """Test dumping and restoring to and from current working directory."""
+
+        filename = "./es_test_remap_dump.oemof"
+
+        msg = self.es.dump(
+            filename,
+            consider_dpath=False,
+        )
+
+        assert filename in msg
+
+        es = EnergySystem()
+        msg = es.restore(
+            filename,
+            consider_dpath=False,
+        )
+
+        assert filename in msg
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
+    def test_dump_restore_default_filename(self):
+        """Test dumping and restoring with default filename to custom dir."""
+
+        default_filename = "es_dump.oemof"
+
+        with pytest.warns(
+            match="Parameter 'dpath' will be removed in a future",
+        ):
+            msg = self.es.dump(dpath="./")
+
+        assert default_filename in msg
+
+        es = EnergySystem()
+        with pytest.warns(
+            match="Parameter 'dpath' will be removed in a future",
+        ):
+            msg = es.restore(dpath="./")
+
+        assert default_filename in msg
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
+    def test_dump_restore_dpath_filename(self):
+        """Test dumping and restoring with filename and dir."""
+
+        directory = "./"
+        filename = "es_dump_dpath_filename.oemof"
+
+        with pytest.warns(
+            match="Parameter 'dpath' will be removed in a future",
+        ):
+            msg = self.es.dump(directory, filename)
+
+        assert filename in msg
+
+        es = EnergySystem()
+        with pytest.warns(
+            match="Parameter 'dpath' will be removed in a future",
+        ):
+            msg = es.restore(directory, filename)
+
+        assert filename in msg
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
+    def test_dump_restore_default(self):
+        """Test default dumping and restoring."""
+
+        default_filename = "es_dump.oemof"
+
+        with pytest.warns(
+            match="Default directory for oemof dumps will change",
+        ):
+            msg = self.es.dump()
+
+        assert default_filename in msg
+
+        es = EnergySystem()
+        with pytest.warns(
+            match="Default directory for oemof dumps will change",
+        ):
+            msg = es.restore()
+
+        assert default_filename in msg
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
+    def test_dump_restore_impossible_combination(self):
+        """Test default dumping and restoring."""
+
+        m = "You set filename and dpath but told that dpath should be ignored."
+        with pytest.raises(ValueError, match=m):
+            self.es.dump(filename="foo.dump", dpath="/", consider_dpath=False)
+
+        es = EnergySystem()
+
+        with pytest.raises(ValueError, match=m):
+            es.restore(filename="foo.dump", dpath="/", consider_dpath=False)
 
 
 class TestsEnergySystem:

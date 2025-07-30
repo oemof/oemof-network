@@ -244,7 +244,7 @@ class EnergySystem:
 
                 warnings.warn(
                     "Default directory for oemof dumps will change"
-                    + "from ~/.oemof/dumps/ to ./ in a future version."
+                    + " from ~/.oemof/dumps/ to ./ in a future version."
                     + " Set 'consider_dpath' to False to already use"
                     + " the new default.",
                     FutureWarning,
@@ -293,13 +293,15 @@ class EnergySystem:
         consider_dpath : bool
             Use separate parameters for path (default: ~/.oemof/) and filename.
         """
+        # Start: to be removed in a future version
         filename = self._deprecated_path_handling(
             dpath, filename, consider_dpath
         )
+        # End: to be removed in a future version
 
         pickle.dump(self.__dict__, open(filename, "wb"))
 
-        msg = "Attributes dumped to: {0}".format(filename)
+        msg = f"Attributes dumped to {filename}."
         logging.debug(msg)
         return msg
 
@@ -331,6 +333,6 @@ class EnergySystem:
 
         self.__dict__ = pickle.load(open(filename, "rb"))
 
-        msg = "Attributes restored from: {0}".format(os.path.join(filename))
+        msg = f"Attributes restored from {filename}."
         logging.debug(msg)
         return msg
