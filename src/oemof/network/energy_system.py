@@ -291,7 +291,7 @@ class EnergySystem:
         filename : str
             Filename to write your dump to.
         consider_dpath : bool
-            Use separate parameters for path (defualt: ~/.oemof/) and filename.
+            Use separate parameters for path (default: ~/.oemof/) and filename.
         """
         filename = self._deprecated_path_handling(
             dpath, filename, consider_dpath
