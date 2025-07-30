@@ -17,3 +17,47 @@ exclude = '''
   | ci
 )/
 '''
+
+[tool.pytest.ini_options]
+norecursedirs = [
+    ".git",
+    ".tox",
+    ".env",
+    "dist",
+    "build",
+    "docs/_build",
+    "docs/_files/code",
+    "migrations",
+    "examples",
+]
+python_files = [
+    "test_*.py",
+    "*_test.py",
+    "*_tests.py",
+    "tests.py",
+]
+addopts = """
+    -ra
+    --strict-markers
+    --ignore=docs/conf.py
+    --ignore=setup.py
+    --ignore=ci
+    --ignore=.eggs
+    --doctest-modules
+    --doctest-glob=\\*.rst
+    --tb=short
+    --pyargs
+"""
+testpaths = [
+    "src/oemof/network/",
+    "tests/",
+    "docs/",
+]
+
+[tool.isort]
+force_single_line = true
+line_length = 79
+known_first_party = "oemof-network"
+default_section = "THIRDPARTY"
+forced_separate = "test_oemof-network"
+skip = "migrations"
