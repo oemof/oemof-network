@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 
-"""Basic tests.
+"""Tests for the EnergySystem class.
 
 This file is part of project oemof.network (github.com/oemof/oemof-network).
 
@@ -14,8 +14,6 @@ SPDX-License-Identifier: MIT
 """
 
 import pytest
-
-import random
 
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Edge
