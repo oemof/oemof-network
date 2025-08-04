@@ -17,7 +17,7 @@ from .edge import Edge
 from .entity import Entity
 from .helpers import Inputs
 from .helpers import Outputs
-
+from .helpers import HierachicalLabel
 
 class Node(Entity):
     r"""A Node of an energy system graph.
@@ -106,6 +106,19 @@ class Node(Entity):
         """
         return self._outputs
 
+    @property
+    def depth(self):
+        """int:
+        Depth within nested :class:`SubNetwork` instances.
+        The :class:`Node` instances have a depth defined via their label if
+        the label is an instance of :class:`HierachicalLabel`, otherwise default depth is 1. If a :class:`SubNetwork`
+        instance is present within an :class:`EnergySystem` nodes, then all :class:`Node` instances within
+        this :class:`SubNetwork` instance will have a depth of 2. The depth is then recursively increased by 1
+         for each subsequent nested :class:`SubNetwork` instance"""
+        if isinstance(self.label, HierachicalLabel):
+            return self.label.depth
+        else:
+            return 1
 
 _deprecation_warning = (
     "Usage of {} is deprecated. Use oemof.network.Node instead."
