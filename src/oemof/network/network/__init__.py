@@ -8,6 +8,7 @@ from .nodes import Node
 from .nodes import Sink
 from .nodes import Source
 from .nodes import Transformer
+from .helpers import HierachicalLabel
 
 __all__ = [
     "AtomicNode",
@@ -20,4 +21,5 @@ __all__ = [
     "Source",
     "Transformer",
     "SubNetwork",
+    "HierachicalLabel"
 ]

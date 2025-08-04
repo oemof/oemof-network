@@ -14,46 +14,7 @@ SPDX-License-Identifier: MIT
 from collections import deque
 
 from .nodes import Node
-
-
-class HierachicalLabel:
-    # TODO: Find a better place for the `interface` parameter/attribute.
-    #       (See the `git blame` of these lines for details.)
-    def __init__(self, label, parent):
-        """Create a special label for subnodes of a `SubNetwork`.
-
-        In order to identify nodes which are part of a `SubNetwork`
-        just by looking at the nodes, such nodes need to have special
-        information attached. In order to create a uniform way of
-        storing this information, a special `SubNetworkLabel` is used to
-        `label` those nodes.
-
-        Parameters
-        ----------
-        label : hashable
-            The original label of the node. This is what would've been
-            used to `label` the node if the node would not have been
-            part of a `SubNetwork`.
-        parent : oemof.network.SubNetwork
-            The `SubNetwork` of which the node to which this label
-            attached to is a part of.
-
-        """
-        self.label = label
-        self.parent = parent
-
-        if parent is not None:
-            self.depth = parent.label.depth + 1
-            self.flat_label = parent.label.flat_label + (label,)
-        else:
-            self.depth = 1
-            self.flat_label = (label,)
-
-    def __repr__(self):
-        return repr(self.flat_label)
-
-    def __str__(self):
-        return str(self.flat_label)
+from .helpers import HierachicalLabel
 
 
 class AtomicNode(Node):
