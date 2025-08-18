@@ -27,3 +27,4 @@ Changelog
 -----
 
 * Added EnergySystem.check() to check graph for sanity
+* Updated build system from setup.py to "build" module
