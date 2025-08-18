@@ -13,8 +13,8 @@ SPDX-License-Identifier: MIT
 
 from collections import deque
 
-from .nodes import Node
 from .helpers import HierachicalLabel
+from .nodes import Node
 
 
 class AtomicNode(Node):
