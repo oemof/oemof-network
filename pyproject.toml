@@ -17,7 +17,6 @@ include = [
     ".editorconfig",
     ".pep8speaks.yml",
     ".readthedocs.yml",
-    "ci/",
     "tox.ini",
     ".flake8",
 ]
