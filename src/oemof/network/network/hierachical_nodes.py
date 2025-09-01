@@ -78,7 +78,7 @@ class SubNetwork(Node):
         Create a subnode by calling `class_(label, *args, **kwargs)` and
         `append` the result to `self.subnodes`.
         The purpose of this wrapper is to make sure that subnodes are
-        always `label`led with a `SubNetworkLabel`.
+        always `label`led with a `HierachicalLabel`.
         This is useful to ensure that the `label` of the subnode is unique
         within the `SubNetwork` and that it can be identified as a subnode of
         the `SubNetwork`.
