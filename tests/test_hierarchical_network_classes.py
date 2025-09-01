@@ -20,6 +20,7 @@ from oemof.network.network.helpers import HierachicalLabel
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import AtomicNode
 from oemof.network.network import Bus
+from oemof.network.network import Node
 from oemof.network.network import SubNetwork
 
 
@@ -100,8 +101,6 @@ class TestsSubNetwork:
         self.sn_label = "label of the subnetwork"
         self.sn = SubNetwork(label=self.sn_label)
         self.subnode_label = "internal_bus"
-
-    def add_subnode(self):
         self.sn.subnode(Bus, self.subnode_label)
 
     def test_instanciate_without_label_raises_type_error(self):
@@ -109,13 +108,42 @@ class TestsSubNetwork:
             SubNetwork()
 
     def test_create_subnode(self):
-        self.add_subnode()
         assert len(self.sn.subnodes) == 1
 
     def test_created_subnode_displays_with_parent_node_name_first(self):
-        self.add_subnode()
-        assert self.sn.subnodes[0].label.flat_label == (self.sn_label, self.subnode_label)
+        assert self.sn.subnodes[0].label.flat_label == (
+            self.sn_label,
+            self.subnode_label,
+        )
 
     def test_created_subnode_depth_is_larger_than_parent_by_one(self):
-        self.add_subnode()
         assert self.sn.subnodes[0].depth == self.sn.depth + 1
+
+    def test_add_simple_node_with_str_label_as_subnode_fails(self):
+        n = Node(label="just a simple Node")
+        with pytest.raises(AttributeError):
+            self.sn.subnodes.append(n)
+
+    def test_add_node_to_subnetwork_via_append_fails(self):
+        n_label = "node label"
+        n = Node(label=n_label)
+        with pytest.raises(AttributeError):
+            self.sn.subnodes.append(n)
+
+    def test_add_node_as_subnode_via_subnode_method(self):
+        n_label = "node label"
+        num_subnodes = len(self.sn.subnodes)
+        self.sn.subnode(Node, label=n_label)
+        assert len(self.sn.subnodes) == num_subnodes + 1
+
+    def test_add_subnetwork_as_subnode_via_subnode_method(self):
+        another_sn_label = "label of the other subnetwork"
+        another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
+        another_sn.subnode(Bus, "another internal bus")
+        assert another_sn.subnodes[0].depth == self.sn.depth + 2
+
+    def test_subnode_of_subnetwork_added_as_subnode_have_updated_depth(self):
+        another_sn_label = "label of the other subnetwork"
+        another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
+        another_sn.subnode(Bus, "another internal bus")
+        assert another_sn.subnodes[0].depth == self.sn.depth + 2
