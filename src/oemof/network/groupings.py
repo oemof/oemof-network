@@ -21,7 +21,6 @@ from itertools import chain
 from itertools import filterfalse
 
 from oemof.network.network.edge import Edge
-from oemof.network.network.nodes import Node
 
 # TODO: Update docstrings.
 #
