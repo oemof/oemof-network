@@ -28,6 +28,11 @@ class AtomicNode(Node):
         custom_properties=None,
     ):
         if not isinstance(label, HierachicalLabel):
+            if parent_node is not None:
+                if not isinstance(parent_node, SubNetwork):
+                    raise TypeError(
+                        "The parent_node of an oemof.network.Node instance can only be of type oemof.network.SubNetwork"
+                    )
             label = HierachicalLabel(label=label, parent=parent_node)
         super().__init__(
             label=label,
