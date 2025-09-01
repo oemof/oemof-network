@@ -58,10 +58,6 @@ class SubNetwork(Node):
             self.add_subnodes, sender=self
         )
 
-    def append_subnodes(self, *args):
-        for sub_component in args:
-            self.subnodes.append(sub_component)
-
     def add_subnodes(self, node, **kwargs):
         """Add subnodes to an EnergySystem.
 

@@ -214,7 +214,6 @@ class EnergySystem:
         return {
             (source, target): source.outputs[target]
             for source in self.nodes
-            if isinstance(source, Node)
             for target in source.outputs
         }
 
