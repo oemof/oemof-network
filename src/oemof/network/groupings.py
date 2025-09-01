@@ -299,7 +299,6 @@ class FlowsWithNodes(Entities):
         return set(tuples)
 
     def __call__(self, n, d):
-            return
         tuples = (
             {(n.input, n.output, n)}
             if isinstance(n, Edge)
