@@ -54,7 +54,7 @@ class SubNetwork(Node):
             label = HierachicalLabel(label=label, parent=parent_node)
         super().__init__(label=label, custom_properties=custom_properties)
 
-        self.subnodes = []
+        self.__subnodes = []
 
         # TODO: Try to avoid this local `import`.
         from ..energy_system import EnergySystem
@@ -62,6 +62,14 @@ class SubNetwork(Node):
         EnergySystem.signals[EnergySystem.add].connect(
             self.add_subnodes, sender=self
         )
+
+    @property
+    def subnodes(self):
+        """Subnodes of the SubNetwork
+
+        It is deliberate provided as a tuple to prevent user to append subnodes other than with API methods
+        """
+        return tuple([sn for sn in self.__subnodes])
 
     def add_subnodes(self, node, **kwargs):
         """Add subnodes to an EnergySystem.
@@ -74,7 +82,8 @@ class SubNetwork(Node):
         #    Explain why the `node` argument is necessary.
         assert self is node
         deque(
-            (kwargs["EnergySystem"].add(sn) for sn in self.subnodes), maxlen=0
+            (kwargs["EnergySystem"].add(sn) for sn in self.__subnodes),
+            maxlen=0,
         )
 
     def subnode(self, class_, label, *args, **kwargs):
@@ -120,18 +129,10 @@ class SubNetwork(Node):
         ... bus = subnetwork.subnode(
         ...     Node, "bus", inputs={input: Edge()}, outputs={output: Edge()}
         ... )
-        >>>
-        >>> # Alternatively, do the same manually
-        >>> bus2 = Node(
-        ...     HierachicalLabel("bus2", parent=subnetwork),
-        ...     inputs={input: Edge()},
-        ...     outputs={output: Edge()},
-        ... )
-        >>> subnetwork.subnodes.append(bus)
 
         """
         subnode = class_(
             label=HierachicalLabel(label=label, parent=self), *args, **kwargs
         )
-        self.subnodes.append(subnode)
+        self.__subnodes.append(subnode)
         return subnode
