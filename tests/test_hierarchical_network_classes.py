@@ -53,3 +53,33 @@ class TestsHierarchicalLabel:
         hl_node = HierachicalLabel(label_node, parent=sn)
 
         assert hl_node.depth == hl_sn.depth + 1
+
+
+class TestsAtomicNode:
+    def setup_method(self):
+        self.an = AtomicNode("label")
+
+    def test_label_is_herarchical(self):
+        assert isinstance(self.an.label, HierachicalLabel)
+
+    def test_default_depth_of_one(self):
+        assert self.an.depth == 1
+
+    def test_parent_of_label_is_none(self):
+        assert self.an.label.parent is None
+
+    def test_depth_of_direct_child_is_larger_than_parent_by_one(self):
+        label_sn = "label of the subnetwork"
+        sn = SubNetwork(label=label_sn)
+        label_node = "label of the node"
+        atomic_node = AtomicNode(label_node, parent_node=sn)
+
+        assert atomic_node.depth == sn.depth + 1
+
+    def test_forbid_atomic_node_to_be_parent(self):
+        label_node = "label of the node"
+        with pytest.raises(
+            TypeError,
+            match="The parent_node of an oemof.network.Node instance can only be of type oemof.network.SubNetwork",
+        ):
+            AtomicNode(label_node, parent_node=self.an)
