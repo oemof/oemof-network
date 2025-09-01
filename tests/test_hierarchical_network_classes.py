@@ -19,12 +19,17 @@ import pytest
 from oemof.network.network.helpers import HierachicalLabel
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import AtomicNode
+from oemof.network.network import Bus
 from oemof.network.network import SubNetwork
 
 
 class TestsHierarchicalLabel:
     def setup_method(self):
         pass
+
+    def test_instanciate_without_label_raises_type_error(self):
+        with pytest.raises(TypeError):
+            HierachicalLabel()
 
     def test_turn_label_rep_into_tuple(self):
         label = "label1"
@@ -59,6 +64,10 @@ class TestsAtomicNode:
     def setup_method(self):
         self.an = AtomicNode("label")
 
+    def test_instanciate_without_label_raises_type_error(self):
+        with pytest.raises(TypeError):
+            AtomicNode()
+
     def test_label_is_herarchical(self):
         assert isinstance(self.an.label, HierachicalLabel)
 
@@ -76,10 +85,37 @@ class TestsAtomicNode:
 
         assert atomic_node.depth == sn.depth + 1
 
-    def test_forbid_atomic_node_to_be_parent(self):
+    def test_forbid_atomic_node_to_be_parent_node(self):
         label_node = "label of the node"
         with pytest.raises(
             TypeError,
             match="The parent_node of an oemof.network.Node instance can only be of type oemof.network.SubNetwork",
         ):
             AtomicNode(label_node, parent_node=self.an)
+
+
+class TestsSubNetwork:
+    def setup_method(self):
+        self.es = EnergySystem()
+        self.sn_label = "label of the subnetwork"
+        self.sn = SubNetwork(label=self.sn_label)
+        self.subnode_label = "internal_bus"
+
+    def add_subnode(self):
+        self.sn.subnode(Bus, self.subnode_label)
+
+    def test_instanciate_without_label_raises_type_error(self):
+        with pytest.raises(TypeError):
+            SubNetwork()
+
+    def test_create_subnode(self):
+        self.add_subnode()
+        assert len(self.sn.subnodes) == 1
+
+    def test_created_subnode_displays_with_parent_node_name_first(self):
+        self.add_subnode()
+        assert self.sn.subnodes[0].label.flat_label == (self.sn_label, self.subnode_label)
+
+    def test_created_subnode_depth_is_larger_than_parent_by_one(self):
+        self.add_subnode()
+        assert self.sn.subnodes[0].depth == self.sn.depth + 1
