@@ -4,6 +4,7 @@ from . import energy_system
 from . import graph
 from . import groupings
 from . import network
+from .network import AtomicNode
 from .network import Bus
 from .network import Component
 from .network import Edge
@@ -15,6 +16,7 @@ from .network import SubNetwork
 from .network import Transformer
 
 __all__ = [
+    "AtomicNode",
     "Bus",
     "Component",
     "Edge",
