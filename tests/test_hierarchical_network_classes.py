@@ -17,11 +17,11 @@ SPDX-License-Identifier: MIT
 
 import pytest
 
-from oemof.network.network.helpers import HierachicalLabel
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import AtomicNode
 from oemof.network.network import Node
 from oemof.network.network import SubNetwork
+from oemof.network.network.helpers import HierachicalLabel
 
 
 class TestsHierarchicalLabel:
