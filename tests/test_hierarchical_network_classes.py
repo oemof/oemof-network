@@ -90,10 +90,27 @@ class TestsAtomicNode:
         label_node = "label of the node"
         with pytest.raises(
             TypeError,
-            match="The parent_node of an oemof.network.Node instance "
+            match="The parent_node of an oemof.network.AtomicNode instance "
             "can only be of type oemof.network.SubNetwork",
         ):
             AtomicNode(label_node, parent_node=self.an)
+
+    def test_check_preexisting_parent_of_label_is_of_type_subnetwork(self):
+        label_node = "label of the node"
+        hl_node = HierachicalLabel(label_node, parent=self.an)
+        with pytest.raises(
+            TypeError,
+            match="The parent_node of an oemof.network.AtomicNode instance "
+            "can only be of type oemof.network.SubNetwork",
+        ):
+            AtomicNode(hl_node)
+
+    def test_allow_changing_parent_of_subnode_label(self):
+        sn = SubNetwork("a subnetwork")
+        atomic_node = AtomicNode(
+            HierachicalLabel("hierarchical node"), parent_node=sn
+        )
+        assert atomic_node.label.parent == sn
 
 
 class TestsSubNetwork:
