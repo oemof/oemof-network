@@ -4,12 +4,13 @@
 
 This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
-available from its original location oemof/tests/test_hierachical_network_classes.py
+available from its original location
+oemof/tests/test_hierachical_network_classes.py
 
 SPDX-FileCopyrightText: Stephan Günther <>
 SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
-SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois.duc@rl-institut.de>
+SPDX-FileCopyrightText: Pierre-Francois Duc<pierre-francois.duc@rl-institut.de>
 
 SPDX-License-Identifier: MIT
 """
@@ -19,7 +20,6 @@ import pytest
 from oemof.network.network.helpers import HierachicalLabel
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import AtomicNode
-from oemof.network.network import Bus
 from oemof.network.network import Node
 from oemof.network.network import SubNetwork
 
@@ -90,7 +90,8 @@ class TestsAtomicNode:
         label_node = "label of the node"
         with pytest.raises(
             TypeError,
-            match="The parent_node of an oemof.network.Node instance can only be of type oemof.network.SubNetwork",
+            match="The parent_node of an oemof.network.Node instance "
+            "can only be of type oemof.network.SubNetwork",
         ):
             AtomicNode(label_node, parent_node=self.an)
 
@@ -101,7 +102,7 @@ class TestsSubNetwork:
         self.sn_label = "label of the subnetwork"
         self.sn = SubNetwork(label=self.sn_label)
         self.subnode_label = "internal_bus"
-        self.sn.subnode(Bus, self.subnode_label)
+        self.sn.subnode(Node, self.subnode_label)
 
     def test_instanciate_without_label_raises_type_error(self):
         with pytest.raises(TypeError):
@@ -139,11 +140,18 @@ class TestsSubNetwork:
     def test_add_subnetwork_as_subnode_via_subnode_method(self):
         another_sn_label = "label of the other subnetwork"
         another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
-        another_sn.subnode(Bus, "another internal bus")
+        another_sn.subnode(Node, "another internal bus")
         assert another_sn.subnodes[0].depth == self.sn.depth + 2
 
     def test_subnode_of_subnetwork_added_as_subnode_have_updated_depth(self):
         another_sn_label = "label of the other subnetwork"
         another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
-        another_sn.subnode(Bus, "another internal bus")
+        another_sn.subnode(Node, "another internal bus")
         assert another_sn.subnodes[0].depth == self.sn.depth + 2
+
+    def test_subnodes_added_to_energy_system_when_subnetwork_added(self):
+        another_sn_label = "label of the other subnetwork"
+        another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
+        another_sn.subnode(Node, "another internal bus")
+        self.es.add(self.sn)
+        assert len(self.es.nodes) == 4
