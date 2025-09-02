@@ -17,7 +17,6 @@ include = [
     ".editorconfig",
     ".pep8speaks.yml",
     ".readthedocs.yml",
-    "ci/",
     "tox.ini",
     ".flake8",
 ]
@@ -79,7 +78,6 @@ dev = [
 
 [tool.black]
 line-length = 79
-target-version = ['py37', 'py38']
 include = '\.pyi?$'
 exclude = '''
 /(

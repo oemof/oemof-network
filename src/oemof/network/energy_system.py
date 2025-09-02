@@ -95,10 +95,10 @@ class EnergySystem:
     >>> bus is es.groups['electricity']
     True
     >>> es.dump()  # doctest: +ELLIPSIS
-    'Attributes dumped to:...
+    'Attributes dumped to ...
     >>> es = EnergySystem()
     >>> es.restore()  # doctest: +ELLIPSIS
-    'Attributes restored from:...
+    'Attributes restored from ...
     >>> bus is es.groups['electricity']
     False
     >>> es.groups['electricity']
@@ -233,40 +233,109 @@ class EnergySystem:
                 if i not in self.nodes:
                     raise RuntimeError(error_message.format(n=n, i=i, o=n))
 
-    def dump(self, dpath=None, filename=None):
-        r"""Dump an EnergySystem instance."""
-        if dpath is None:
-            bpath = os.path.join(os.path.expanduser("~"), ".oemof")
-            if not os.path.isdir(bpath):
-                os.mkdir(bpath)
-            dpath = os.path.join(bpath, "dumps")
-            if not os.path.isdir(dpath):
-                os.mkdir(dpath)
+    # Begin: to be removed in a future version
+    @staticmethod
+    def _deprecated_path_handling(dpath, filename, consider_dpath):
+        if consider_dpath:
+            if dpath is None:
+                bpath = os.path.join(os.path.expanduser("~"), ".oemof")
+                if not os.path.isdir(bpath):
+                    os.mkdir(bpath)
+                dpath = os.path.join(bpath, "dumps")
+                if not os.path.isdir(dpath):
+                    os.mkdir(dpath)
 
-        if filename is None:
-            filename = "es_dump.oemof"
+                warnings.warn(
+                    "Default directory for oemof dumps will change"
+                    + " from ~/.oemof/dumps/ to ./ in a future version."
+                    + " Set 'consider_dpath' to False to already use"
+                    + " the new default.",
+                    FutureWarning,
+                )
+            else:
+                warnings.warn(
+                    "Parameter 'dpath' will be removed in a future"
+                    + " version. You can give the directory as part"
+                    + " of the filename and set 'consider_dpath' to"
+                    + " False to suppress this waring.",
+                    FutureWarning,
+                )
+            if filename is None:
+                filename = "es_dump.oemof"
 
-        pickle.dump(self.__dict__, open(os.path.join(dpath, filename), "wb"))
+            filename = os.path.join(dpath, filename)
+        else:
+            if dpath is not None:
+                if filename is None:
+                    # Interpret dpath as intended to be filename,
+                    # as it might be given as positional argument.
+                    filename = dpath
+                else:
+                    raise ValueError(
+                        "You set filename and dpath but told that"
+                        + " dpath should be ignored."
+                    )
 
-        msg = "Attributes dumped to: {0}".format(os.path.join(dpath, filename))
+        return filename
+        # End: to be removed in a future version
+
+    def dump(
+        self,
+        dpath=None,  # to be removed in a future version
+        filename=None,
+        consider_dpath=True,  # to be removed in a future version
+    ):
+        """Dump an EnergySystem instance.
+
+        Parameters
+        ----------
+        dpath : str
+            Path to write your dump in.
+        filename : str
+            Filename to write your dump to.
+        consider_dpath : bool
+            Use separate parameters for path (default: ~/.oemof/) and filename.
+        """
+        # Start: to be removed in a future version
+        filename = self._deprecated_path_handling(
+            dpath, filename, consider_dpath
+        )
+        # End: to be removed in a future version
+
+        pickle.dump(self.__dict__, open(filename, "wb"))
+
+        msg = f"Attributes dumped to {filename}."
         logging.debug(msg)
         return msg
 
-    def restore(self, dpath=None, filename=None):
-        r"""Restore an EnergySystem instance."""
+    def restore(
+        self,
+        dpath=None,  # to be removed in a future version
+        filename=None,
+        consider_dpath=True,  # to be removed in a future version
+    ):
+        """Restore an EnergySystem instance.
+
+        Parameters
+        ----------
+        dpath : str
+            Path to write your dump in.
+        filename : str
+            Filename to write your dump to.
+        consider_dpath : bool
+            Use separate parameters for path (defualt: ~/.oemof/) and filename.
+        """
         logging.info(
             "Restoring attributes will overwrite existing attributes."
         )
-        if dpath is None:
-            dpath = os.path.join(os.path.expanduser("~"), ".oemof", "dumps")
-
-        if filename is None:
-            filename = "es_dump.oemof"
-
-        self.__dict__ = pickle.load(open(os.path.join(dpath, filename), "rb"))
-
-        msg = "Attributes restored from: {0}".format(
-            os.path.join(dpath, filename)
+        # Start: to be removed in a future version
+        filename = self._deprecated_path_handling(
+            dpath, filename, consider_dpath
         )
+        # End: to be removed in a future version
+
+        self.__dict__ = pickle.load(open(filename, "rb"))
+
+        msg = f"Attributes restored from {filename}."
         logging.debug(msg)
         return msg
