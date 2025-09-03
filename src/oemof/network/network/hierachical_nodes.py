@@ -109,7 +109,7 @@ class SubNetwork(Node):
 
         Returns
         -------
-        :class:`Node`
+        :class: Node
             The newly created subnode, which is also appended to
             `self.subnodes`.
 

@@ -80,7 +80,7 @@ class HierachicalLabel:
             The original label of the node. This is what would've been
             used to `label` the node if the node would not have been
             part of a `SubNetwork`.
-        parent : oemof.network.SubNetwork
+        parent : oemof.network.SubNetwork or None
             The `SubNetwork` of which the node to which this label
             attached to is a part of.
 
