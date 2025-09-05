@@ -14,30 +14,9 @@ import warnings
 
 from collections import deque
 
+from typing import Optional, Self
 from .helpers import HierachicalLabel
 from .nodes import Node
-
-
-def _check_parent_node_and_label_args(label, parent_node, node_type=""):
-    if not isinstance(label, HierachicalLabel):
-        label = HierachicalLabel(label=label, parent=parent_node)
-    else:
-        if parent_node is not None:
-            label.parent = parent_node
-            warnings.warn(
-                f"The parent of the {node_type} with the Hierarchical "
-                f"label '{label}' was changed to the provided SubNetwork "
-                f"'{parent_node.label}', however this does not add the "
-                f"{node_type} as a subnode of the SubNetwork"
-            )
-
-    if label.parent is not None:
-        if not isinstance(label.parent, SubNetwork):
-            raise TypeError(
-                f"The parent_node of an oemof.network.{node_type} instance "
-                f"can only be of type oemof.network.SubNetwork"
-            )
-    return label
 
 
 class AtomicNode(Node):
@@ -47,12 +26,14 @@ class AtomicNode(Node):
         *,
         inputs=None,
         outputs=None,
-        parent_node=None,
+        parent_node: Optional["SubNetwork"] = None,
         custom_properties=None,
     ):
-        label = _check_parent_node_and_label_args(
-            label, parent_node, node_type="AtomicNode"
-        )
+        if not isinstance(label, HierachicalLabel):
+            label = HierachicalLabel(label=label, parent=parent_node)
+        else:
+            if parent_node is not None:
+                label.parent = parent_node
 
         super().__init__(
             label=label,
@@ -67,12 +48,11 @@ class SubNetwork(Node):
         self,
         label,
         *,
-        parent_node=None,
+        parent_node: Optional[Self] = None,
         custom_properties=None,
     ):
-        label = _check_parent_node_and_label_args(
-            label, parent_node, node_type="SubNetwork"
-        )
+        if not isinstance(label, HierachicalLabel):
+            label = HierachicalLabel(label=label, parent=parent_node)
 
         super().__init__(label=label, custom_properties=custom_properties)
 

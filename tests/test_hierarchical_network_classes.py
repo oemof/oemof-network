@@ -86,25 +86,6 @@ class TestsAtomicNode:
 
         assert atomic_node.depth == sn.depth + 1
 
-    def test_forbid_atomic_node_to_be_parent_node(self):
-        label_node = "label of the node"
-        with pytest.raises(
-            TypeError,
-            match="The parent_node of an oemof.network.AtomicNode instance "
-            "can only be of type oemof.network.SubNetwork",
-        ):
-            AtomicNode(label_node, parent_node=self.an)
-
-    def test_check_preexisting_parent_of_label_is_of_type_subnetwork(self):
-        label_node = "label of the node"
-        hl_node = HierachicalLabel(label_node, parent=self.an)
-        with pytest.raises(
-            TypeError,
-            match="The parent_node of an oemof.network.AtomicNode instance "
-            "can only be of type oemof.network.SubNetwork",
-        ):
-            AtomicNode(hl_node)
-
     def test_allow_changing_parent_of_subnode_label(self):
         sn = SubNetwork("a subnetwork")
         atomic_node = AtomicNode(
@@ -171,4 +152,11 @@ class TestsSubNetwork:
         another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
         another_sn.subnode(Node, "another internal bus")
         self.es.add(self.sn)
+        assert len(self.es.nodes) == 4
+
+    def test_subnodes_not_added_to_energy_system_when_added_after(self):
+        self.es.add(self.sn)
+        another_sn_label = "label of the other subnetwork"
+        another_sn = self.sn.subnode(SubNetwork, label=another_sn_label)
+        another_sn.subnode(Node, "another internal bus")
         assert len(self.es.nodes) == 4

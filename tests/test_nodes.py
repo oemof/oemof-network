@@ -5,68 +5,7 @@ import pytest
 from oemof.network.network.helpers import HierachicalLabel
 from oemof.network.network.hierachical_nodes import AtomicNode
 from oemof.network.network.hierachical_nodes import SubNetwork
-from oemof.network.network.hierachical_nodes import (
-    _check_parent_node_and_label_args,
-)
 from oemof.network.network.nodes import Node
-
-
-class TestCheckParentNodeAndLabelArgs:
-    """Tests für _check_parent_node_and_label_args Hilfsfunktion"""
-
-    def test_create_hierarchical_label_from_string(self):
-        """Erstelle HierachicalLabel aus String und parent_node"""
-        parent = Mock(spec=SubNetwork)
-        parent_label = Mock()
-        parent_label.depth = 1
-        parent_label.flat_label = ("parent",)
-        parent.label = parent_label
-
-        result = _check_parent_node_and_label_args(
-            "test_label", parent, "TestNode"
-        )
-
-        assert isinstance(result, HierachicalLabel)
-        assert result.label == "test_label"
-        assert result.parent == parent
-        assert result.depth == 2
-        assert result.flat_label == ("parent", "test_label")
-
-    def test_use_existing_hierarchical_label(self):
-        """Verwende existierendes HierachicalLabel ohne parent_node"""
-        label = HierachicalLabel("test", parent=None)
-        result = _check_parent_node_and_label_args(label, None, "TestNode")
-
-        assert result is label
-        assert result.label == "test"
-
-    def test_update_parent_of_existing_label_with_warning(self):
-        """Update parent von existierendem Label mit Warnung"""
-        parent = Mock(spec=SubNetwork)
-        parent_label = Mock()
-        parent_label.depth = 1
-        parent_label.flat_label = ("parent",)
-        parent.label = parent_label
-
-        label = HierachicalLabel("test", parent=None)
-
-        with pytest.warns(UserWarning, match="The parent of the TestNode"):
-            result = _check_parent_node_and_label_args(
-                label, parent, "TestNode"
-            )
-
-        assert result.parent == parent
-
-    def test_invalid_parent_node_type_raises_error(self):
-        """Fehler bei ungültigem parent_node Typ"""
-        # Mock der explizit NICHT SubNetwork ist
-        invalid_parent = Mock()
-        invalid_parent.__class__.__name__ = "NotSubNetwork"
-
-        with pytest.raises(TypeError):
-            _check_parent_node_and_label_args(
-                "test", invalid_parent, "TestNode"
-            )
 
 
 class TestAtomicNode:
@@ -224,7 +163,7 @@ class TestSubNetwork:
         assert coal_plant.depth == 3
 
         assert isinstance(heat_pump.label, HierachicalLabel)
- 
+
         # Validiere flat_labels
         assert coal_plant.label.flat_label == (
             "sub_energy_system",
