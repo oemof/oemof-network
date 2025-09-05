@@ -12,6 +12,8 @@ SPDX-License-Identifier: MIT
 """
 import warnings
 
+from collections import deque
+
 from .helpers import HierachicalLabel
 from .nodes import Node
 
@@ -76,14 +78,35 @@ class SubNetwork(Node):
 
         self.__subnodes = []
 
+        # TODO: Try to avoid this local `import`.
+        from ..energy_system import EnergySystem
+
+        EnergySystem.signals[EnergySystem.add].connect(
+            self.add_subnodes, sender=self
+        )
+
     @property
     def subnodes(self):
         """Subnodes of the SubNetwork
 
-        It is deliberate provided as a tuple to prevent user to append subnodes
-        other than with API methods
+        It is deliberate provided as a tuple to prevent user to append subnodes other than with API methods
         """
         return tuple([sn for sn in self.__subnodes])
+
+    def add_subnodes(self, node, **kwargs):
+        """Add subnodes to an EnergySystem.
+
+        This is meant to be used as an event callback that is called when this
+        node is added to an EnergySystem, to add the child nodes to the
+        EnergySystem, too.
+        """
+        # TODO:
+        #    Explain why the `node` argument is necessary.
+        assert self is node
+        deque(
+            (kwargs["EnergySystem"].add(sn) for sn in self.__subnodes),
+            maxlen=0,
+        )
 
     def subnode(self, class_, label, *args, **kwargs):
         """Create a subnode and add it to this `SubNetwork`.

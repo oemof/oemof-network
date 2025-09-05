@@ -27,7 +27,7 @@ from oemof.tools import debugging
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
 from oemof.network.groupings import Grouping
-from oemof.network.network.hierachical_nodes import SubNetwork
+from oemof.network.network.nodes import Node
 
 
 class EnergySystem:
@@ -180,8 +180,6 @@ class EnergySystem:
         self._nodes.update({node.label: node for node in nodes})
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
-            if isinstance(n, SubNetwork):
-                self.add(*n.subnodes)
 
     signals[add] = blinker.signal(add)
 
