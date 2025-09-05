@@ -50,8 +50,22 @@ class Node(Entity):
         inputs=None,
         outputs=None,
         custom_properties=None,
+        parent_node=None
     ):
         super().__init__(label=label, custom_properties=custom_properties)
+
+
+        self.parent = parent_node
+        self._flat_label = (label,)
+        self._depth = 1
+
+        if parent is not None:
+            self._depth = parent.depth + 1
+            self._flat_label = parent._flat_label + (label,)
+        else:
+            self._depth = 1
+            self._flat_label = (label,)
+
 
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
@@ -118,10 +132,20 @@ class Node(Entity):
         instances within this :class:`SubNetwork` instance will have a depth
         of 2. The depth is then recursively increased by 1 for each subsequent
         nested :class:`SubNetwork` instance"""
-        if isinstance(self.label, HierachicalLabel):
-            return self.label.depth
-        else:
-            return 1
+        return self._depth
+
+    @property
+    def hierarchical_label(self):
+        """int:
+        Depth within nested :class:`SubNetwork` instances.
+        The :class:`Node` instances have a depth defined via their label if
+        the label is an instance of :class:`HierachicalLabel`, otherwise
+        default depth is 1. If a :class:`SubNetwork` instance is present
+        within an :class:`EnergySystem` nodes, then all :class:`Node`
+        instances within this :class:`SubNetwork` instance will have a depth
+        of 2. The depth is then recursively increased by 1 for each subsequent
+        nested :class:`SubNetwork` instance"""
+        return self._flat_label
 
 
 _deprecation_warning = (
