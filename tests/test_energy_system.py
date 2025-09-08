@@ -17,11 +17,11 @@ import pytest
 
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Edge
-from oemof.network.network.nodes import Node
+from oemof.network.network import AtomicNode
 
 
 def test_ensys_init():
-    node = Node("label")
+    node = AtomicNode("label")
     ensys = EnergySystem(nodes=[node])
     assert node in ensys.nodes
 
@@ -34,8 +34,8 @@ class TestDumpRestore:
     def setup_method(self):
         self.es = EnergySystem()
 
-        node0 = Node(label="node0")
-        node1 = Node(label="node1", inputs={node0: Edge()})
+        node0 = AtomicNode(label="node0")
+        node1 = AtomicNode(label="node1", inputs={node0: Edge()})
         self.es.add(node0, node1)
 
     def test_dump_restore_cwd(self):
@@ -58,7 +58,7 @@ class TestDumpRestore:
 
         assert filename in msg
         assert len(es.nodes) == 2
-        assert isinstance(es.node["node0"], Node)
+        assert isinstance(es.node["node0"], AtomicNode)
 
     def test_dump_restore_dpath_remapping(self):
         """Test dumping and restoring to and from current working directory."""
@@ -80,7 +80,7 @@ class TestDumpRestore:
 
         assert filename in msg
         assert len(es.nodes) == 2
-        assert isinstance(es.node["node0"], Node)
+        assert isinstance(es.node["node0"], AtomicNode)
 
     def test_dump_restore_default_filename(self):
         """Test dumping and restoring with default filename to custom dir."""
@@ -102,7 +102,7 @@ class TestDumpRestore:
 
         assert default_filename in msg
         assert len(es.nodes) == 2
-        assert isinstance(es.node["node0"], Node)
+        assert isinstance(es.node["node0"], AtomicNode)
 
     def test_dump_restore_dpath_filename(self):
         """Test dumping and restoring with filename and dir."""
@@ -125,7 +125,7 @@ class TestDumpRestore:
 
         assert filename in msg
         assert len(es.nodes) == 2
-        assert isinstance(es.node["node0"], Node)
+        assert isinstance(es.node["node0"], AtomicNode)
 
     def test_dump_restore_default(self):
         """Test default dumping and restoring."""
@@ -147,7 +147,7 @@ class TestDumpRestore:
 
         assert default_filename in msg
         assert len(es.nodes) == 2
-        assert isinstance(es.node["node0"], Node)
+        assert isinstance(es.node["node0"], AtomicNode)
 
     def test_dump_restore_impossible_combination(self):
         """Test default dumping and restoring."""
@@ -169,7 +169,7 @@ class TestsEnergySystem:
     def test_add_nodes(self):
         assert not self.es.nodes
 
-        node1 = Node(label="node1")
+        node1 = AtomicNode(label="node1")
         self.es.add(node1)
         assert self.es.nodes
         assert node1 in self.es.nodes
@@ -178,7 +178,7 @@ class TestsEnergySystem:
         # Note that node2 is not added, but the Flow is already
         # registred. We do not assert the latter fact as this is not a
         # guaranteed functionality.
-        node2 = Node(label="node2", inputs={node1: Edge()})
+        node2 = AtomicNode(label="node2", inputs={node1: Edge()})
         assert node2 not in self.es.nodes
 
         # When both nodes are registred, also the Flow needs to be there.
@@ -189,9 +189,9 @@ class TestsEnergySystem:
     def test_add_flow_assignment(self):
         assert not self.es.nodes
 
-        node0 = Node(label="node0")
-        node1 = Node(label="node1")
-        node2 = Node(label="node2", inputs={node0: Edge()})
+        node0 = AtomicNode(label="node0")
+        node1 = AtomicNode(label="node1")
+        node2 = AtomicNode(label="node2", inputs={node0: Edge()})
 
         self.es.add(node0, node1, node2)
 
@@ -211,10 +211,10 @@ class TestsEnergySystem:
         assert (node2, node1) in self.es.flows().keys()
 
     def test_check_method(self):
-        node0 = Node(label="node0")
-        node1 = Node(label="node1")
-        node2 = Node(label="node2")
-        node3 = Node(label="node3", inputs={node2: Edge()})
+        node0 = AtomicNode(label="node0")
+        node1 = AtomicNode(label="node1")
+        node2 = AtomicNode(label="node2")
+        node3 = AtomicNode(label="node3", inputs={node2: Edge()})
         self.es.check()  # empty, no problem
 
         self.es.add(node0)
@@ -246,7 +246,7 @@ class TestsEnergySystem:
         """
         When a node gets `add`ed, a corresponding signal should be emitted.
         """
-        node = Node(label="Node")
+        node = AtomicNode(label="AtomicNode")
 
         def subscriber(sender, **kwargs):
             assert sender is node
