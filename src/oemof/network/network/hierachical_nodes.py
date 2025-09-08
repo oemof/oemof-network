@@ -12,6 +12,9 @@ SPDX-License-Identifier: MIT
 """
 import warnings
 
+
+
+
 from .helpers import HierachicalLabel
 from .nodes import Node
 
@@ -86,7 +89,7 @@ class SubNetwork(Node):
         """
         return tuple([sn for sn in self.__subnodes])
 
-    def subnode(self, class_, label, *args, **kwargs):
+    def subnode(self, class_, local_name, *args, **kwargs):
         """Create a subnode and add it to this `SubNetwork`.
 
         Create a subnode by calling `class_(label, *args, **kwargs)` and
@@ -131,8 +134,14 @@ class SubNetwork(Node):
         ... )
 
         """
+
+        if self.parent is not None:
+            flat_label = self.parent._flat_label + (local_name,)
+        else:
+            flat_label = (local_name,)
+
         subnode = class_(
-            label=label, parent_node=self, *args, **kwargs
+            label=flat_label, parent_node=self, *args, **kwargs
         )
         self.__subnodes.append(subnode)
         return subnode
