@@ -59,9 +59,9 @@ class Node(Entity):
         self._flat_label = (label,)
         self._depth = 1
 
-        if parent is not None:
-            self._depth = parent.depth + 1
-            self._flat_label = parent._flat_label + (label,)
+        if self.parent is not None:
+            self._depth = self.parent.depth + 1
+            self._flat_label = self.parent._flat_label + (label,)
         else:
             self._depth = 1
             self._flat_label = (label,)

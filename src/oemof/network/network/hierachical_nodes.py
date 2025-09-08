@@ -16,26 +16,26 @@ from .helpers import HierachicalLabel
 from .nodes import Node
 
 
-def _check_parent_node_and_label_args(label, parent_node, node_type=""):
-    if not isinstance(label, HierachicalLabel):
-        label = HierachicalLabel(label=label, parent=parent_node)
-    else:
-        if parent_node is not None:
-            label.parent = parent_node
-            warnings.warn(
-                f"The parent of the {node_type} with the Hierarchical "
-                f"label '{label}' was changed to the provided SubNetwork "
-                f"'{parent_node.label}', however this does not add the "
-                f"{node_type} as a subnode of the SubNetwork"
-            )
-
-    if label.parent is not None:
-        if not isinstance(label.parent, SubNetwork):
-            raise TypeError(
-                f"The parent_node of an oemof.network.{node_type} instance "
-                f"can only be of type oemof.network.SubNetwork"
-            )
-    return label
+# def _check_parent_node_and_label_args(label, parent_node, node_type=""):
+#     if not isinstance(label, HierachicalLabel):
+#         label = HierachicalLabel(label=label, parent=parent_node)
+#     else:
+#         if parent_node is not None:
+#             label.parent = parent_node
+#             warnings.warn(
+#                 f"The parent of the {node_type} with the Hierarchical "
+#                 f"label '{label}' was changed to the provided SubNetwork "
+#                 f"'{parent_node.label}', however this does not add the "
+#                 f"{node_type} as a subnode of the SubNetwork"
+#             )
+#
+#     if label.parent is not None:
+#         if not isinstance(label.parent, SubNetwork):
+#             raise TypeError(
+#                 f"The parent_node of an oemof.network.{node_type} instance "
+#                 f"can only be of type oemof.network.SubNetwork"
+#             )
+#     return label
 
 
 class AtomicNode(Node):
@@ -48,12 +48,13 @@ class AtomicNode(Node):
         parent_node=None,
         custom_properties=None,
     ):
-        label = _check_parent_node_and_label_args(
-            label, parent_node, node_type="AtomicNode"
-        )
+        # label = _check_parent_node_and_label_args(
+        #     label, parent_node, node_type="AtomicNode"
+        # )
 
         super().__init__(
             label=label,
+            parent_node=parent_node,
             inputs=inputs,
             outputs=outputs,
             custom_properties=custom_properties,
@@ -68,11 +69,11 @@ class SubNetwork(Node):
         parent_node=None,
         custom_properties=None,
     ):
-        label = _check_parent_node_and_label_args(
-            label, parent_node, node_type="SubNetwork"
-        )
+        # label = _check_parent_node_and_label_args(
+        #     label, parent_node, node_type="SubNetwork"
+        # )
 
-        super().__init__(label=label, custom_properties=custom_properties)
+        super().__init__(label=label, parent_node=parent_node, custom_properties=custom_properties)
 
         self.__subnodes = []
 
@@ -131,7 +132,7 @@ class SubNetwork(Node):
 
         """
         subnode = class_(
-            label=HierachicalLabel(label=label, parent=self), *args, **kwargs
+            label=label, parent_node=self, *args, **kwargs
         )
         self.__subnodes.append(subnode)
         return subnode
