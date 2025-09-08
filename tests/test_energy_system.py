@@ -18,6 +18,7 @@ import pytest
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Edge
 from oemof.network.network import AtomicNode
+from oemof.network.network import SubNetwork
 
 
 def test_ensys_init():
@@ -185,6 +186,27 @@ class TestsEnergySystem:
         self.es.add(node2)
         assert node2 in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
+
+    def test_automatically_add_subnode(self):
+        subnetwork = SubNetwork(label="root")
+        self.es.add(subnetwork)
+        assert len(self.es.nodes) == 1
+
+        leaf1 = subnetwork.subnode(AtomicNode, local_name="leaf1")
+        subnetwork.subnode(AtomicNode, local_name="leaf2")
+        assert len(self.es.nodes) == 3
+
+        assert self.es.node[("root", "leaf1")] == leaf1
+
+    def test_add_populated_subnetwork(self):
+        subnetwork = SubNetwork(label="root")
+        leaf1 = subnetwork.subnode(AtomicNode, local_name="leaf1")
+        subnetwork.subnode(AtomicNode, local_name="leaf2")
+
+        self.es.add(subnetwork)
+        assert len(self.es.nodes) == 3
+
+        assert self.es.node[("root", "leaf1")] == leaf1
 
     def test_add_flow_assignment(self):
         assert not self.es.nodes
