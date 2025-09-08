@@ -16,8 +16,8 @@ SPDX-License-Identifier: MIT
 import pytest
 
 from oemof.network.energy_system import EnergySystem
-from oemof.network.network import Edge
 from oemof.network.network import AtomicNode
+from oemof.network.network import Edge
 from oemof.network.network import SubNetwork
 
 
