@@ -14,6 +14,9 @@ from collections import deque
 
 from .nodes import Node
 
+class HierachicalLabel(tuple):
+    """Alias class to allow tuples in labels"""
+    pass
 
 class AtomicNode(Node):
     def __init__(
@@ -124,10 +127,15 @@ class SubNetwork(Node):
         ...     Node, "bus", inputs={input: Edge()}, outputs={output: Edge()}
         ... )
         """
-        if isinstance(self.label, tuple):
-            label = (*self.label, local_name)
+        if isinstance(self.label, HierachicalLabel):
+            label = HierachicalLabel([*self.label, local_name])
         else:
-            label = (self.label, local_name)
-        subnode = class_(label=label, parent_node=self, *args, **kwargs)
+            label = HierachicalLabel([self.label, local_name])
+        subnode = class_(
+            label=label,
+            parent_node=self,
+            *args,
+            **kwargs,
+        )
         self.__subnodes.append(subnode)
         return subnode

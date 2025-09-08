@@ -64,6 +64,23 @@ class TestSubNetwork:
         assert subnode.depth == 2
         assert subnode.label == ("parent", "child")
 
+    def test_subnode_nested_tuples(self):
+        """Add Subnode mit subnode() method and tuples as labels"""
+        subnet = SubNetwork(("parent", "electricity"))
+
+        subnode = subnet.subnode(AtomicNode, ("child", "electricity"))
+
+        assert isinstance(subnet.subnodes, tuple)
+        assert len(subnet.subnodes) == 1
+        assert subnet.subnodes[0] == subnode
+        assert isinstance(subnode, AtomicNode)
+        assert subnode.parent == subnet
+        assert subnode.depth == 2
+        assert subnode.label == (
+            ("parent", "electricity"),
+            ("child", "electricity"),
+        )
+
     def test_subnode_with_args_kwargs(self):
         """Subnode creation mit zusätzlichen Argumenten"""
         subnet = SubNetwork("parent")
