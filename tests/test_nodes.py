@@ -1,23 +1,16 @@
-from unittest.mock import Mock
-
-import pytest
-
-from oemof.network.network.helpers import HierachicalLabel
 from oemof.network.network.hierachical_nodes import AtomicNode
 from oemof.network.network.hierachical_nodes import SubNetwork
-from oemof.network.network.nodes import Node
 
 
 class TestAtomicNode:
-    """Tests für AtomicNode Klasse"""
+    """Tests for the class AtomicNode Klasse"""
 
     def test_init_without_parent_node(self):
         """Initialisierung ohne parent_node"""
         node = AtomicNode("atomic_test")
 
-        assert isinstance(node.label, HierachicalLabel)
-        assert node.label.label == "atomic_test"
-        assert node.label.parent is None
+        assert node.label == "atomic_test"
+        assert node.parent is None
         assert node.depth == 1
 
     def test_init_with_parent_node(self):
@@ -25,18 +18,9 @@ class TestAtomicNode:
         parent = SubNetwork("parent_subnet")
         node = AtomicNode("atomic_child", parent_node=parent)
 
-        assert isinstance(node.label, HierachicalLabel)
-        assert node.label.parent == parent
+        assert node.label == "atomic_child"
+        assert node.parent == parent
         assert node.depth == 2
-
-    def test_init_with_hierarchical_label(self):
-        """Initialisierung mit existierendem HierachicalLabel"""
-        parent = SubNetwork("parent")
-        label = HierachicalLabel("atomic", parent=parent)
-        node = AtomicNode(label)
-
-        assert node.label == label
-        assert node.label.parent == parent
 
     def test_init_with_custom_properties(self):
         """Initialisierung mit custom_properties"""
@@ -44,16 +28,6 @@ class TestAtomicNode:
         node = AtomicNode("test", custom_properties=props)
 
         assert node.custom_properties == props
-
-    def test_invalid_parent_type_raises_error(self):
-        """Fehler bei ungültigem parent_node Typ"""
-        # Echtes Node-Objekt als invalid parent
-        invalid_parent = Node("invalid")
-
-        with pytest.raises(
-            AttributeError, match="object has no attribute 'depth'"
-        ):
-            AtomicNode("test", parent_node=invalid_parent)
 
 
 class TestSubNetwork:
@@ -63,9 +37,8 @@ class TestSubNetwork:
         """Grundlegende Initialisierung"""
         subnet = SubNetwork("test_subnet")
 
-        assert isinstance(subnet.label, HierachicalLabel)
-        assert subnet.label.label == "test_subnet"
-        assert subnet.label.parent is None
+        assert subnet.label == "test_subnet"
+        assert subnet.parent is None
         assert subnet.depth == 1
         assert len(subnet.subnodes) == 0
 
@@ -74,15 +47,8 @@ class TestSubNetwork:
         parent = SubNetwork("parent")
         child = SubNetwork("child", parent_node=parent)
 
-        assert child.label.parent == parent
+        assert child.parent == parent
         assert child.depth == 2
-
-    def test_subnodes_property_is_tuple(self):
-        """subnodes Property gibt Tuple zurück"""
-        subnet = SubNetwork("test")
-
-        assert isinstance(subnet.subnodes, tuple)
-        assert len(subnet.subnodes) == 0
 
     def test_subnode_creation(self):
         """Erstelle Subnode mit subnode() Methode"""
@@ -90,12 +56,13 @@ class TestSubNetwork:
 
         subnode = subnet.subnode(AtomicNode, "child")
 
+        assert isinstance(subnet.subnodes, tuple)
         assert len(subnet.subnodes) == 1
         assert subnet.subnodes[0] == subnode
         assert isinstance(subnode, AtomicNode)
-        assert isinstance(subnode.label, HierachicalLabel)
-        assert subnode.label.parent == subnet
+        assert subnode.parent == subnet
         assert subnode.depth == 2
+        assert subnode.label == ("parent", "child")
 
     def test_subnode_with_args_kwargs(self):
         """Subnode creation mit zusätzlichen Argumenten"""
@@ -107,7 +74,7 @@ class TestSubNetwork:
         )
 
         assert subnode.custom_properties == custom_props
-        assert subnode.label.parent == subnet
+        assert subnode.parent == subnet
 
     def test_multiple_subnodes(self):
         """Mehrere Subnodes erstellen"""
@@ -124,7 +91,7 @@ class TestSubNetwork:
 
         # Alle sollten subnet als parent haben
         for child in subnet.subnodes:
-            assert child.label.parent == subnet
+            assert child.parent == subnet
 
     def test_nested_subnets(self):
         """Verschachtelte SubNetworks"""
@@ -138,7 +105,7 @@ class TestSubNetwork:
         assert level2.depth == 3
         assert leaf.depth == 4
 
-        assert leaf.label.flat_label == ("root", "level1", "level2", "leaf")
+        assert leaf.label == ("root", "level1", "level2", "leaf")
 
     def test_complex_hierarchy(self):
         """Komplexe hierarchische Struktur"""
@@ -162,15 +129,13 @@ class TestSubNetwork:
         assert power_sector.depth == 2
         assert coal_plant.depth == 3
 
-        assert isinstance(heat_pump.label, HierachicalLabel)
-
         # Validiere flat_labels
-        assert coal_plant.label.flat_label == (
+        assert coal_plant.label == (
             "sub_energy_system",
             "power",
             "coal_plant",
         )
-        assert heat_pump.label.flat_label == (
+        assert heat_pump.label == (
             "sub_energy_system",
             "heat",
             "heat_pump",

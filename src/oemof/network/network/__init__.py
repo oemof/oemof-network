@@ -1,6 +1,5 @@
 from .edge import Edge
 from .entity import Entity
-from .helpers import HierachicalLabel
 from .hierachical_nodes import AtomicNode
 from .hierachical_nodes import SubNetwork
 from .nodes import Bus
@@ -21,5 +20,4 @@ __all__ = [
     "Source",
     "Transformer",
     "SubNetwork",
-    "HierachicalLabel",
 ]
