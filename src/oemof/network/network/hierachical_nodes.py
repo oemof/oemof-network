@@ -78,7 +78,9 @@ class SubNetwork(Node):
         """
         # TODO:
         #    Explain why the `node` argument is necessary.
-        assert self is node
+        if self is not node:
+            raise ValueError("Call needs to be obj.add_subnodes(obj).")
+        self.__energy_system = kwargs["EnergySystem"]
         deque(
             (kwargs["EnergySystem"].add(sn) for sn in self.__subnodes),
             maxlen=0,
@@ -138,4 +140,6 @@ class SubNetwork(Node):
             **kwargs,
         )
         self.__subnodes.append(subnode)
+        if self.__energy_system is not None:
+            self.__energy_system.add(subnode)
         return subnode
