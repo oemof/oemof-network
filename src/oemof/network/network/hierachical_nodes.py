@@ -14,9 +14,12 @@ from collections import deque
 
 from .nodes import Node
 
+
 class HierachicalLabel(tuple):
     """Alias class to allow tuples in labels"""
+
     pass
+
 
 class AtomicNode(Node):
     def __init__(
