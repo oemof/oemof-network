@@ -52,6 +52,7 @@ class SubNetwork(Node):
         )
 
         self.__subnodes = []
+        self.__energy_system = None
 
         # TODO: Try to avoid this local `import`.
         from ..energy_system import EnergySystem
