@@ -7,6 +7,7 @@ SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
+SPDX-FileCopyrightText: Pierre-francois Duc <pierre-francois@rl-institut.de>
 
 SPDX-License-Identifier: MIT
 """
