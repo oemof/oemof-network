@@ -23,8 +23,10 @@ Changelog
 * Add Entity.custom_properties
 * Simplify node access (experimental: energy_system.node[label])
 
+
 0.5.1
 -----
 
 * Added EnergySystem.check() to check graph for sanity
 * Updated build system from setup.py to "build" module
+* Added SubNetwork to build hierachical graphs
