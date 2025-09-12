@@ -73,7 +73,7 @@ Installation
 
 ::
 
-    pip install oemof-network
+    pip install oemof.network
 
 You can also install the in-development version with::
 
