@@ -48,6 +48,7 @@ class Node(Entity):
         *,
         inputs=None,
         outputs=None,
+        parent_node=None,
         custom_properties=None,
     ):
         super().__init__(label=label, custom_properties=custom_properties)
@@ -55,6 +56,13 @@ class Node(Entity):
         self._inputs = Inputs(self)
         self._outputs = Outputs(self)
         self._in_edges = set()
+
+        self.parent = parent_node
+
+        if self.parent is not None:
+            self._depth = self.parent.depth + 1
+        else:
+            self._depth = 1
 
         if inputs is None:
             inputs = {}
@@ -105,6 +113,13 @@ class Node(Entity):
         value.
         """
         return self._outputs
+
+    @property
+    def depth(self) -> int:
+        """
+        The :class:`Node` instances have a depth defined
+        as the depth of their parent (if any) + 1."""
+        return self._depth
 
 
 _deprecation_warning = (

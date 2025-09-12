@@ -264,6 +264,10 @@ class TestsNode:
         n = Node(label=None)
         assert "0x{:x}>".format(id(n)) in n.label
 
+    def test_depth_default(self):
+        n = Node(label="node")
+        assert n.depth == 1
+
 
 class TestsEdge:
     def setup_method(self):
