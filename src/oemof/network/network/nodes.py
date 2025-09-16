@@ -62,7 +62,7 @@ class Node(Entity):
         if self.parent is not None:
             self._depth = self.parent.depth + 1
         else:
-            self._depth = 1
+            self._depth = 0
 
         if inputs is None:
             inputs = {}

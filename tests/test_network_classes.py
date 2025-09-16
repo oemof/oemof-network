@@ -266,7 +266,7 @@ class TestsNode:
 
     def test_depth_default(self):
         n = Node(label="node")
-        assert n.depth == 1
+        assert n.depth == 0
 
 
 class TestsEdge:

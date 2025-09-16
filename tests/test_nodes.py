@@ -11,7 +11,7 @@ class TestAtomicNode:
 
         assert node.label == "atomic_test"
         assert node.parent is None
-        assert node.depth == 1
+        assert node.depth == 0
 
     def test_init_with_parent_node(self):
         """Initialisation with parent_node"""
@@ -20,7 +20,7 @@ class TestAtomicNode:
 
         assert node.label == "atomic_child"
         assert node.parent == parent
-        assert node.depth == 2
+        assert node.depth == 1
 
     def test_init_with_custom_properties(self):
         """Initialisation with custom_properties"""
@@ -39,7 +39,7 @@ class TestSubNetwork:
 
         assert subnet.label == "test_subnet"
         assert subnet.parent is None
-        assert subnet.depth == 1
+        assert subnet.depth == 0
         assert len(subnet.subnodes) == 0
 
     def test_init_with_parent_node(self):
@@ -48,7 +48,7 @@ class TestSubNetwork:
         child = SubNetwork("child", parent_node=parent)
 
         assert child.parent == parent
-        assert child.depth == 2
+        assert child.depth == 1
 
     def test_subnode_creation(self):
         """Create Subnode with subnode() method"""
@@ -61,7 +61,7 @@ class TestSubNetwork:
         assert subnet.subnodes[0] == subnode
         assert isinstance(subnode, AtomicNode)
         assert subnode.parent == subnet
-        assert subnode.depth == 2
+        assert subnode.depth == 1
         assert subnode.label == ("parent", "child")
 
     def test_subnode_nested_tuples(self):
@@ -75,7 +75,7 @@ class TestSubNetwork:
         assert subnet.subnodes[0] == subnode
         assert isinstance(subnode, AtomicNode)
         assert subnode.parent == subnet
-        assert subnode.depth == 2
+        assert subnode.depth == 1
         assert subnode.label == (
             ("parent", "electricity"),
             ("child", "electricity"),
@@ -117,10 +117,10 @@ class TestSubNetwork:
         level2 = level1.subnode(SubNetwork, "level2")
         leaf = level2.subnode(AtomicNode, "leaf")
 
-        assert root.depth == 1
-        assert level1.depth == 2
-        assert level2.depth == 3
-        assert leaf.depth == 4
+        assert root.depth == 0
+        assert level1.depth == 1
+        assert level2.depth == 2
+        assert leaf.depth == 3
 
         assert leaf.label == ("root", "level1", "level2", "leaf")
 
@@ -141,9 +141,9 @@ class TestSubNetwork:
         assert len(heat_sector.subnodes) == 1
 
         # Validiere Tiefen
-        assert root.depth == 1
-        assert power_sector.depth == 2
-        assert coal_plant.depth == 3
+        assert root.depth == 0
+        assert power_sector.depth == 1
+        assert coal_plant.depth == 2
 
         # Validiere flat_labels
         assert coal_plant.label == (
