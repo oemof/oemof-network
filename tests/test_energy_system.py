@@ -197,7 +197,7 @@ class TestsEnergySystem:
         subnetwork.subnode(AtomicNode, local_name="leaf2")
         assert len(self.es.nodes) == 3
 
-        assert self.es.node[("root", "leaf1")] == leaf1
+        assert self.es.node[("leaf1", "root")] == leaf1
 
     def test_add_populated_subnetwork(self):
         subnetwork = SubNetwork(label="root")
@@ -207,7 +207,7 @@ class TestsEnergySystem:
         self.es.add(subnetwork)
         assert len(self.es.nodes) == 3
 
-        assert self.es.node[("root", "leaf1")] == leaf1
+        assert self.es.node[("leaf1" , "root")] == leaf1
 
     def test_add_flow_assignment(self):
         assert not self.es.nodes

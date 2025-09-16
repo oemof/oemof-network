@@ -135,9 +135,9 @@ class SubNetwork(Node):
         ... )
         """
         if isinstance(self.label, HierachicalLabel):
-            label = HierachicalLabel([*self.label, local_name])
+            label = HierachicalLabel([local_name, *self.label])
         else:
-            label = HierachicalLabel([self.label, local_name])
+            label = HierachicalLabel([local_name, self.label])
         subnode = class_(
             label=label,
             parent_node=self,

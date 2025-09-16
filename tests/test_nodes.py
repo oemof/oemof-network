@@ -62,7 +62,7 @@ class TestSubNetwork:
         assert isinstance(subnode, AtomicNode)
         assert subnode.parent == subnet
         assert subnode.depth == 1
-        assert subnode.label == ("parent", "child")
+        assert subnode.label == ("child", "parent")
 
     def test_subnode_nested_tuples(self):
         """Add Subnode with subnode() method and tuples as labels"""
@@ -77,8 +77,8 @@ class TestSubNetwork:
         assert subnode.parent == subnet
         assert subnode.depth == 1
         assert subnode.label == (
-            ("parent", "electricity"),
             ("child", "electricity"),
+            ("parent", "electricity"),
         )
 
     def test_subnode_with_args_kwargs(self):
@@ -122,7 +122,7 @@ class TestSubNetwork:
         assert level2.depth == 2
         assert leaf.depth == 3
 
-        assert leaf.label == ("root", "level1", "level2", "leaf")
+        assert leaf.label == ("leaf", "level2", "level1", "root")
 
     def test_complex_hierarchy(self):
         """Complex hierarchical structure"""
@@ -147,12 +147,12 @@ class TestSubNetwork:
 
         # Validiere flat_labels
         assert coal_plant.label == (
-            "sub_energy_system",
-            "power",
             "coal_plant",
+            "power",
+            "sub_energy_system",
         )
         assert heat_pump.label == (
-            "sub_energy_system",
-            "heat",
             "heat_pump",
+            "heat",
+            "sub_energy_system",
         )
