@@ -294,9 +294,14 @@ class TestsEnergySystem:
         fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
         my_graph = graph.create_nx_graph(self.es)
         assert isinstance(my_graph, DiGraph)
+
+        # make sure that test does not pass because of pre-existing file
         assert not fpath.is_file()
+
+        # create graph file
         my_graph = graph.create_nx_graph(self.es, filename=fpath)
         assert isinstance(my_graph, DiGraph)
         assert fpath.is_file()
+
+        # clean up (delete graph file)
         fpath.unlink()
-        assert not fpath.is_file()
