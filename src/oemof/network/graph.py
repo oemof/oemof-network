@@ -140,7 +140,5 @@ def create_nx_graph(
                 grph.remove_nodes_from(remove_nodes)
 
         if filename is not None:
-            filename = Path(filename)
-            filename.with_suffix(".graphml")
-            nx.write_graphml(grph, filename)
+            nx.write_graphml(grph, Path(filename).with_suffix(".graphml"))
         return grph
