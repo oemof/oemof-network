@@ -14,8 +14,11 @@ SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
 SPDX-License-Identifier: MIT
 """
 
+from pathlib import Path
+
 import pytest
 
+from oemof.network import graph
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import AtomicNode
 from oemof.network.network import Edge
@@ -285,3 +288,12 @@ class TestsEnergySystem:
             "Got {}.\n"
             "Probable reason: `subscriber` didn't get called."
         ).format(subscriber.called)
+
+    def test_graph(self):
+        fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
+        my_graph = graph.create_nx_graph(self.es)
+        assert not fpath.is_file()
+        my_graph = graph.create_nx_graph(self.es, filename=fpath)
+        assert fpath.is_file()
+        fpath.unlink()
+        assert not fpath.is_file()
