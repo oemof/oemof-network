@@ -17,6 +17,7 @@ SPDX-License-Identifier: MIT
 from pathlib import Path
 
 import pytest
+from networkx import DiGraph
 
 from oemof.network import graph
 from oemof.network.energy_system import EnergySystem
@@ -292,8 +293,10 @@ class TestsEnergySystem:
     def test_graph(self):
         fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
         my_graph = graph.create_nx_graph(self.es)
+        assert isinstance(my_graph, DiGraph)
         assert not fpath.is_file()
         my_graph = graph.create_nx_graph(self.es, filename=fpath)
+        assert isinstance(my_graph, DiGraph)
         assert fpath.is_file()
         fpath.unlink()
         assert not fpath.is_file()
