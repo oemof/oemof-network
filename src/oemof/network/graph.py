@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 """
 
 import warnings
+from pathlib import Path
 
 import networkx as nx
 
@@ -32,7 +33,7 @@ def create_nx_graph(
     ----------
     energy_system : `oemof.solph.network.EnergySystem`
 
-    filename : str
+    filename : str or Path
         Absolute filename (with path) to write your graph in the graphml
         format. If no filename is given no file will be written.
 
@@ -139,8 +140,7 @@ def create_nx_graph(
                 grph.remove_nodes_from(remove_nodes)
 
         if filename is not None:
-            if filename[-8:] != ".graphml":
-                filename = filename + ".graphml"
+            filename = Path(filename)
+            filename.with_suffix(".graphml")
             nx.write_graphml(grph, filename)
-
         return grph
