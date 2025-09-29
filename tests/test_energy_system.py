@@ -5,7 +5,7 @@
 This file is part of project oemof.network (github.com/oemof/oemof-network).
 
 SPDX-FileCopyrightText: Stephan Günther <>
-SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
@@ -14,8 +14,12 @@ SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
 SPDX-License-Identifier: MIT
 """
 
-import pytest
+from pathlib import Path
 
+import pytest
+from networkx import DiGraph
+
+from oemof.network import graph
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import AtomicNode
 from oemof.network.network import Edge
@@ -207,7 +211,7 @@ class TestsEnergySystem:
         self.es.add(subnetwork)
         assert len(self.es.nodes) == 3
 
-        assert self.es.node[("leaf1" , "root")] == leaf1
+        assert self.es.node[("leaf1", "root")] == leaf1
 
     def test_add_flow_assignment(self):
         assert not self.es.nodes
@@ -285,3 +289,19 @@ class TestsEnergySystem:
             "Got {}.\n"
             "Probable reason: `subscriber` didn't get called."
         ).format(subscriber.called)
+
+    def test_graph(self):
+        fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
+        my_graph = graph.create_nx_graph(self.es)
+        assert isinstance(my_graph, DiGraph)
+
+        # make sure that test does not pass because of pre-existing file
+        assert not fpath.is_file()
+
+        # create graph file
+        my_graph = graph.create_nx_graph(self.es, filename=fpath)
+        assert isinstance(my_graph, DiGraph)
+        assert fpath.is_file()
+
+        # clean up (delete graph file)
+        fpath.unlink()
