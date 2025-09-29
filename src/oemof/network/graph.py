@@ -7,7 +7,7 @@ by the contributors recorded in the version control history of the file,
 available from its original location oemof/oemof/graph.py
 
 SPDX-FileCopyrightText: Simon Hilpert <>
-SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 
 SPDX-License-Identifier: MIT
 """

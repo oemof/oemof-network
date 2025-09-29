@@ -5,7 +5,7 @@
 This file is part of project oemof.network (github.com/oemof/oemof-network).
 
 SPDX-FileCopyrightText: Stephan Günther <>
-SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
@@ -210,7 +210,7 @@ class TestsEnergySystem:
         self.es.add(subnetwork)
         assert len(self.es.nodes) == 3
 
-        assert self.es.node[("leaf1" , "root")] == leaf1
+        assert self.es.node[("leaf1", "root")] == leaf1
 
     def test_add_flow_assignment(self):
         assert not self.es.nodes
