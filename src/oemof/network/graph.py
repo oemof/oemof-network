@@ -52,7 +52,7 @@ def create_nx_graph(
     >>> import pandas as pd
     >>> from oemof.network.network import Node
     >>> from oemof.network.energy_system import EnergySystem
-    >>> import oemof.network.graph as grph
+    >>> import oemof.network.graph as graph
     >>> datetimeindex = pd.date_range('1/1/2017', periods=3, freq='h')
     >>> es = EnergySystem(timeindex=datetimeindex)
     >>> b_gas = Node(label='b_gas')
@@ -66,24 +66,24 @@ def create_nx_graph(
     >>> line_from2 = Node(label='line_from2',
     ...                   inputs=[bel2], outputs=[bel1])
     >>> es.add(b_gas, bel1, demand_el, pp_gas, bel2, line_to2, line_from2)
-    >>> my_graph = grph.create_nx_graph(es)
+    >>> my_graph = graph.create_nx_graph(es)
     >>> # export graph as .graphml for programs like Yed where it can be
     >>> # sorted and customized. this is especially helpful for large graphs
     >>> # grph.create_nx_graph(es, filename="my_graph.graphml")
-    >>> [my_graph.has_node(n)
-    ...  for n in ['b_gas', 'bel1', "('pp', 'gas')", 'demand_el', 'tester']]
+    >>> [my_graph.has_node(nd)
+    ...  for nd in ['b_gas', 'bel1', "('pp', 'gas')", 'demand_el', 'tester']]
     [True, True, True, True, False]
     >>> list(nx.attracting_components(my_graph))
     [{'demand_el'}]
     >>> sorted(list(nx.strongly_connected_components(my_graph))[1])
     ['bel1', 'bel2', 'line_from2', 'line_to2']
-    >>> new_graph = grph.create_nx_graph(energy_system=es,
+    >>> new_graph = graph.create_nx_graph(energy_system=es,
     ...                                  remove_nodes_with_substrings=['b_'],
     ...                                  remove_nodes=["('pp', 'gas')"],
     ...                                  remove_edges=[('bel2', 'line_from2')],
     ...                                  filename='test_graph')
-    >>> [new_graph.has_node(n)
-    ...  for n in ['b_gas', 'bel1', "('pp', 'gas')", 'demand_el', 'tester']]
+    >>> [new_graph.has_node(nd)
+    ...  for nd in ['b_gas', 'bel1', "('pp', 'gas')", 'demand_el', 'tester']]
     [False, True, False, True, False]
     >>> my_graph.has_edge("('pp', 'gas')", 'bel1')
     True
