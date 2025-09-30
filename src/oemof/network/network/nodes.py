@@ -149,9 +149,10 @@ class Node(Entity):
         return tuple([sn for sn in self.__subnodes])
 
     def add(self, *subnodes):
-        """Add subnodes to this `Node`.
-        """
+        """Add subnodes to this `Node`."""
         for subnode in subnodes:
+            subnode.parent = self
+            subnode._depth = self.depth + 1
             self.__subnodes.append(subnode)
             if self.__energy_system is not None:
                 self.__energy_system.add(subnode)
