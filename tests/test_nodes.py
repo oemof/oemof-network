@@ -1,41 +1,12 @@
-from oemof.network.network.hierachical_nodes import AtomicNode
-from oemof.network.network.hierachical_nodes import SubNetwork
+from oemof.network.network import Node
 
 
-class TestAtomicNode:
-    """Tests for the AtomicNode class"""
-
-    def test_init_without_parent_node(self):
-        """Initialisation without parent_node"""
-        node = AtomicNode("atomic_test")
-
-        assert node.label == "atomic_test"
-        assert node.parent is None
-        assert node.depth == 0
-
-    def test_init_with_parent_node(self):
-        """Initialisation with parent_node"""
-        parent = SubNetwork("parent_subnet")
-        node = AtomicNode("atomic_child", parent_node=parent)
-
-        assert node.label == "atomic_child"
-        assert node.parent == parent
-        assert node.depth == 1
-
-    def test_init_with_custom_properties(self):
-        """Initialisation with custom_properties"""
-        props = {"custom_key": "custom_value"}
-        node = AtomicNode("test", custom_properties=props)
-
-        assert node.custom_properties == props
-
-
-class TestSubNetwork:
-    """Tests for SubNetwork class"""
+class TestNode:
+    """Tests for Node class"""
 
     def test_init_basic(self):
         """Basic initialisation"""
-        subnet = SubNetwork("test_subnet")
+        subnet = Node("test_subnet")
 
         assert subnet.label == "test_subnet"
         assert subnet.parent is None
@@ -44,36 +15,76 @@ class TestSubNetwork:
 
     def test_init_with_parent_node(self):
         """Initialisation with parent_node"""
-        parent = SubNetwork("parent")
-        child = SubNetwork("child", parent_node=parent)
+        parent = Node("parent")
+        child = Node("child", parent_node=parent)
 
         assert child.parent == parent
         assert child.depth == 1
 
-    def test_subnode_creation(self):
-        """Create Subnode with subnode() method"""
-        subnet = SubNetwork("parent")
+    def test_init_with_custom_properties(self):
+        """Initialisation with custom_properties"""
+        props = {"custom_key": "custom_value"}
+        node = Node("test", custom_properties=props)
 
-        subnode = subnet.subnode(AtomicNode, "child")
+        assert node.custom_properties == props
+
+    def test_subnode_addition(self):
+        """Add existing Node"""
+        subnet = Node("parent")
+
+        # add single Node
+        subnode = Node("child")
+        subnet.add(subnode)
 
         assert isinstance(subnet.subnodes, tuple)
         assert len(subnet.subnodes) == 1
         assert subnet.subnodes[0] == subnode
-        assert isinstance(subnode, AtomicNode)
+        assert subnode.parent == subnet
+        assert subnode.depth == 1
+        assert subnode.label == "child"
+
+        # add multiple Nodes
+        subnode2 = Node("child2")
+        subnode3 = Node("child3")
+        subnet.add(subnode2, subnode3)
+
+        assert isinstance(subnet.subnodes, tuple)
+        assert len(subnet.subnodes) == 3
+
+        # labels are unchanged
+        assert subnode2.label == "child2"
+        assert subnode3.label == "child3"
+
+        # hierachy properties are adjusted
+        assert subnode2.parent == subnet
+        assert subnode3.parent == subnet
+        assert subnode2.depth == 1
+        assert subnode3.depth == 1
+
+    def test_subnode_creation(self):
+        """Create Subnode with subnode() method"""
+        subnet = Node("parent")
+
+        subnode = subnet.subnode(Node, "child")
+
+        assert isinstance(subnet.subnodes, tuple)
+        assert len(subnet.subnodes) == 1
+        assert subnet.subnodes[0] == subnode
+        assert isinstance(subnode, Node)
         assert subnode.parent == subnet
         assert subnode.depth == 1
         assert subnode.label == ("child", "parent")
 
     def test_subnode_nested_tuples(self):
         """Add Subnode with subnode() method and tuples as labels"""
-        subnet = SubNetwork(("parent", "electricity"))
+        subnet = Node(("parent", "electricity"))
 
-        subnode = subnet.subnode(AtomicNode, ("child", "electricity"))
+        subnode = subnet.subnode(Node, ("child", "electricity"))
 
         assert isinstance(subnet.subnodes, tuple)
         assert len(subnet.subnodes) == 1
         assert subnet.subnodes[0] == subnode
-        assert isinstance(subnode, AtomicNode)
+        assert isinstance(subnode, Node)
         assert subnode.parent == subnet
         assert subnode.depth == 1
         assert subnode.label == (
@@ -83,23 +94,21 @@ class TestSubNetwork:
 
     def test_subnode_with_args_kwargs(self):
         """Subnode creation with extra arguments"""
-        subnet = SubNetwork("parent")
+        subnet = Node("parent")
         custom_props = {"test": "value"}
 
-        subnode = subnet.subnode(
-            AtomicNode, "child", custom_properties=custom_props
-        )
+        subnode = subnet.subnode(Node, "child", custom_properties=custom_props)
 
         assert subnode.custom_properties == custom_props
         assert subnode.parent == subnet
 
     def test_multiple_subnodes(self):
         """Create many Subnodes"""
-        subnet = SubNetwork("parent")
+        subnet = Node("parent")
 
-        child1 = subnet.subnode(AtomicNode, "child1")
-        child2 = subnet.subnode(AtomicNode, "child2")
-        child3 = subnet.subnode(SubNetwork, "child_subnet")
+        child1 = subnet.subnode(Node, "child1")
+        child2 = subnet.subnode(Node, "child2")
+        child3 = subnet.subnode(Node, "child_subnet")
 
         assert len(subnet.subnodes) == 3
         assert child1 in subnet.subnodes
@@ -111,11 +120,11 @@ class TestSubNetwork:
             assert child.parent == subnet
 
     def test_nested_subnets(self):
-        """Nested SubNetworks"""
-        root = SubNetwork("root")
-        level1 = root.subnode(SubNetwork, "level1")
-        level2 = level1.subnode(SubNetwork, "level2")
-        leaf = level2.subnode(AtomicNode, "leaf")
+        """Nested Nodes"""
+        root = Node("root")
+        level1 = root.subnode(Node, "level1")
+        level2 = level1.subnode(Node, "level2")
+        leaf = level2.subnode(Node, "leaf")
 
         assert root.depth == 0
         assert level1.depth == 1
@@ -126,14 +135,14 @@ class TestSubNetwork:
 
     def test_complex_hierarchy(self):
         """Complex hierarchical structure"""
-        root = SubNetwork("sub_energy_system")
+        root = Node("sub_energy_system")
 
-        power_sector = root.subnode(SubNetwork, "power")
-        heat_sector = root.subnode(SubNetwork, "heat")
+        power_sector = root.subnode(Node, "power")
+        heat_sector = root.subnode(Node, "heat")
 
-        coal_plant = power_sector.subnode(AtomicNode, "coal_plant")
+        coal_plant = power_sector.subnode(Node, "coal_plant")
 
-        heat_pump = heat_sector.subnode(AtomicNode, "heat_pump")
+        heat_pump = heat_sector.subnode(Node, "heat_pump")
 
         # Validiere Struktur
         assert len(root.subnodes) == 2
