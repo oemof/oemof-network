@@ -29,5 +29,6 @@ Changelog
 
 * Added EnergySystem.check() to check graph for sanity
 * Updated build system from setup.py to "build" module
-* Added SubNetwork to build hierachical graphs
+* Modified Node to allow building hierachical graphs
 * create_nx_graph(...) now accepts Path objects
+
