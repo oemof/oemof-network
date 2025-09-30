@@ -141,7 +141,7 @@ class Node(Entity):
 
     @property
     def subnodes(self):
-        """Subnodes of the SubNetwork
+        """Subnodes of the Node
 
         It is deliberately provided as a tuple to prevent user to append
         subnodes other than with API methods.
@@ -149,14 +149,14 @@ class Node(Entity):
         return tuple([sn for sn in self.__subnodes])
 
     def subnode(self, class_, local_name, *args, **kwargs):
-        """Create a subnode and add it to this `SubNetwork`.
+        """Create a subnode and add it to this `Node`.
 
         Create a subnode by calling `class_(label, *args, **kwargs)` and
         `append` the result to `self.__subnodes`.
         The purpose of this wrapper is to make sure that subnodes are
         always `label` led with a unique label.
         This is useful because this allows giving the same `local_name`
-        to `Node`s in multiple `SubNetwork` s.
+        to `Node`s in multiple `Node` s.
 
         Parameters
         ----------
@@ -180,11 +180,11 @@ class Node(Entity):
         --------
         Create a subnode of type `Bus` with a `label` based on the the given
         `local_name`, `inputs` and `outputs` and append it to the
-        `subnodes` of this `SubNetwork`.
+        `subnodes` of this `Node`.
 
         When
-        >>> from oemof.network import SubNetwork, Node, Edge
-        >>> subnetwork = SubNetwork("subnetwork")
+        >>> from oemof.network import Node, Edge
+        >>> subnetwork = Node("subnetwork")
         >>> input = output = Node("input")
         >>> # Create a subnode of type `Node` using this convenience function
         >>> bus = subnetwork.subnode(
