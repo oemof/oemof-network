@@ -163,7 +163,7 @@ class Node(Entity):
         Create a subnode by calling `class_(label, *args, **kwargs)` and
         `append` the result to `self.__subnodes`.
         The purpose of this wrapper is to make sure that subnodes are
-        always `label` led with a unique label.
+        always `label`led with a unique label.
         This is useful because this allows giving the same `local_name`
         to `Node`s in multiple `Node` s.
 
