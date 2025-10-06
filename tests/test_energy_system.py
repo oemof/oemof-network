@@ -191,6 +191,28 @@ class TestsEnergySystem:
         assert node2 in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
 
+    def test_enforce_unique_labels(self):
+        node1 = Node(label="node1")
+        self.es.add(node1)
+
+        node2 = Node(label="node1")
+        with pytest.raises(
+            ValueError,
+            match="already contains",
+        ):
+            self.es.add(node2)
+
+        node2 = Node(label="node2")
+        self.es.add(node2)
+
+        node3 = Node(label="node1")
+        node4 = Node(label="node2")
+        with pytest.raises(
+            ValueError,
+            match="already contains",
+        ):
+            self.es.add(node3, node4)
+
     def test_automatically_add_subnode(self):
         subnetwork = Node(label="root")
         self.es.add(subnetwork)
