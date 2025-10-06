@@ -7,16 +7,24 @@ SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
+SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
 
 SPDX-License-Identifier: MIT
 """
 
 import warnings
+from collections import deque
 
 from .edge import Edge
 from .entity import Entity
 from .helpers import Inputs
 from .helpers import Outputs
+
+
+class QualifiedLabel(tuple):
+    """Alias class to allow tuples in labels"""
+
+    pass
 
 
 class Node(Entity):
@@ -63,6 +71,16 @@ class Node(Entity):
             self._depth = self.parent.depth + 1
         else:
             self._depth = 0
+
+        self.__subnodes = []
+        self.__energy_system = None
+
+        # TODO: Try to avoid this local `import`.
+        from ..energy_system import EnergySystem
+
+        EnergySystem.signals[EnergySystem.add].connect(
+            self._add_subnodes, sender=self
+        )
 
         if inputs is None:
             inputs = {}
@@ -120,6 +138,97 @@ class Node(Entity):
         The :class:`Node` instances have a depth defined
         as the depth of their parent (if any) + 1."""
         return self._depth
+
+    @property
+    def subnodes(self):
+        """Subnodes of the Node
+
+        It is deliberately provided as a tuple to prevent user to append
+        subnodes other than with API methods.
+        """
+        return tuple([sn for sn in self.__subnodes])
+
+    def add(self, *subnodes):
+        """Add subnodes to this `Node`."""
+        for subnode in subnodes:
+            subnode.parent = self
+            subnode._depth = self.depth + 1
+            self.__subnodes.append(subnode)
+            if self.__energy_system is not None:
+                self.__energy_system.add(subnode)
+
+    def subnode(self, class_, local_name, *args, **kwargs):
+        """Create a subnode and add it to this `Node`.
+
+        Create a subnode by calling `class_(label, *args, **kwargs)` and
+        `append` the result to `self.__subnodes`.
+        The purpose of this wrapper is to make sure that subnodes are
+        always `label`led with a unique label.
+        This is useful because this allows giving the same `local_name`
+        to distinct sub-`Node`s in different `Node` s.
+
+        Parameters
+        ----------
+        class_: type
+            The class of the subnode to create. This class must be a subclass
+            of `Node`.
+        local_name: hashable
+            The label to use for the subnode.
+        *args, **kwargs:
+            Additional positional and keyword arguments that will be passed to
+            the constructor of `class_` when creating the subnode.
+
+        Returns
+        -------
+        :class: Node
+            The newly created subnode, which is also appended to
+            `self.subnodes`.
+
+
+        Examples
+        --------
+        Create a subnode of type `Bus` with a `label` based on the the given
+        `local_name`, `inputs` and `outputs` and append it to the
+        `subnodes` of this `Node`.
+
+        When
+        >>> from oemof.network import Node, Edge
+        >>> subnetwork = Node("subnetwork")
+        >>> input = output = Node("input")
+        >>> # Create a subnode of type `Node` using this convenience function
+        >>> bus = subnetwork.subnode(
+        ...     Node, "bus", inputs={input: Edge()}, outputs={output: Edge()}
+        ... )
+        """
+        if isinstance(self.label, QualifiedLabel):
+            label = QualifiedLabel([local_name, *self.label])
+        else:
+            label = QualifiedLabel([local_name, self.label])
+        subnode = class_(
+            label=label,
+            parent_node=self,
+            *args,
+            **kwargs,
+        )
+        self.add(subnode)
+        return subnode
+
+    def _add_subnodes(self, node, **kwargs):
+        """Add subnodes to an EnergySystem.
+
+        This is meant to be used as an event callback that is called when this
+        node is added to an EnergySystem, to add the child nodes to the
+        EnergySystem, too.
+        """
+        # TODO:
+        #    Explain why the `node` argument is necessary.
+        if self is not node:
+            raise ValueError("Call needs to be obj._add_subnodes(obj).")
+        self.__energy_system = kwargs["EnergySystem"]
+        deque(
+            (kwargs["EnergySystem"].add(sn) for sn in self.__subnodes),
+            maxlen=0,
+        )
 
 
 _deprecation_warning = (
