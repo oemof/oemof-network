@@ -22,7 +22,6 @@ from collections import deque
 
 import blinker
 import dill as pickle
-from oemof.tools import debugging
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
@@ -198,11 +197,6 @@ class EnergySystem:
 
     @property
     def node(self):
-        msg = (
-            "The API to access nodes by label is experimental"
-            " and might change without prior notice."
-        )
-        warnings.warn(msg, debugging.ExperimentalFeatureWarning)
         return self._nodes
 
     @property
