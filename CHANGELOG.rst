@@ -31,4 +31,4 @@ Changelog
 * Updated build system from setup.py to "build" module
 * Modified Node to allow building hierachical graphs
 * create_nx_graph(...) now accepts Path objects
-
+* EnergySystem.add(node) will now fail if node.label is already known
