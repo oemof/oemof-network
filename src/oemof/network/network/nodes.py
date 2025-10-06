@@ -21,7 +21,7 @@ from .helpers import Inputs
 from .helpers import Outputs
 
 
-class HierachicalLabel(tuple):
+class QualifiedLabel(tuple):
     """Alias class to allow tuples in labels"""
 
     pass
@@ -200,10 +200,10 @@ class Node(Entity):
         ...     Node, "bus", inputs={input: Edge()}, outputs={output: Edge()}
         ... )
         """
-        if isinstance(self.label, HierachicalLabel):
-            label = HierachicalLabel([local_name, *self.label])
+        if isinstance(self.label, QualifiedLabel):
+            label = QualifiedLabel([local_name, *self.label])
         else:
-            label = HierachicalLabel([local_name, self.label])
+            label = QualifiedLabel([local_name, self.label])
         subnode = class_(
             label=label,
             parent_node=self,
