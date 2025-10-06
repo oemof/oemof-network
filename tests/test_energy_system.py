@@ -19,10 +19,10 @@ from pathlib import Path
 import pytest
 from networkx import DiGraph
 
+from oemof.network import Edge
+from oemof.network import Node
 from oemof.network import graph
 from oemof.network.energy_system import EnergySystem
-from oemof.network.network import Edge
-from oemof.network.network import Node
 
 
 def test_ensys_init():

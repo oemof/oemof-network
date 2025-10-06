@@ -1,4 +1,4 @@
-from oemof.network.network import Node
+from oemof.network import Node
 
 
 class TestNode:
