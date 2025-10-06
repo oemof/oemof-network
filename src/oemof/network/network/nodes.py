@@ -165,7 +165,7 @@ class Node(Entity):
         The purpose of this wrapper is to make sure that subnodes are
         always `label`led with a unique label.
         This is useful because this allows giving the same `local_name`
-        to `Node`s in multiple `Node` s.
+        to distinct sub-`Node`s in different `Node` s.
 
         Parameters
         ----------
