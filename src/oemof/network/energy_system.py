@@ -185,7 +185,7 @@ class EnergySystem:
                 "EnergySystem already contains Node(s) labeled: "
                 + ", ".join(common_labels)
             )
-        self._nodes.update({node.label: node for node in nodes})
+        self._nodes.update(new_nodes)
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
 
