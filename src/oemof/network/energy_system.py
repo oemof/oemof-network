@@ -176,7 +176,16 @@ class EnergySystem:
 
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
-        self._nodes.update({node.label: node for node in nodes})
+        new_nodes = {node.label: node for node in nodes}
+        if self._nodes.keys().isdisjoint(new_nodes.keys()):
+            self._nodes.update(new_nodes)
+        else:
+            common_labels = list(self._nodes.keys() & new_nodes.keys())
+            raise ValueError(
+                "EnergySystem already contains Node(s) labeled: "
+                + ", ".join(common_labels)
+            )
+        self._nodes.update(new_nodes)
         for n in nodes:
             self.signals[type(self).add].send(n, EnergySystem=self)
 
