@@ -32,3 +32,4 @@ Changelog
 * Modified Node to allow building hierachical graphs
 * create_nx_graph(...) now accepts Path objects
 * Node access using `energy_system.node[label]` is no longer experimental
+* EnergySystem.add(node) will now fail if node.label is already known
