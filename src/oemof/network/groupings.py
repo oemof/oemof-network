@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-""" All you need to create groups of stuff in your energy system.
+"""All you need to create groups of stuff in your energy system.
 
 This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
 by the contributors recorded in the version control history of the file,
 available from its original location oemof/oemof/groupings.py
 
 SPDX-FileCopyrightText: Stephan Günther <>
-SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 
 SPDX-License-Identifier: MIT
@@ -323,7 +323,7 @@ def _uid_or_str(node_or_entity):
 
 
 DEFAULT = Grouping(_uid_or_str)
-""" The default :class:`Grouping`.
+"""The default :class:`Grouping`.
 
 This one is always present in an :class:`energy system
 <oemof.energy_system.EnergySystem>`. It stores every :class:`entity

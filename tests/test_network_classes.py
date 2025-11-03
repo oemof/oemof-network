@@ -7,7 +7,7 @@ by the contributors recorded in the version control history of the file,
 available from its original location oemof/tests/test_network_classes.py
 
 SPDX-FileCopyrightText: Stephan Günther <>
-SPDX-FileCopyrightText: Uwe Krien <krien@uni-bremen.de>
+SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
@@ -264,6 +264,10 @@ class TestsNode:
         n = Node(label=None)
         assert "0x{:x}>".format(id(n)) in n.label
 
+    def test_depth_default(self):
+        n = Node(label="node")
+        assert n.depth == 0
+
 
 class TestsEdge:
     def setup_method(self):
@@ -331,18 +335,16 @@ class TestsEnergySystemNodesIntegration:
         self.es = EnergySystem()
 
     def test_entity_registration(self):
-        with pytest.warns(
-            match="API to access nodes by label is experimental"
-        ):
-            n1 = Node(label="<B1>")
-            self.es.add(n1)
-            assert self.es.node["<B1>"] == n1
-            n2 = Node(label="<B2>")
-            self.es.add(n2)
-            assert self.es.node["<B2>"] == n2
-            n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
-            self.es.add(n3)
-            assert self.es.node["<TF1>"] == n3
+        n1 = Node(label="<B1>")
+        self.es.add(n1)
+        assert self.es.node["<B1>"] == n1
+
+        n2 = Node(label="<B2>")
+
+        n3 = Node(label="<TF1>", inputs=[n1], outputs=[n2])
+        self.es.add(n3, n2)
+        assert self.es.node["<B2>"] == n2
+        assert self.es.node["<TF1>"] == n3
 
 
 def test_deprecated_classes():

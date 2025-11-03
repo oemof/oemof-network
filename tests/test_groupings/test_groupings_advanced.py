@@ -1,4 +1,4 @@
-""" Specific tests for the `oemof.groupings` module.
+"""Specific tests for the `oemof.groupings` module.
 
 Most parts of the `groupings` module are tested via other tests, but certain
 code paths don't get covered by those, which is what this module is for.

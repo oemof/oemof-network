@@ -16,9 +16,20 @@ Changelog
 * Explicitly defined API
 
 
-0.5.0
------
+0.5.0 (2024-01-12)
+------------------
 
 * Improved code quality
 * Add Entity.custom_properties
 * Simplify node access (experimental: energy_system.node[label])
+
+
+0.5.1
+-----
+
+* Added EnergySystem.check() to check graph for sanity
+* Updated build system from setup.py to "build" module
+* Modified Node to allow building hierachical graphs
+* create_nx_graph(...) now accepts Path objects
+* Node access using `energy_system.node[label]` is no longer experimental
+* EnergySystem.add(node) will now fail if node.label is already known
