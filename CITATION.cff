@@ -12,5 +12,7 @@ authors:
 - family-names: "Schönfeldt"
   given-names: "Patrik"
   orcid: https://orcid.org/0000-0002-4311-2753
+- family-names: "Duc"
+  given-names: "Pierre-Francois"
 title: "oemof.network"
 url: "https://github.com/oemof/oemof-network"
