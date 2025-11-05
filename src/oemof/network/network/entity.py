@@ -51,7 +51,12 @@ class Entity:
         self.custom_properties = custom_properties
 
     def __eq__(self, other):
-        return id(self) == id(other)
+        if isinstance(other, Entity):
+            # We could also check if labels are the same,
+            # but decided on minor change.
+            return id(self) == id(other)
+        else:
+            return self._label == other
 
     def __lt__(self, other):
         return str(self) < str(other)
