@@ -174,8 +174,8 @@ class TestNode:
         assert node1 != node3
         assert node2 != node3
 
-node1a = Node("node")
-assert node1 == node1a
+        node1a = Node("node")
+        assert node1 == node1a
 
         label = "node"
         assert node1 == label
