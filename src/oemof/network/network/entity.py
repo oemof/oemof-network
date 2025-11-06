@@ -52,9 +52,7 @@ class Entity:
 
     def __eq__(self, other):
         if isinstance(other, Entity):
-            # We could also check if labels are the same,
-            # but decided on minor change.
-            return id(self) == id(other)
+            return self._label == other._label
         else:
             return self._label == other
 
