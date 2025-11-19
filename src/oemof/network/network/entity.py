@@ -51,13 +51,13 @@ class Entity:
         self.custom_properties = custom_properties
 
     def __eq__(self, other):
-        return id(self) == id(other)
+        return str(self) == str(other)
 
     def __lt__(self, other):
         return str(self) < str(other)
 
     def __hash__(self):
-        return hash(self.label)
+        return hash(str(self))
 
     def __str__(self):
         return str(self.label)
