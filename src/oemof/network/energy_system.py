@@ -222,7 +222,8 @@ class EnergySystem:
 
     def check(self):
         error_message = (
-            "Node {n} not part of EnergySystem " + "but Flow ({i}, {o}) exists."
+            "Node {n} not part of EnergySystem "
+            + "but Flow ({i}, {o}) exists."
         )
 
         for n in self.nodes:
@@ -297,7 +298,9 @@ class EnergySystem:
             Use separate parameters for path (default: ~/.oemof/) and filename.
         """
         # Start: to be removed in a future version
-        filename = self._deprecated_path_handling(dpath, filename, consider_dpath)
+        filename = self._deprecated_path_handling(
+            dpath, filename, consider_dpath
+        )
         # End: to be removed in a future version
 
         pickle.dump(self.__dict__, open(filename, "wb"))
@@ -323,9 +326,13 @@ class EnergySystem:
         consider_dpath : bool
             Use separate parameters for path (defualt: ~/.oemof/) and filename.
         """
-        logging.info("Restoring attributes will overwrite existing attributes.")
+        logging.info(
+            "Restoring attributes will overwrite existing attributes."
+        )
         # Start: to be removed in a future version
-        filename = self._deprecated_path_handling(dpath, filename, consider_dpath)
+        filename = self._deprecated_path_handling(
+            dpath, filename, consider_dpath
+        )
         # End: to be removed in a future version
 
         self.__dict__ = pickle.load(open(filename, "rb"))
