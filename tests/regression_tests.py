@@ -9,12 +9,9 @@ available from its original location oemof/tests/regression_tests.py
 SPDX-License-Identifier: MIT
 """
 
-import logging
-
 import pandas as pd
 import pytest
 
-from oemof import tools
 from oemof.network.energy_system import EnergySystem
 from oemof.network.network import Node
 from oemof.network.network.nodes import QualifiedLabel
