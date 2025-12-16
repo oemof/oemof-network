@@ -13,12 +13,11 @@ import logging
 
 import pandas as pd
 import pytest
-from oemof.network.network.nodes import QualifiedLabel
-from oemof.network.energy_system import EnergySystem
-from oemof.network.network import Node
-
 
 from oemof import tools
+from oemof.network.energy_system import EnergySystem
+from oemof.network.network import Node
+from oemof.network.network.nodes import QualifiedLabel
 
 
 def test_duplicate_label():
