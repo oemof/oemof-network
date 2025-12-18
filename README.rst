@@ -53,7 +53,7 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/oemof.network
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof-network/v0.5.0/dev
+.. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof-network/latest/dev
     :alt: Commits since latest release
     :target: https://github.com/oemof/oemof-network/compare/master...dev
 
