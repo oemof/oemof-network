@@ -166,7 +166,7 @@ class EnergySystem:
             g if isinstance(g, Grouping) else Entities(g) for g in groupings
         ]
         self._nodes = {}
-        self._node_strings = {}
+        self._node_strings = set()
 
         self.results = results
         self.timeindex = timeindex
@@ -187,7 +187,7 @@ class EnergySystem:
                 "EnergySystem already contains Node(s) with the following"
                 + " string representation: "
                 + ", ".join(common_strings)
-                + " This can be because"
+                + ". This can be because"
                 + " a) you try to add one Node more than once, "
                 + " b) multiple Nodes have identical labels, or"
                 + " c) multiple labels have the same string representation."
