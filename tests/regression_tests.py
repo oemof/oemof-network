@@ -25,8 +25,8 @@ def test_duplicate_label():
     es.add(Node(label=my_label1))
     es.add(Node(label=my_label2))
     msg = (
-        rf"EnergySystem already contains Node\(s\) labeled: {my_label1}, "
-        rf"{my_label2}"
+        r"EnergySystem already contains Node\(s\) with the following string"
+        r" representation: \"test_01\", \"test_02\""
     )
     with pytest.raises(ValueError, match=msg):
         es.add(Node(label=my_label1), Node(label=my_label2))
@@ -44,8 +44,8 @@ def test_duplicate_qualified_label():
     es.add(Node(label=my_label1))
     es.add(Node(label=my_label2))
     msg = (
-        r"EnergySystem already contains Node\(s\) labeled: \('test_01',\), "
-        r"\('test_02',\)"
+        r"EnergySystem already contains Node\(s\) with the following string"
+        r" representation: \"\('test_01',\)\", \"\('test_02',\)\""
     )
     with pytest.raises(ValueError, match=msg):
         es.add(Node(label=my_label1), Node(label=my_label2))
