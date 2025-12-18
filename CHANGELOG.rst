@@ -24,8 +24,8 @@ Changelog
 * Simplify node access (experimental: energy_system.node[label])
 
 
-0.5.1
------
+0.5.1 (2025-11-03)
+------------------
 
 * Added EnergySystem.check() to check graph for sanity
 * Updated build system from setup.py to "build" module
@@ -33,3 +33,8 @@ Changelog
 * create_nx_graph(...) now accepts Path objects
 * Node access using `energy_system.node[label]` is no longer experimental
 * EnergySystem.add(node) will now fail if node.label is already known
+
+0.5.2
+-----
+
+* Nodes are now considered equal to their string representation
