@@ -187,9 +187,9 @@ class EnergySystem:
             )
             raise ValueError(
                 "EnergySystem already contains Node(s) with the following"
-                + " string representation: \""
-                + "\", \"".join(common_strings)
-                + "\". This can be because"
+                + ' string representation: "'
+                + '", "'.join(common_strings)
+                + '". This can be because'
                 + " a) you try to add one Node more than once, "
                 + " b) multiple Nodes have identical labels, or"
                 + " c) multiple labels have the same string representation."
