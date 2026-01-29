@@ -41,3 +41,6 @@ Changelog
 * EnergySystem.add(node) will now fail if a node with the same
   string representation is already known. (It turned out that just having
   different labels sometimes is not good enough.)
+
+0.5.3
+-----
