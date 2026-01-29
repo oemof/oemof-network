@@ -166,6 +166,7 @@ class EnergySystem:
             g if isinstance(g, Grouping) else Entities(g) for g in groupings
         ]
         self._nodes = {}
+        self._node_strings = set()
 
         self.results = results
         self.timeindex = timeindex
@@ -176,13 +177,22 @@ class EnergySystem:
     def add(self, *nodes):
         """Add :class:`nodes <oemof.network.Node>` to this energy system."""
         new_nodes = {node.label: node for node in nodes}
-        if self._nodes.keys().isdisjoint(new_nodes.keys()):
+        new_node_strings = {str(node) for node in nodes}
+        if self._node_strings.isdisjoint(new_node_strings):
+            self._node_strings.update(new_node_strings)
             self._nodes.update(new_nodes)
         else:
-            common_labels = list(self._nodes.keys() & new_nodes.keys())
+            common_strings = sorted(
+                list(self._node_strings & new_node_strings)
+            )
             raise ValueError(
-                "EnergySystem already contains Node(s) labeled: "
-                + ", ".join(common_labels)
+                "EnergySystem already contains Node(s) with the following"
+                + ' string representation: "'
+                + '", "'.join(common_strings)
+                + '". This can be because'
+                + " a) you try to add one Node more than once, "
+                + " b) multiple Nodes have identical labels, or"
+                + " c) multiple labels have the same string representation."
             )
         self._nodes.update(new_nodes)
         for n in nodes:
