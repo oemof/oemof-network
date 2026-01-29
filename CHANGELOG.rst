@@ -34,7 +34,10 @@ Changelog
 * Node access using `energy_system.node[label]` is no longer experimental
 * EnergySystem.add(node) will now fail if node.label is already known
 
-0.5.2
------
+0.5.2 (2026-01-29)
+------------------
 
 * Nodes are now considered equal to their string representation
+* EnergySystem.add(node) will now fail if a node with the same
+  string representation is already known. (It turned out that just having
+  different labels sometimes is not good enough.)
