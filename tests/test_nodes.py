@@ -165,3 +165,20 @@ class TestNode:
             "heat",
             "sub_energy_system",
         )
+
+    def test_equality(self):
+        node1 = Node("node")
+        node2 = node1
+        node3 = Node("node_x")
+        assert node1 == node2
+        assert node1 != node3
+        assert node2 != node3
+
+        node1a = Node("node")
+        assert node1 == node1a
+
+        label = "node"
+        assert node1 == label
+
+        label = "node_x"
+        assert node1 != label
