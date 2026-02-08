@@ -11,7 +11,7 @@ Overview
       - |docs|
     * - tests
       - | |tox-pytest| |tox-checks|
-        | |coveralls| |scrutinizer| |codacy|
+        | |coveralls| |codacy|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since| |packaging|
@@ -56,11 +56,6 @@ Overview
 .. |commits-since| image:: https://img.shields.io/github/commits-since/oemof/oemof-network/latest/dev
     :alt: Commits since latest release
     :target: https://github.com/oemof/oemof-network/compare/master...dev
-
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/quality/g/oemof/oemof-network/dev.svg
-    :alt: Scrutinizer Status
-    :target: https://scrutinizer-ci.com/g/oemof/oemof-network/
-
 
 .. end-badges
 
