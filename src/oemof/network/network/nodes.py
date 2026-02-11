@@ -65,11 +65,10 @@ class Node(Entity):
         self._outputs = Outputs(self)
         self._in_edges = set()
 
-        self.parent = parent_node
-
-        if self.parent is not None:
-            self._depth = self.parent.depth + 1
+        if parent_node is not None:
+            parent_node.add(self)
         else:
+            self.parent = None
             self._depth = 0
 
         self.__subnodes = []
@@ -210,7 +209,6 @@ class Node(Entity):
             *args,
             **kwargs,
         )
-        self.add(subnode)
         return subnode
 
     def _add_subnodes(self, node, **kwargs):

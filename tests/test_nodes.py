@@ -21,6 +21,9 @@ class TestNode:
         assert child.parent == parent
         assert child.depth == 1
 
+        assert child in parent.subnodes
+        assert len(parent.subnodes) == 1
+
     def test_init_with_custom_properties(self):
         """Initialisation with custom_properties"""
         props = {"custom_key": "custom_value"}
