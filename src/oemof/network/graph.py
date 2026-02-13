@@ -53,8 +53,7 @@ def create_nx_graph(
     >>> from oemof.network.network import Node
     >>> from oemof.network.energy_system import EnergySystem
     >>> import oemof.network.graph as graph
-    >>> datetimeindex = pd.date_range('1/1/2017', periods=3, freq='h')
-    >>> es = EnergySystem(timeindex=datetimeindex)
+    >>> es = EnergySystem()
     >>> b_gas = Node(label='b_gas')
     >>> bel1 = Node(label='bel1')
     >>> bel2 = Node(label='bel2')

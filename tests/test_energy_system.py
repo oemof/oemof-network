@@ -30,9 +30,13 @@ def test_ensys_init():
     ensys = EnergySystem(nodes=[node])
     assert node in ensys.nodes
 
-    with pytest.warns(FutureWarning):
+    with pytest.warns(FutureWarning, match="entities"):
         ensys = EnergySystem(entities=[node])
         assert node in ensys.nodes
+
+    for attr in ["results", "timeindex", "timeincrement", "temporal"]:
+        with pytest.warns(FutureWarning, match=attr):
+            EnergySystem(**{attr: 1})
 
 
 class TestDumpRestore:

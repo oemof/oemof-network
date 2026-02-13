@@ -18,8 +18,7 @@ from oemof.network.network.nodes import QualifiedLabel
 
 
 def test_duplicate_label():
-    datetimeindex = pd.date_range("1/1/2012", periods=12, freq="h")
-    es = EnergySystem(timeindex=datetimeindex)
+    es = EnergySystem()
     my_label1 = "test_01"
     my_label2 = "test_02"
     es.add(Node(label=my_label1))
@@ -33,8 +32,7 @@ def test_duplicate_label():
 
 
 def test_duplicate_qualified_label():
-    datetimeindex = pd.date_range("1/1/2012", periods=12, freq="h")
-    es = EnergySystem(timeindex=datetimeindex)
+    es = EnergySystem()
     my_label1 = QualifiedLabel(
         ("test_01",),
     )
