@@ -20,9 +20,10 @@ import pytest
 from networkx import DiGraph
 
 from oemof.network import Edge
+from oemof.network import EnergySystem
 from oemof.network import Node
 from oemof.network import graph
-from oemof.network.energy_system import EnergySystem
+from oemof.network.network.nodes import QualifiedLabel
 
 
 def test_ensys_init():
@@ -37,6 +38,38 @@ def test_ensys_init():
     for attr in ["results", "timeindex", "timeincrement", "temporal"]:
         with pytest.warns(FutureWarning, match=attr):
             EnergySystem(**{attr: 1})
+
+
+def test_duplicate_label():
+    es = EnergySystem()
+    my_label1 = "test_01"
+    my_label2 = "test_02"
+    es.add(Node(label=my_label1))
+    es.add(Node(label=my_label2))
+    msg = (
+        r"EnergySystem already contains Node\(s\) with the following string"
+        + r' representation: "test_01", "test_02"'
+    )
+    with pytest.raises(ValueError, match=msg):
+        es.add(Node(label=my_label1), Node(label=my_label2))
+
+
+def test_duplicate_qualified_label():
+    es = EnergySystem()
+    my_label1 = QualifiedLabel(
+        ("test_01",),
+    )
+    my_label2 = QualifiedLabel(
+        ("test_02",),
+    )
+    es.add(Node(label=my_label1))
+    es.add(Node(label=my_label2))
+    msg = (
+        r"EnergySystem already contains Node\(s\) with the following string"
+        + r" representation: \"\('test_01',\)\", \"\('test_02',\)\""
+    )
+    with pytest.raises(ValueError, match=msg):
+        es.add(Node(label=my_label1), Node(label=my_label2))
 
 
 class TestDumpRestore:
