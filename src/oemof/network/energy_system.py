@@ -72,10 +72,10 @@ class EnergySystem:
     >>> es.add(bus)
     >>> bus is es.groups['electricity']
     True
-    >>> es.dump()  # doctest: +ELLIPSIS
+    >>> es.dump("test.dump", consider_dpath=False)  # doctest: +ELLIPSIS
     'Attributes dumped to ...
     >>> es = EnergySystem()
-    >>> es.restore()  # doctest: +ELLIPSIS
+    >>> es.restore("test.dump", consider_dpath=False)  # doctest: +ELLIPSIS
     'Attributes restored from ...
     >>> bus is es.groups['electricity']
     False
