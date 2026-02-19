@@ -22,6 +22,7 @@ from collections import deque
 
 import blinker
 import dill as pickle
+import networkx
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
@@ -226,6 +227,24 @@ class EnergySystem:
             for i in n.inputs.keys():
                 if i not in self.nodes:
                     raise RuntimeError(error_message.format(n=n, i=i, o=n))
+
+    def to_networkx(
+        self,
+    ) -> networkx.DiGraph:
+        """
+        Create a `networkx.DiGraph` from the EnergySystem.
+        See https://networkx.org/documentation/ for more information.
+        """
+        graph = networkx.DiGraph()
+
+        for label in self._node_strings:
+            graph.add_node(label, label=label)
+
+        for n in self.nodes:
+            for i in n.inputs.keys():
+                graph.add_edge(str(i.label), str(n.label))
+
+        return graph
 
     # Begin: to be removed in a future version
     @staticmethod

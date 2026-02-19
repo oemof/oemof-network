@@ -348,18 +348,36 @@ class TestsEnergySystem:
             "Probable reason: `subscriber` didn't get called."
         ).format(subscriber.called)
 
-    def test_graph(self):
+    def test_graph_function(self):
         fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
-        my_graph = graph.create_nx_graph(self.es)
+        with pytest.warns(
+            FutureWarning,
+            match="use 'EnergySystem.to_nx_graph\\(\\)' instead.",
+        ):
+            my_graph = graph.create_nx_graph(self.es)
         assert isinstance(my_graph, DiGraph)
 
         # make sure that test does not pass because of pre-existing file
         assert not fpath.is_file()
 
         # create graph file
-        my_graph = graph.create_nx_graph(self.es, filename=fpath)
+        with pytest.warns(
+            FutureWarning,
+            match="use 'EnergySystem.to_nx_graph\\(\\)' instead.",
+        ):
+            my_graph = graph.create_nx_graph(self.es, filename=fpath)
         assert isinstance(my_graph, DiGraph)
         assert fpath.is_file()
 
         # clean up (delete graph file)
         fpath.unlink()
+
+    def test_grapf_export(self):
+        node0 = Node(label="node 0")
+        node1 = Node(label="node 1", inputs={node0: Edge()})
+        self.es.add(node0, node1)
+
+        my_graph = self.es.to_networkx()
+        assert isinstance(my_graph, DiGraph)
+        assert node0 in my_graph.nodes
+        assert node1 in my_graph.nodes
