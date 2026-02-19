@@ -240,9 +240,9 @@ class EnergySystem:
         for label in self._node_strings:
             graph.add_node(label, label=label)
 
-        for n in self.nodes:
-            for i in n.inputs.keys():
-                graph.add_edge(str(i.label), str(n.label))
+        edges = self.flows()
+        for s, t in edges:
+            graph.add_edge(str(s), str(t))
 
         return graph
 
