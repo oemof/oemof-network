@@ -230,6 +230,7 @@ class EnergySystem:
 
     def to_networkx(
         self,
+        add_implicit_edges: bool = False,
     ) -> networkx.DiGraph:
         """
         Create a `networkx.DiGraph` from the EnergySystem.
@@ -240,9 +241,23 @@ class EnergySystem:
         for label in self._node_strings:
             graph.add_node(label, label=label)
 
-        edges = self.flows()
+        explicit_edges = self.flows()
+        edges = set(explicit_edges)
+
+        if add_implicit_edges:
+            for s, t in explicit_edges:
+                graph.add_edge(str(s), str(t))
+                s_p = s.parent
+                while s_p is not None:
+                    edges.add((str(s_p), str(t)))
+                    s_p = s_p.parent
+                    t_p = t.parent
+                    while t_p is not None:
+                        edges.add((str(s_p), str(t_p)))
+                        t_p = t_p.parent
+
         for s, t in edges:
-            graph.add_edge(str(s), str(t))
+            graph.add_edge(s, t)
 
         return graph
 
