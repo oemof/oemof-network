@@ -230,6 +230,7 @@ class EnergySystem:
 
     def to_networkx(
         self,
+        *,
         add_implicit_edges: bool = False,
     ) -> networkx.DiGraph:
         """
