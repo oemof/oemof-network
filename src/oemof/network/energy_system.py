@@ -245,19 +245,31 @@ class EnergySystem:
         edges = set(explicit_edges)
 
         if add_implicit_edges:
-            for s, t in explicit_edges:
-                graph.add_edge(str(s), str(t))
-                s_p = s.parent
-                while s_p is not None:
-                    edges.add((str(s_p), str(t)))
-                    s_p = s_p.parent
-                    t_p = t.parent
-                    while t_p is not None:
-                        edges.add((str(s_p), str(t_p)))
-                        t_p = t_p.parent
+            # iterate through edges and collect parent nodes
+            for source, target in explicit_edges:
 
-        for s, t in edges:
-            graph.add_edge(s, t)
+                # parents and great parent of source
+                source_parent = source.parent
+
+                while source_parent is not None:
+                    edges.add((str(source_parent), str(target)))
+
+                    # parents and great parent of target
+                    target_parent = target.parent
+                    while target_parent is not None:
+                        edges.add((str(source_parent), str(target_parent)))
+                        target_parent = target_parent.parent
+                    source_parent = source_parent.parent
+
+                # parents and great parent of target
+                target_parent = target.parent
+
+                while target_parent is not None:
+                    edges.add((str(source), str(target_parent)))
+                    target_parent = target_parent.parent
+
+        for source, target in edges:
+            graph.add_edge(source, target)
 
         return graph
 

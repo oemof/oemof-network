@@ -372,7 +372,7 @@ class TestsEnergySystem:
         # clean up (delete graph file)
         fpath.unlink()
 
-    def test_grapf_export(self):
+    def test_graph_export(self):
         node0 = Node(label="node 0")
         node1 = Node(label="node 1", inputs={node0: Edge()})
         self.es.add(node0, node1)
@@ -381,3 +381,35 @@ class TestsEnergySystem:
         assert isinstance(my_graph, DiGraph)
         assert node0 in my_graph.nodes
         assert node1 in my_graph.nodes
+
+        assert (node0, node1) in my_graph.edges
+
+    def test_implicit_connections(self):
+        node0a = Node(label="node 0a")
+        node0b = node0a.subnode(Node, "node 0b")
+
+        # outbound from subnode
+        node1 = Node(label="node 1", inputs={node0b: Edge()})
+
+        # inbound to subnode
+        node2a = Node(label="node 2a")
+        node2b = Node(
+            label="node 2b",
+            parent_node=node2a,
+            inputs={node0b: Edge()},
+        )
+        self.es.add(node0b, node1, node2a)
+
+        graph = self.es.to_networkx()
+        assert len(graph.edges) == 2
+        assert (node0b, node1) in graph.edges
+        assert (node0b, node2b) in graph.edges
+
+        graph = self.es.to_networkx(add_implicit_edges=True)
+        assert len(graph.edges) == 6
+        assert (node0a, node1) in graph.edges
+        assert (node0b, node1) in graph.edges
+        assert (node0a, node2a) in graph.edges
+        assert (node0a, node2b) in graph.edges
+        assert (node0b, node2a) in graph.edges
+        assert (node0b, node2b) in graph.edges
