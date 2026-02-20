@@ -8,7 +8,7 @@ source =
 parallel = true
 omit =
     # deprecated, will be deleted
-    oemof/network/graph.py
+    src/oemof/network/graph.py
 
 [report]
 show_missing = true
