@@ -208,14 +208,66 @@ class EnergySystem:
     def nodes(self):
         return self._nodes.values()
 
-    def flows(self):
+    def flows(self) -> dict:
+        """Collects (explicit) flows in the EnergySystem.
+
+        Returns
+        -------
+        dict
+            keys are tuples (from_node, to_node),
+            values are the graph edges (typically called flows)
+        """
         return {
             (source, target): source.outputs[target]
             for source in self.nodes
             for target in source.outputs
         }
 
+    def implicit_flows(self) -> set[tuple]:
+        """Collects implicit flows in the EnergySystem.
+
+        Returns
+        -------
+        set
+            A set of pairs (from_node, to_node) representing flows
+            from and to parent nodes the nodes explicit flows proint from/to.
+        """
+        edges = set()
+
+        # iterate through edges and collect parent nodes
+        for source, target in self.flows():
+
+            # parents and great parent of source
+            source_parent = source.parent
+
+            while source_parent is not None:
+                edges.add((str(source_parent), str(target)))
+
+                # parents and great parent of target
+                target_parent = target.parent
+                while target_parent is not None:
+                    edges.add((str(source_parent), str(target_parent)))
+                    target_parent = target_parent.parent
+                source_parent = source_parent.parent
+
+            # parents and great parent of target
+            target_parent = target.parent
+
+            while target_parent is not None:
+                edges.add((str(source), str(target_parent)))
+                target_parent = target_parent.parent
+
+        return edges
+
     def check(self):
+        """Checks if all connected nodes are members of the EnergySystem
+
+        Raises
+        ------
+        RuntimeError
+            Telling that a node connected via a Flow
+            is not part of the EnergySystem
+        """
         error_message = (
             "Node {n} not part of EnergySystem but Flow ({i}, {o}) exists."
         )
@@ -234,8 +286,18 @@ class EnergySystem:
         add_implicit_edges: bool = False,
     ) -> networkx.DiGraph:
         """
-        Create a `networkx.DiGraph` from the EnergySystem.
-        See https://networkx.org/documentation/ for more information.
+            Create a `networkx.DiGraph` from the EnergySystem.
+            See https://networkx.org/documentation/ for more information.
+
+        Parameters
+        ----------
+        add_implicit_edges : bool
+            whether to add flows from/to subnodes to parent nodes
+
+        Returns
+        -------
+        networkx.DiGraph:
+            plain graph of the energy system
         """
         graph = networkx.DiGraph()
 
@@ -246,28 +308,7 @@ class EnergySystem:
         edges = set(explicit_edges)
 
         if add_implicit_edges:
-            # iterate through edges and collect parent nodes
-            for source, target in explicit_edges:
-
-                # parents and great parent of source
-                source_parent = source.parent
-
-                while source_parent is not None:
-                    edges.add((str(source_parent), str(target)))
-
-                    # parents and great parent of target
-                    target_parent = target.parent
-                    while target_parent is not None:
-                        edges.add((str(source_parent), str(target_parent)))
-                        target_parent = target_parent.parent
-                    source_parent = source_parent.parent
-
-                # parents and great parent of target
-                target_parent = target.parent
-
-                while target_parent is not None:
-                    edges.add((str(source), str(target_parent)))
-                    target_parent = target_parent.parent
+            edges.update(self.implicit_flows())
 
         for source, target in edges:
             graph.add_edge(source, target)
