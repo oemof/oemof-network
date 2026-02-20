@@ -275,10 +275,10 @@ class EnergySystem:
         for n in self.nodes:
             for o in n.outputs.keys():
                 if o not in self.nodes:
-                    raise RuntimeError(error_message.format(n=n, i=n, o=o))
+                    raise RuntimeError(error_message.format(n=o, i=n, o=o))
             for i in n.inputs.keys():
                 if i not in self.nodes:
-                    raise RuntimeError(error_message.format(n=n, i=i, o=n))
+                    raise RuntimeError(error_message.format(n=i, i=i, o=n))
 
     def to_networkx(
         self,

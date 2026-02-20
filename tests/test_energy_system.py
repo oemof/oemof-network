@@ -300,6 +300,7 @@ class TestsEnergySystem:
         node1 = Node(label="node1")
         node2 = Node(label="node2")
         node3 = Node(label="node3", inputs={node2: Edge()})
+        node4 = Node(label="node4")
         self.es.check()  # empty, no problem
 
         self.es.add(node0)
@@ -321,10 +322,23 @@ class TestsEnergySystem:
         self.es.check()  # graph still consistent
 
         self.es.add(node2)
-        with pytest.raises(RuntimeError, match="not part of EnergySystem"):
+        with pytest.raises(
+            RuntimeError,
+            match="node3 not part of EnergySystem",
+        ):
             self.es.check()  # if node 2 is present, node3 also needs to be
 
         self.es.add(node3)
+        self.es.check()  # Now, everything is fine.
+
+        node3.inputs[node4] = Edge()
+        with pytest.raises(
+            RuntimeError,
+            match="node4 not part of EnergySystem",
+        ):
+            self.es.check()  # node 3 has a flow from node 4
+
+        self.es.add(node4)
         self.es.check()  # Now, everything is fine.
 
     def test_that_node_additions_are_signalled(self):
