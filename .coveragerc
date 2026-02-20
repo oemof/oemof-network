@@ -5,8 +5,10 @@ source = src
 branch = true
 source =
     src
-    tests
 parallel = true
+omit =
+    # deprecated, will be deleted
+    oemof/network/graph.py
 
 [report]
 show_missing = true
