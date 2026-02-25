@@ -68,7 +68,7 @@ class Node(Entity):
         if parent_node is not None:
             parent_node.add(self)
         else:
-            self.parent = None
+            self._parent = None
             self._depth = 0
 
         self.__subnodes = []
@@ -147,10 +147,15 @@ class Node(Entity):
         """
         return tuple([sn for sn in self.__subnodes])
 
+    @property
+    def parent(self) -> Node:
+        """Get parent of this `Node`."""
+        return self._parent
+
     def add(self, *subnodes):
         """Add subnodes to this `Node`."""
         for subnode in subnodes:
-            subnode.parent = self
+            subnode._parent = self
             subnode._depth = self.depth + 1
             self.__subnodes.append(subnode)
             if self.__energy_system is not None:
