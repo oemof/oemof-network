@@ -16,8 +16,8 @@ SPDX-License-Identifier: MIT
 
 from pathlib import Path
 
+import networkx as nx
 import pytest
-from networkx import DiGraph
 
 from oemof.network import Edge
 from oemof.network import EnergySystem
@@ -369,7 +369,7 @@ class TestsEnergySystem:
             match="use 'EnergySystem.to_nx_graph\\(\\)' instead.",
         ):
             my_graph = graph.create_nx_graph(self.es)
-        assert isinstance(my_graph, DiGraph)
+        assert isinstance(my_graph, nx.DiGraph)
 
         # make sure that test does not pass because of pre-existing file
         assert not fpath.is_file()
@@ -380,7 +380,7 @@ class TestsEnergySystem:
             match="use 'EnergySystem.to_nx_graph\\(\\)' instead.",
         ):
             my_graph = graph.create_nx_graph(self.es, filename=fpath)
-        assert isinstance(my_graph, DiGraph)
+        assert isinstance(my_graph, nx.DiGraph)
         assert fpath.is_file()
 
         # clean up (delete graph file)
@@ -392,7 +392,7 @@ class TestsEnergySystem:
         self.es.add(node0, node1)
 
         my_graph = self.es.to_networkx()
-        assert isinstance(my_graph, DiGraph)
+        assert isinstance(my_graph, nx.DiGraph)
         assert node0 in my_graph.nodes
         assert node1 in my_graph.nodes
 
@@ -414,6 +414,8 @@ class TestsEnergySystem:
         )
         self.es.add(node0b, node1, node2a)
 
+        assert self.es.max_depth == 1
+
         graph = self.es.to_networkx()
         assert len(graph.edges) == 2
         assert (node0b, node1) in graph.edges
@@ -427,3 +429,70 @@ class TestsEnergySystem:
         assert (node0a, node2b) in graph.edges
         assert (node0b, node2a) in graph.edges
         assert (node0b, node2b) in graph.edges
+
+    def test_max_depth(self):
+        node0a = Node(label="node 0a")
+        node1a = node0a.subnode(
+            Node, "node 1a", inputs={node0a: Edge()}, outputs={node0a: Edge()}
+        )
+        node2a = node1a.subnode(
+            Node, "node 2a", inputs={node1a: Edge()}, outputs={node1a: Edge()}
+        )
+        node3a = node2a.subnode(
+            Node, "node 3a", inputs={node2a: Edge()}, outputs={node2a: Edge()}
+        )
+
+        node0b = Node(label="node 0b")
+        node1b = node0b.subnode(Node, "node 1b")
+        node2b = node1b.subnode(Node, "node 2b")
+        node3b = node2b.subnode(Node, "node 3b")
+
+        self.es.add(node0a, node0b)
+
+        node0a.outputs[node3b] = Edge()
+        node1a.outputs[node1b] = Edge()
+        node1a.outputs[node2b] = Edge()
+
+        g3 = self.es.to_networkx(max_depth=3)
+        assert len(g3.nodes) == 8
+        assert len(g3.edges) == 9
+        assert (node0a, node3b) in g3.edges
+        assert (node1a, node1b) in g3.edges
+        assert (node1a, node2b) in g3.edges
+        assert (node0a, node1a) in g3.edges
+        assert (node1a, node0a) in g3.edges
+        assert (node1a, node2a) in g3.edges
+        assert (node2a, node1a) in g3.edges
+        assert (node2a, node3a) in g3.edges
+        assert (node3a, node2a) in g3.edges
+
+        g2 = self.es.to_networkx(max_depth=2)
+        assert len(g2.nodes) == 6
+        assert len(g2.edges) == 7
+        assert (node0a, node2b) in g2.edges
+        assert (node1a, node1b) in g2.edges
+        assert (node1a, node2b) in g2.edges
+        assert (node0a, node1a) in g2.edges
+        assert (node1a, node0a) in g2.edges
+        assert (node1a, node2a) in g2.edges
+        assert (node2a, node1a) in g2.edges
+
+        g1 = self.es.to_networkx(max_depth=1)
+        assert len(g1.nodes) == 4
+        assert len(g1.edges) == 4
+        assert (node0a, node1b) in g1.edges
+        assert (node1a, node1b) in g1.edges
+        assert (node0a, node1a) in g1.edges
+        assert (node1a, node0a) in g1.edges
+
+        g0 = self.es.to_networkx(max_depth=0)
+        assert len(g0.nodes) == 2
+        assert list(g0.edges) == [(node0a, node0b)]
+
+        g_1 = self.es.to_networkx(max_depth=-1)
+        g_2 = self.es.to_networkx(max_depth=-2)
+        g_3 = self.es.to_networkx(max_depth=-3)
+
+        assert nx.utils.graphs_equal(g_1, g3)
+        assert nx.utils.graphs_equal(g_2, g2)
+        assert nx.utils.graphs_equal(g_3, g1)

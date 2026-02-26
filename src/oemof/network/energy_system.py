@@ -208,6 +208,10 @@ class EnergySystem:
     def nodes(self):
         return self._nodes.values()
 
+    @property
+    def max_depth(self):
+        return max([node.depth for node in self.nodes])
+
     def flows(self) -> dict:
         """Collects (explicit) flows in the EnergySystem.
 
@@ -241,12 +245,12 @@ class EnergySystem:
             source_parent = source.parent
 
             while source_parent is not None:
-                edges.add((str(source_parent), str(target)))
+                edges.add((source_parent, target))
 
                 # parents and great parent of target
                 target_parent = target.parent
                 while target_parent is not None:
-                    edges.add((str(source_parent), str(target_parent)))
+                    edges.add((source_parent, target_parent))
                     target_parent = target_parent.parent
                 source_parent = source_parent.parent
 
@@ -254,7 +258,7 @@ class EnergySystem:
             target_parent = target.parent
 
             while target_parent is not None:
-                edges.add((str(source), str(target_parent)))
+                edges.add((source, target_parent))
                 target_parent = target_parent.parent
 
         return edges
@@ -283,14 +287,18 @@ class EnergySystem:
     def to_networkx(
         self,
         *,
+        max_depth: int = -1,
         add_implicit_edges: bool = False,
     ) -> networkx.DiGraph:
         """
-            Create a `networkx.DiGraph` from the EnergySystem.
-            See https://networkx.org/documentation/ for more information.
+        Create a `networkx.DiGraph` from the EnergySystem.
+        See https://networkx.org/documentation/ for more information.
 
         Parameters
         ----------
+        max_depth : int
+            maximum depth of subnodes to include.
+            Negative values start from the deepest level.
         add_implicit_edges : bool
             whether to add flows from/to subnodes to parent nodes
 
@@ -300,9 +308,12 @@ class EnergySystem:
             plain graph of the energy system
         """
         graph = networkx.DiGraph()
+        if max_depth < 0:
+            max_depth = self.max_depth + 1 + max_depth
 
-        for label in self._node_strings:
-            graph.add_node(label, label=label)
+        for node in self.nodes:
+            if node.depth <= max_depth:
+                graph.add_node(node, label=node.label)
 
         explicit_edges = self.flows()
         edges = set(explicit_edges)
@@ -311,7 +322,12 @@ class EnergySystem:
             edges.update(self.implicit_flows())
 
         for source, target in edges:
-            graph.add_edge(source, target)
+            while source.depth > max_depth:
+                source = source.parent
+            while target.depth > max_depth:
+                target = target.parent
+            if source != target:
+                graph.add_edge(source, target)
 
         return graph
 
