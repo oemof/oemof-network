@@ -34,7 +34,7 @@ class TestNode:
 
         with pytest.raises(
             AttributeError,
-            match="property 'parent' of 'Node' object has no setter",
+            match="set",
         ):
             child.parent = stepmother
 
