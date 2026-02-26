@@ -12,6 +12,7 @@ SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
 SPDX-License-Identifier: MIT
 """
 
+import sys
 import warnings
 from collections import deque
 
@@ -19,6 +20,9 @@ from .edge import Edge
 from .entity import Entity
 from .helpers import Inputs
 from .helpers import Outputs
+
+if sys.version_info < (3, 14)  # first version with proper annotations
+    from __future__ import annotations
 
 
 class QualifiedLabel(tuple):
