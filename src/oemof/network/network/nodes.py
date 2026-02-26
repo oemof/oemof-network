@@ -21,7 +21,7 @@ from .entity import Entity
 from .helpers import Inputs
 from .helpers import Outputs
 
-if sys.version_info < (3, 14)  # first version with proper annotations
+if sys.version_info < (3, 14):  # first version with proper annotations
     from __future__ import annotations
 
 
