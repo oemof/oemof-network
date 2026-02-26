@@ -12,6 +12,8 @@ SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
 SPDX-License-Identifier: MIT
 """
 
+from __future__ import annotations
+
 import warnings
 from collections import deque
 
