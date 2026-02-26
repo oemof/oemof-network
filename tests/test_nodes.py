@@ -1,3 +1,5 @@
+import pytest
+
 from oemof.network import Node
 
 
@@ -23,6 +25,18 @@ class TestNode:
 
         assert child in parent.subnodes
         assert len(parent.subnodes) == 1
+
+    def test_replace_parent_node(self):
+        """Initialisation with parent_node"""
+        parent = Node("parent")
+        child = Node("child", parent_node=parent)
+        stepmother = Node("new parent")
+
+        with pytest.raises(
+            AttributeError,
+            match="property 'parent' of 'Node' object has no setter",
+        ):
+            child.parent = stepmother
 
     def test_init_with_custom_properties(self):
         """Initialisation with custom_properties"""
