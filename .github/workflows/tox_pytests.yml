@@ -35,18 +35,22 @@ jobs:
     - name: Test with tox
       run: tox -e py3
       env:
-        COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
+        COVERAGE_FILE: ".coverage.${{ matrix.python-version }}"
+        # The file name prefix must be ".coverage." for "coverage combine"
+        # enabled by "MERGE_COVERAGE_FILES: true" to work. A "subprocess"
+        # error with the message "No data to combine" will be triggered if
+        # this prefix is not used.
 
     - name: Check test coverage
       run: coverage report -m --fail-under=85
       env:
-        COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
+        COVERAGE_FILE: ".coverage.${{ matrix.python-version }}"
 
     - name: Store coverage file
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.python_version }}
-        path: .coverage.${{ matrix.python_version }}
+        name: coverage-${{ matrix.python-version }}
+        path: .coverage.${{ matrix.python-version }}
         # By default hidden files/folders (i.e. starting with .) are ignored.
         # You may prefer (for security reasons) not setting this and instead
         # set COVERAGE_FILE above to not start with a `.`, but you cannot
