@@ -1,3 +1,5 @@
+# Additional copyright: Joachim Jablon, kieferro (MIT license)
+
 name: tox pytests
 
 on:
@@ -32,6 +34,57 @@ jobs:
         pip install tox tox-gh-actions coverage
     - name: Test with tox
       run: tox -e py3
+      env:
+        COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
 
     - name: Check test coverage
       run: coverage report -m --fail-under=85
+      env:
+        COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
+
+    - name: Store coverage file
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-${{ matrix.python_version }}
+        path: .coverage.${{ matrix.python_version }}
+        # By default hidden files/folders (i.e. starting with .) are ignored.
+        # You may prefer (for security reasons) not setting this and instead
+        # set COVERAGE_FILE above to not start with a `.`, but you cannot
+        # use "MERGE_COVERAGE_FILES: true" later on and need to manually
+        # combine the coverage file using "pipx run coverage combine"
+        include-hidden-files: true
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs: pytest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # This is optional since by default it's to true. The git
+          # operations in python-coverage-comment-action utilize the token
+          # stored by actions/checkout.
+          persist-credentials: true
+
+      - uses: actions/download-artifact@v4
+        id: download
+        with:
+          pattern: coverage-*
+          merge-multiple: true
+
+      - name: Coverage comment
+        id: coverage_comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_COVERAGE_FILES: true
+
+      - name: Store Pull Request comment to be posted
+        uses: actions/upload-artifact@v4
+        if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+        with:
+          name: python-coverage-comment-action
+          path: python-coverage-comment-action.txt
