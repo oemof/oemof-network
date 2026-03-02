@@ -6,7 +6,6 @@ branch = true
 relative_files = true
 source =
     src
-    tests
 parallel = true
 
 [report]
