@@ -11,7 +11,7 @@ Overview
       - |docs|
     * - tests
       - | |tox-pytest| |tox-checks|
-        | |coveralls| |codacy|
+        | |codacy|
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since| |packaging|
@@ -28,10 +28,6 @@ Overview
 .. |docs| image:: https://readthedocs.org/projects/oemof-network/badge/?style=flat
     :target: https://readthedocs.org/projects/oemof-network
     :alt: Documentation Status
-
-.. |coveralls| image:: https://coveralls.io/repos/oemof/oemof-network/badge.svg?branch=dev&service=github
-    :alt: Coverage Status
-    :target: https://coveralls.io/r/oemof/oemof-network?branch=dev
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
     :target: https://app.codacy.com/gh/oemof/oemof-network
