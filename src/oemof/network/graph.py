@@ -58,7 +58,7 @@ def create_nx_graph(
     )
 
     with warnings.catch_warnings():
-        # suppress ExperimentalFeatureWarnungs
+        # suppress ExperimentalFeatureWarning
         warnings.simplefilter("ignore")
 
         # construct graph from nodes and flows

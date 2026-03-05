@@ -18,6 +18,7 @@ from pathlib import Path
 
 import networkx as nx
 import pytest
+from oemof.tools.debugging import ExperimentalFeatureWarning
 
 from oemof.network import Edge
 from oemof.network import EnergySystem
@@ -421,7 +422,8 @@ class TestsEnergySystem:
         assert (node0b, node1) in graph.edges
         assert (node0b, node2b) in graph.edges
 
-        graph = self.es.to_networkx(add_implicit_edges=True)
+        with pytest.warns(ExperimentalFeatureWarning, match="implicit_flows"):
+            graph = self.es.to_networkx(add_implicit_edges=True)
         assert len(graph.edges) == 6
         assert (node0a, node1) in graph.edges
         assert (node0b, node1) in graph.edges

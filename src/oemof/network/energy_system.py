@@ -23,6 +23,7 @@ from collections import deque
 import blinker
 import dill as pickle
 import networkx
+from oemof.tools.debugging import ExperimentalFeatureWarning
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
@@ -236,6 +237,11 @@ class EnergySystem:
             A set of pairs (from_node, to_node) representing flows
             from and to parent nodes the nodes explicit flows proint from/to.
         """
+        warnings.warn(
+            "The function EnergySystem.implicit_flows() is experiemental."
+            + "It might change without further notice.",
+            ExperimentalFeatureWarning,
+        )
         edges = set()
 
         # iterate through edges and collect parent nodes
