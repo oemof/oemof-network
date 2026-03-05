@@ -2,7 +2,7 @@
 
 """Basic EnergySystem class
 
-This file is part of project oemof (github.com/oemof/oemof). It's copyrighted
+This file is part of project oemof.network. It's copyrighted
 by the contributors recorded in the version control history of the file,
 available from its original location oemof/oemof/energy_system.py
 
@@ -22,6 +22,8 @@ from collections import deque
 
 import blinker
 import dill as pickle
+import networkx
+from oemof.tools.debugging import ExperimentalFeatureWarning
 
 from oemof.network.groupings import DEFAULT as BY_UID
 from oemof.network.groupings import Entities
@@ -29,62 +31,41 @@ from oemof.network.groupings import Grouping
 
 
 class EnergySystem:
-    r"""Defining an energy supply system to use oemof's solver libraries.
-
-    Note
-    ----
-    The list of regions is not necessary to use the energy system with solph.
+    r"""Defining an energy system to use oemof's solver libraries.
 
     Parameters
     ----------
-    entities : list of :class:`Entity <oemof.core.network.Entity>`, optional
-        A list containing the already existing :class:`Entities
-        <oemof.core.network.Entity>` that should be part of the energy system.
-        Stored in the :attr:`entities` attribute.
-        Defaults to `[]` if not supplied.
-    timeindex : pandas.datetimeindex
-        Defines the time range and, if equidistant, the timeindex for the
-        energy system
-    timeincrement : numeric (sequence)
-        Define the timeincrement for the energy system
     groupings : list
         The elements of this list are used to construct :class:`Groupings
         <oemof.core.energy_system.Grouping>` or they are used directly if they
         are instances of :class:`Grouping <oemof.core.energy_system.Grouping>`.
-        These groupings are then used to aggregate the entities added to this
+        These groupings are then used to aggregate the Nodes added to this
         energy system into :attr:`groups`.
         By default, there'll always be one group for each :attr:`uid
-        <oemof.core.network.Entity.uid>` containing exactly the entity with the
-        given :attr:`uid <oemof.core.network.Entity.uid>`.
+        <oemof.network.Node.uid>` containing exactly the entity with the
+        given :attr:`uid <oemof.network.Node.uid>`.
         See the :ref:`examples <energy-system-examples>` for more information.
+    nodes : list of :class:`Node <oemof.core.network.Node>`, optional
+        A list containing the already existing :class:`Entities
+        <oemof.network.Node>` that should be part of the energy system.
+        Stored in the :attr:`nodes` attribute.
+        Defaults to `[]` if not supplied.
 
     Attributes
     ----------
-    entities : list of :class:`Entity <oemof.core.network.Entity>`
-        A list containing the :class:`Entities <oemof.core.network.Entity>`
+    nodes : list of :class:`Node <oemof.network.Node>`
+        A list containing the :class:`Entities <oemof.network.Node>`
         that comprise the energy system.
     groups : dict
-    results : dictionary
-        A dictionary holding the results produced by the energy system.
-        Is `None` while no results are produced.
-        Currently only set after a call to :meth:`optimize` after which it
-        holds the return value of :meth:`om.results()
-        <oemof.solph.optimization_model.OptimizationModel.results>`.
-        See the documentation of that method for a detailed description of the
-        structure of the results dictionary.
-    timeindex : pandas.index, optional
-        Define the time range and increment for the energy system. This is an
-        optional attribute but might be import for other functions/methods that
-        use the EnergySystem class as an input parameter.
 
 
     .. _energy-system-examples:
     Examples
     --------
 
-    Regardles of additional groupings, :class:`entities
-    <oemof.core.network.Entity>` will always be grouped by their :attr:`uid
-    <oemof.core.network.Entity.uid>`:
+    Regardles of additional groupings, :class:`Nodes
+    <oemof.network.Node>` will always be grouped by their :attr:`uid
+    <oemof.network.Node.uid>`:
 
     >>> from oemof.network.network import Node
     >>> es = EnergySystem()
@@ -92,10 +73,10 @@ class EnergySystem:
     >>> es.add(bus)
     >>> bus is es.groups['electricity']
     True
-    >>> es.dump()  # doctest: +ELLIPSIS
+    >>> es.dump("test.dump", consider_dpath=False)  # doctest: +ELLIPSIS
     'Attributes dumped to ...
     >>> es = EnergySystem()
-    >>> es.restore()  # doctest: +ELLIPSIS
+    >>> es.restore("test.dump", consider_dpath=False)  # doctest: +ELLIPSIS
     'Attributes restored from ...
     >>> bus is es.groups['electricity']
     False
@@ -103,10 +84,10 @@ class EnergySystem:
     "<oemof.network.network.nodes.Node: 'electricity'>"
 
     For simple user defined groupings, you can just supply a function that
-    computes a key from an :class:`entity <oemof.core.network.Entity>` and the
-    resulting groups will be sets of :class:`entities
+    computes a key from an :class:`entity <oemof.network.Node>` and the
+    resulting groups will be sets of :class:`Nodes
     <oemof.network.Entity>` stored under the returned keys, like in this
-    example, where :class:`entities <oemof.network.Entity>` are grouped by
+    example, where :class:`Nodes <oemof.network.Entity>` are grouped by
     their `type`:
 
     >>> es = EnergySystem(groupings=[type])
@@ -168,10 +149,16 @@ class EnergySystem:
         self._nodes = {}
         self._node_strings = set()
 
-        self.results = results
-        self.timeindex = timeindex
-        self.timeincrement = timeincrement
-        self.temporal = temporal
+        for attr in ["results", "timeindex", "timeincrement", "temporal"]:
+            if eval(attr) is not None:
+                warnings.warn(
+                    f"Setting {attr} of an EnergySystem at the level of"
+                    + " oemof.network is deprecated, as it is not used"
+                    + " by this library.",
+                    category=FutureWarning,
+                )
+                setattr(self, attr, eval(attr))
+
         self.add(*nodes)
 
     def add(self, *nodes):
@@ -222,26 +209,133 @@ class EnergySystem:
     def nodes(self):
         return self._nodes.values()
 
-    def flows(self):
+    @property
+    def max_depth(self):
+        return max([node.depth for node in self.nodes])
+
+    def flows(self) -> dict:
+        """Collects (explicit) flows in the EnergySystem.
+
+        Returns
+        -------
+        dict
+            keys are tuples (from_node, to_node),
+            values are the graph edges (typically called flows)
+        """
         return {
             (source, target): source.outputs[target]
             for source in self.nodes
             for target in source.outputs
         }
 
+    def implicit_flows(self) -> set[tuple]:
+        """Collects implicit flows in the EnergySystem.
+
+        Returns
+        -------
+        set
+            A set of pairs (from_node, to_node) representing flows
+            from and to parent nodes the nodes explicit flows proint from/to.
+        """
+        warnings.warn(
+            "The function EnergySystem.implicit_flows() is experiemental."
+            + "It might change without further notice.",
+            ExperimentalFeatureWarning,
+        )
+        edges = set()
+
+        # iterate through edges and collect parent nodes
+        for source, target in self.flows():
+
+            # parents and great parent of source
+            source_parent = source.parent
+
+            while source_parent is not None:
+                edges.add((source_parent, target))
+
+                # parents and great parent of target
+                target_parent = target.parent
+                while target_parent is not None:
+                    edges.add((source_parent, target_parent))
+                    target_parent = target_parent.parent
+                source_parent = source_parent.parent
+
+            # parents and great parent of target
+            target_parent = target.parent
+
+            while target_parent is not None:
+                edges.add((source, target_parent))
+                target_parent = target_parent.parent
+
+        return edges
+
     def check(self):
+        """Checks if all connected nodes are members of the EnergySystem
+
+        Raises
+        ------
+        RuntimeError
+            Telling that a node connected via a Flow
+            is not part of the EnergySystem
+        """
         error_message = (
-            "Node {n} not part of EnergySystem "
-            + "but Flow ({i}, {o}) exists."
+            "Node {n} not part of EnergySystem but Flow ({i}, {o}) exists."
         )
 
         for n in self.nodes:
             for o in n.outputs.keys():
                 if o not in self.nodes:
-                    raise RuntimeError(error_message.format(n=n, i=n, o=o))
+                    raise RuntimeError(error_message.format(n=o, i=n, o=o))
             for i in n.inputs.keys():
                 if i not in self.nodes:
-                    raise RuntimeError(error_message.format(n=n, i=i, o=n))
+                    raise RuntimeError(error_message.format(n=i, i=i, o=n))
+
+    def to_networkx(
+        self,
+        *,
+        max_depth: int = -1,
+        add_implicit_edges: bool = False,
+    ) -> networkx.DiGraph:
+        """
+        Create a `networkx.DiGraph` from the EnergySystem.
+        See https://networkx.org/documentation/ for more information.
+
+        Parameters
+        ----------
+        max_depth : int
+            maximum depth of subnodes to include.
+            Negative values start from the deepest level.
+        add_implicit_edges : bool
+            whether to add flows from/to subnodes to parent nodes
+
+        Returns
+        -------
+        networkx.DiGraph:
+            plain graph of the energy system
+        """
+        graph = networkx.DiGraph()
+        if max_depth < 0:
+            max_depth = self.max_depth + 1 + max_depth
+
+        for node in self.nodes:
+            if node.depth <= max_depth:
+                graph.add_node(node, label=node.label)
+
+        explicit_edges = self.flows()
+        edges = set(explicit_edges)
+
+        if add_implicit_edges:
+            edges.update(self.implicit_flows())
+
+        for source, target in edges:
+            while source.depth > max_depth:
+                source = source.parent
+            while target.depth > max_depth:
+                target = target.parent
+            if source != target:
+                graph.add_edge(source, target)
+
+        return graph
 
     # Begin: to be removed in a future version
     @staticmethod

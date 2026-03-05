@@ -4,6 +4,7 @@ from . import energy_system
 from . import graph
 from . import groupings
 from . import network
+from .energy_system import EnergySystem
 from .network import Bus
 from .network import Component
 from .network import Edge
@@ -20,6 +21,7 @@ __all__ = [
     "Entity",
     "energy_system",
     "graph",
+    "EnergySystem",
     "groupings",
     "network",
     "Node",

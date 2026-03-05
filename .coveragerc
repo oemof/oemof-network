@@ -7,6 +7,9 @@ relative_files = true
 source =
     src
 parallel = true
+omit =
+    # deprecated, will be deleted
+    src/oemof/network/graph.py
 
 [report]
 show_missing = true
