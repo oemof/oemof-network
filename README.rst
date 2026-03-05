@@ -29,8 +29,8 @@ Overview
     :target: https://readthedocs.org/projects/oemof-network
     :alt: Documentation Status
 
-.. |coverage| image:: https://raw.githubusercontent.com/oemof/oemof-demand/python-coverage-comment-action-data/badge.svg
-    :target: https://htmlpreview.github.io/?https://github.com/oemof/oemof-demand/blob/python-coverage-comment-action-data/htmlcov/index.html
+.. |coverage| image:: https://raw.githubusercontent.com/oemof/oemof-network/python-coverage-comment-action-data/badge.svg
+    :target: https://htmlpreview.github.io/?https://github.com/oemof/oemof-network/blob/python-coverage-comment-action-data/htmlcov/index.html
     :alt: Test Coverage Badge
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/39b648d0de3340da912c3dc48688a7b5
