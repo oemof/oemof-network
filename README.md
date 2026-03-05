@@ -4,16 +4,15 @@
 
 | Name                                      |    Stmts |     Miss |   Branch |   BrPart |      Cover |   Missing |
 |------------------------------------------ | -------: | -------: | -------: | -------: | ---------: | --------: |
-| src/oemof/network/\_\_init\_\_.py         |       14 |        0 |        0 |        0 |    100.00% |           |
-| src/oemof/network/energy\_system.py       |       98 |        1 |       34 |        1 |     98.48% |       244 |
-| src/oemof/network/graph.py                |       26 |        1 |       18 |        1 |     95.45% |       120 |
+| src/oemof/network/\_\_init\_\_.py         |       15 |        0 |        0 |        0 |    100.00% |           |
+| src/oemof/network/energy\_system.py       |      139 |        0 |       62 |        0 |    100.00% |           |
 | src/oemof/network/groupings.py            |       69 |        5 |       28 |        2 |     90.72% |180-182, 217, 221 |
 | src/oemof/network/network/\_\_init\_\_.py |        9 |        0 |        0 |        0 |    100.00% |           |
 | src/oemof/network/network/edge.py         |       43 |        1 |       12 |        2 |     94.55% |107, 117->exit |
 | src/oemof/network/network/entity.py       |       27 |        0 |        2 |        0 |    100.00% |           |
 | src/oemof/network/network/helpers.py      |       27 |        1 |        0 |        0 |     96.30% |        40 |
 | src/oemof/network/network/nodes.py        |      100 |        1 |       22 |        1 |     98.36% |       231 |
-| **TOTAL**                                 |  **413** |   **10** |  **116** |    **7** | **96.41%** |           |
+| **TOTAL**                                 |  **429** |    **8** |  **126** |    **5** | **97.30%** |           |
 
 
 ## Setup coverage badge
