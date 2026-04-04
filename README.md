@@ -8,7 +8,7 @@
 | src/oemof/network/energy\_system.py       |      139 |        0 |       62 |        0 |    100.00% |           |
 | src/oemof/network/groupings.py            |       69 |        5 |       28 |        2 |     90.72% |180-182, 217, 221 |
 | src/oemof/network/network/\_\_init\_\_.py |        9 |        0 |        0 |        0 |    100.00% |           |
-| src/oemof/network/network/edge.py         |       43 |        1 |       12 |        2 |     94.55% |107, 117->exit |
+| src/oemof/network/network/edge.py         |       43 |        1 |       12 |        2 |     94.55% |107, 117-\>exit |
 | src/oemof/network/network/entity.py       |       27 |        0 |        2 |        0 |    100.00% |           |
 | src/oemof/network/network/helpers.py      |       27 |        1 |        0 |        0 |     96.30% |        40 |
 | src/oemof/network/network/nodes.py        |      100 |        1 |       22 |        1 |     98.36% |       231 |
