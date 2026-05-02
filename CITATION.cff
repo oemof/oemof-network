@@ -17,5 +17,8 @@ authors:
 - family-names: "Maldonado Castro"
   given-names: "Diana"
   orcid: https://orcid.org/0000-0001-8373-8913
+- family-names: "Schürmann"
+  given-names: "Lennart"
+  orcid: https://orcid.org/0000-0002-5624-232X
 title: "oemof.network"
 url: "https://github.com/oemof/oemof-network"
