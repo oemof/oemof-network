@@ -70,8 +70,8 @@ class Node(Entity):
         self._parent = None
         self._depth = 0
 
-        self.__subnodes = []
-        self.__energy_system = None
+        self._subnodes = []
+        self._energy_system = None
 
         if parent_node is not None:
             parent_node.add(self)
@@ -147,7 +147,7 @@ class Node(Entity):
         It is deliberately provided as a tuple to prevent user to append
         subnodes other than with API methods.
         """
-        return tuple([sn for sn in self.__subnodes])
+        return tuple([sn for sn in self._subnodes])
 
     @property
     def parent(self) -> Node:
@@ -159,10 +159,10 @@ class Node(Entity):
         for subnode in subnodes:
             subnode._parent = self
             subnode._depth = self.depth + 1
-            self.__subnodes.append(subnode)
-            if self.__energy_system is not None:
-                self.__energy_system.add(subnode)
-                subnode.__energy_system = self.__energy_system
+            self._subnodes.append(subnode)
+            if self._energy_system is not None:
+                self._energy_system.add(subnode)
+                subnode._energy_system = self._energy_system
 
     def subnode(self, class_, local_name, *args, **kwargs):
         """Create a subnode and add it to this `Node`.
@@ -230,9 +230,9 @@ class Node(Entity):
         #    Explain why the `node` argument is necessary.
         if self is not node:
             raise ValueError("Call needs to be obj._add_subnodes(obj).")
-        self.__energy_system = kwargs["EnergySystem"]
+        self._energy_system = kwargs["EnergySystem"]
         deque(
-            (kwargs["EnergySystem"].add(sn) for sn in self.__subnodes),
+            (kwargs["EnergySystem"].add(sn) for sn in self._subnodes),
             maxlen=0,
         )
 
