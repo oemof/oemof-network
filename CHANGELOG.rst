@@ -48,3 +48,4 @@ Changelog
 * Properties "results", "timeindex", "timeincrement", and "temporal"
   of the class EnergySystem are now deprecated. They are not used (at least
   not at the level of oemof.network).
+* Fixed passing references to the EnergySystem when adding Nodes as subnodes.
