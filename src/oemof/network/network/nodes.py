@@ -67,14 +67,14 @@ class Node(Entity):
         self._outputs = Outputs(self)
         self._in_edges = set()
 
-        if parent_node is not None:
-            parent_node.add(self)
-        else:
-            self._parent = None
-            self._depth = 0
+        self._parent = None
+        self._depth = 0
 
         self.__subnodes = []
         self.__energy_system = None
+
+        if parent_node is not None:
+            parent_node.add(self)
 
         # TODO: Try to avoid this local `import`.
         from ..energy_system import EnergySystem
@@ -162,6 +162,7 @@ class Node(Entity):
             self.__subnodes.append(subnode)
             if self.__energy_system is not None:
                 self.__energy_system.add(subnode)
+                subnode.__energy_system = self.__energy_system
 
     def subnode(self, class_, local_name, *args, **kwargs):
         """Create a subnode and add it to this `Node`.
