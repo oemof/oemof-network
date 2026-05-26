@@ -11,8 +11,8 @@
 | src/oemof/network/network/edge.py         |       43 |        1 |       12 |        2 |     94.55% |107, 117-\>exit |
 | src/oemof/network/network/entity.py       |       27 |        0 |        2 |        0 |    100.00% |           |
 | src/oemof/network/network/helpers.py      |       27 |        1 |        0 |        0 |     96.30% |        40 |
-| src/oemof/network/network/nodes.py        |      100 |        1 |       22 |        1 |     98.36% |       231 |
-| **TOTAL**                                 |  **429** |    **8** |  **126** |    **5** | **97.30%** |           |
+| src/oemof/network/network/nodes.py        |      101 |        1 |       22 |        1 |     98.37% |       232 |
+| **TOTAL**                                 |  **430** |    **8** |  **126** |    **5** | **97.30%** |           |
 
 
 ## Setup coverage badge
