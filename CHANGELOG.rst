@@ -49,6 +49,7 @@ Changelog
   of the class EnergySystem are now deprecated. They are not used (at least
   not at the level of oemof.network).
 * Fixed passing references to the EnergySystem when adding Nodes as subnodes.
+* Add a method `connect_to_energy_system` to the Node class to assign a reference to the EnergySystem when a Node instance is added to it and to connect Node class methods with the signal sent when from the Energysystem when the Node instance is added.
 * The required python version is upped to 3.10. This prevents problems in
-  environment creation and moves with the end-of-life-timeline of python 
+  environment creation and moves with the end-of-life-timeline of python
   versions.
