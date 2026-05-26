@@ -185,7 +185,7 @@ class EnergySystem:
         self._nodes.update(new_nodes)
         for n in nodes:
             n.connect_to_energy_system(self)
-            self.signals[type(self).add].send(n, EnergySystem=self)
+            self.signals[type(self).add].send(n)
 
     signals[add] = blinker.signal(add)
 

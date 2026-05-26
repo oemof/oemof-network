@@ -350,7 +350,7 @@ class TestsEnergySystem:
 
         def subscriber(sender, **kwargs):
             assert sender is node
-            assert kwargs["EnergySystem"] is self.es
+            assert node._energy_system is self.es
             subscriber.called = True
 
         subscriber.called = False
