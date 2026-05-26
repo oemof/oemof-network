@@ -181,8 +181,10 @@ class EnergySystem:
                 + " b) multiple Nodes have identical labels, or"
                 + " c) multiple labels have the same string representation."
             )
+
         self._nodes.update(new_nodes)
         for n in nodes:
+            n.connect_to_energy_system(self)
             self.signals[type(self).add].send(n, EnergySystem=self)
 
     signals[add] = blinker.signal(add)
