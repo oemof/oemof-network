@@ -23,6 +23,7 @@ lib64
 venv*/
 pyvenv*/
 pip-wheel-metadata/
+uv.lock
 
 # Installer logs
 pip-log.txt
