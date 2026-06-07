@@ -108,12 +108,15 @@ class EnergySystem:
     signals = {}
     """A dictionary of blinker_ signals emitted by energy systems.
 
-    Currently only one signal is supported. This signal is emitted whenever a
-    `node <oemof.network.Node>` is `add`ed to an energy system. The
-    signal's `sender` is set to the `node <oemof.network.Node>` that got
-    added to the energy system so that `node <oemof.network.Node>` have an
-    easy way to only receive signals for when they themselves get added to an
-    energy system.
+    Currently two signals are supported: `add` and `remove`.
+    The `add` signal is emitted whenever a `node <oemof.network.Node>` is
+    `add`ed to an energy system. The signal's `sender` is set to the 
+    `node <oemof.network.Node>` that got added to the energy system so that
+    `node <oemof.network.Node>` have an easy way to only receive signals for
+    when they themselves get added to an energy system.
+    The `remove` signal is emitted whenever a `node <oemof.network.Node>` is
+    `remove`d from an energy system. The signal is structured in the same way
+    as the `add` signal.
 
     .. _blinker: https://blinker.readthedocs.io/en/stable/
     """
@@ -187,6 +190,32 @@ class EnergySystem:
 
     signals[add] = blinker.signal(add)
 
+    def remove(self, *nodes):
+        """Remove :class:`nodes <oemof.network.Node>` from this energy system."""
+        rm_nodes = {node.label: node for node in nodes}
+        rm_node_strings = {str(node) for node in nodes}
+        if self._node_strings.issuperset(rm_node_strings):
+            self._node_strings.difference_update(rm_node_strings)
+            for node_label in rm_nodes.keys():
+                del self._nodes[node_label]
+        else:
+            unknown_strings = sorted(
+                list(self._node_strings - rm_node_strings)
+            )
+            raise ValueError(
+                "EnergySystem does not contain Node(s) with the following"
+                + ' string representation: "'
+                + '", "'.join(unknown_strings)
+                + '". This can be because'
+                + " a) you try to remove one Node more than once, "
+                + " b) the Node has a different label than expected, or"
+                + " c) the Node was not added to the EnergySystem beforehand."
+            )
+        for n in nodes:
+            self.signals[type(self).remove].send(n, EnergySystem=self)
+
+    signals[remove] = blinker.signal(remove)
+
     @property
     def groups(self):
         gs = self._groups
@@ -246,7 +275,6 @@ class EnergySystem:
 
         # iterate through edges and collect parent nodes
         for source, target in self.flows():
-
             # parents and great parent of source
             source_parent = source.parent
 
