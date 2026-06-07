@@ -11,6 +11,7 @@ SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
+SPDX-FileCopyrightText: Lennart Schürmann <>
 
 SPDX-License-Identifier: MIT
 """
@@ -110,7 +111,7 @@ class EnergySystem:
 
     Currently two signals are supported: `add` and `remove`.
     The `add` signal is emitted whenever a `node <oemof.network.Node>` is
-    `add`ed to an energy system. The signal's `sender` is set to the 
+    `add`ed to an energy system. The signal's `sender` is set to the
     `node <oemof.network.Node>` that got added to the energy system so that
     `node <oemof.network.Node>` have an easy way to only receive signals for
     when they themselves get added to an energy system.
@@ -191,7 +192,9 @@ class EnergySystem:
     signals[add] = blinker.signal(add)
 
     def remove(self, *nodes):
-        """Remove :class:`nodes <oemof.network.Node>` from this energy system."""
+        """
+        Remove :class:`nodes <oemof.network.Node>` from this energy system.
+        """
         rm_nodes = {node.label: node for node in nodes}
         rm_node_strings = {str(node) for node in nodes}
         if self._node_strings.issuperset(rm_node_strings):

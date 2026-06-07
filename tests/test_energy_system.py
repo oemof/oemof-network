@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
+SPDX-FileCopyrightText: Lennart Schürmann <>
 
 SPDX-License-Identifier: MIT
 """
@@ -227,6 +228,19 @@ class TestsEnergySystem:
         # When both nodes are registred, also the Flow needs to be there.
         self.es.add(node2)
         assert node2 in self.es.nodes
+        assert (node1, node2) in self.es.flows().keys()
+
+    def test_remove_nodes(self):
+        assert not self.es.nodes
+        assert not self.es.flows()
+
+        node1 = Node(label="node1")
+        node2 = Node(label="node2", inputs={node1: Edge()})
+        self.es.add(node1, node2)
+        assert all([n in self.es.nodes for n in [node1, node2]])
+
+        self.es.remove(node2)
+        assert node2 not in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
 
     def test_enforce_unique_labels(self):
