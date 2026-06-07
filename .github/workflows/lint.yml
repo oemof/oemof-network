@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -28,7 +28,7 @@ jobs:
         run: pip install black flake8
 
       - name: Run linters
-        uses: samuelmeuli/lint-action@v1
+        uses: samuelmeuli/lint-action@v2
         with:
           github_token: ${{ secrets.github_token }}
           # Enable linters
