@@ -195,7 +195,7 @@ class EnergySystem:
         """
         Remove :class:`nodes <oemof.network.Node>` from this energy system.
         """
-        # perform BFS for subnodes
+        # perform BFS for subnodes if necessary
         if any([n.subnodes for n in nodes]):
             rm_nodes = dict()
             queue = deque(nodes)
@@ -213,8 +213,11 @@ class EnergySystem:
 
         if self._node_strings.issuperset(rm_node_strings):
             self._node_strings.difference_update(rm_node_strings)
-            for node_label in rm_nodes.keys():
+            for node_label, node in rm_nodes.items():
                 del self._nodes[node_label]
+                # remove reference to node in parent (if existent)
+                if node.parent is not None:
+                    node.parent._subnodes.remove(node)
         else:
             unknown_strings = sorted(
                 list(self._node_strings - rm_node_strings)
