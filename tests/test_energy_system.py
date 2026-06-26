@@ -305,6 +305,15 @@ class TestsEnergySystem:
         self.es.remove(leaf1)
         assert leaf1 not in subnetwork.subnodes
 
+    def test_energy_system_removal_subnode(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        leaf1 = subnetwork.subnode(Node, local_name="leaf1")
+        assert leaf1._energy_system == self.es
+
+        self.es.remove(leaf1)
+        assert leaf1._energy_system is None
+
     def test_add_populated_subnetwork(self):
         subnetwork = Node(label="root")
         leaf1 = subnetwork.subnode(Node, local_name="leaf1")

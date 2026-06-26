@@ -215,9 +215,9 @@ class EnergySystem:
             self._node_strings.difference_update(rm_node_strings)
             for node_label, node in rm_nodes.items():
                 del self._nodes[node_label]
-                # remove reference to node in parent (if existent)
                 if node.parent is not None:
                     node.parent._subnodes.remove(node)
+                node._energy_system = None
         else:
             unknown_strings = sorted(
                 list(self._node_strings - rm_node_strings)
@@ -233,6 +233,8 @@ class EnergySystem:
             )
         for n in rm_nodes.values():
             self.signals[type(self).remove].send(n, EnergySystem=self)
+        self._groups = {}
+        self._first_ungrouped_node_index_ = 0
 
     signals[remove] = blinker.signal(remove)
 
