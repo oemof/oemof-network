@@ -241,7 +241,18 @@ class TestsEnergySystem:
 
         self.es.remove(node2)
         assert node2 not in self.es.nodes
+        # flow stays present when node2 is deleted
         assert (node1, node2) in self.es.flows().keys()
+
+    def test_remove_subnodes(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        leaf1 = subnetwork.subnode(Node, local_name="leaf1")
+        assert leaf1 in self.es.nodes
+
+        self.es.remove(leaf1)
+        assert leaf1 not in self.es.nodes
+        assert subnetwork in self.es.nodes
 
     def test_enforce_unique_labels(self):
         node1 = Node(label="node1")
@@ -284,6 +295,15 @@ class TestsEnergySystem:
 
         self.es.remove(subnetwork)
         assert not bool(self.es.nodes)
+
+    def test_removal_from_parent_nodes_subnodes_list(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        leaf1 = subnetwork.subnode(Node, local_name="leaf1")
+        assert leaf1 in subnetwork.subnodes
+
+        self.es.remove(leaf1)
+        assert leaf1 not in subnetwork.subnodes
 
     def test_add_populated_subnetwork(self):
         subnetwork = Node(label="root")
