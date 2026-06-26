@@ -195,8 +195,22 @@ class EnergySystem:
         """
         Remove :class:`nodes <oemof.network.Node>` from this energy system.
         """
-        rm_nodes = {node.label: node for node in nodes}
-        rm_node_strings = {str(node) for node in nodes}
+        # perform BFS for subnodes
+        if any([n.subnodes for n in nodes]):
+            rm_nodes = dict()
+            queue = deque(nodes)
+            while queue:
+                node = queue.popleft()
+                if node.label in rm_nodes.keys():
+                    continue
+                rm_nodes[node.label] = node
+                for sn in node.subnodes:
+                    if sn.label not in rm_nodes.keys():
+                        queue.append(sn)
+        else:
+            rm_nodes = {node.label: node for node in nodes}
+        rm_node_strings = {str(node) for node in rm_nodes.values()}
+
         if self._node_strings.issuperset(rm_node_strings):
             self._node_strings.difference_update(rm_node_strings)
             for node_label in rm_nodes.keys():
@@ -214,7 +228,7 @@ class EnergySystem:
                 + " b) the Node has a different label than expected, or"
                 + " c) the Node was not added to the EnergySystem beforehand."
             )
-        for n in nodes:
+        for n in rm_nodes.values():
             self.signals[type(self).remove].send(n, EnergySystem=self)
 
     signals[remove] = blinker.signal(remove)
