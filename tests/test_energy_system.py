@@ -377,6 +377,31 @@ class TestsEnergySystem:
             "Probable reason: `subscriber` didn't get called."
         ).format(subscriber.called)
 
+    def test_that_node_removals_are_signalled(self):
+        """
+        When a node get `remove`d, a corresponding signal should be emitted.
+        """
+        node = Node(label="Node")
+        self.es.add(node)
+
+        def subscriber(sender, **kwargs):
+            assert sender is node
+            assert kwargs["EnergySystem"] is self.es
+            subscriber.called = True
+
+        subscriber.called = False
+
+        EnergySystem.signals[EnergySystem.remove].connect(
+            subscriber, sender=node
+        )
+        self.es.remove(node)
+        assert subscriber.called, (
+            "\nExpected `subscriber.called` to be `True`.\n"
+            "Got {}.\n"
+            "Probable reason: `subscriber` didn't get called upon node "
+            "removal."
+        ).format(subscriber.called)
+
     def test_graph_function(self):
         fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
         with pytest.warns(
