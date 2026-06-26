@@ -276,6 +276,15 @@ class TestsEnergySystem:
 
         assert self.es.node[("leaf1", "root")] == leaf1
 
+    def test_automatically_remove_subnodes(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        subnetwork.subnode(Node, local_name="leaf1")
+        assert len(self.es.nodes) == 2
+
+        self.es.remove(subnetwork)
+        assert not bool(self.es.nodes)
+
     def test_add_populated_subnetwork(self):
         subnetwork = Node(label="root")
         leaf1 = subnetwork.subnode(Node, local_name="leaf1")
