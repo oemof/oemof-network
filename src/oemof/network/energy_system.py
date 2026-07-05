@@ -195,7 +195,14 @@ class EnergySystem:
         """
         Remove :class:`nodes <oemof.network.Node>` from this energy system.
         """
-        # perform BFS for subnodes if necessary
+        # --- BEGIN: To be removed for versions >= v0.7 ---
+        warnings.warn(
+            "The function EnergySystem.remove() is experiemental."
+            + "It might change without further notice.",
+            ExperimentalFeatureWarning,
+        )
+        # --- END ---
+        # perform breadth first search to catch all subnodes for removal
         if any([n.subnodes for n in nodes]):
             rm_nodes = dict()
             queue = deque(nodes)
