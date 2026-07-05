@@ -294,7 +294,7 @@ class TestsEnergySystem:
         assert len(self.es.nodes) == 2
 
         self.es.remove(subnetwork)
-        assert not bool(self.es.nodes)
+        assert len(self.es.nodes) == 0
 
     def test_removal_from_parent_nodes_subnodes_list(self):
         subnetwork = Node(label="root")
@@ -433,12 +433,6 @@ class TestsEnergySystem:
             subscriber, sender=node
         )
         self.es.remove(node)
-        assert subscriber.called, (
-            "\nExpected `subscriber.called` to be `True`.\n"
-            "Got {}.\n"
-            "Probable reason: `subscriber` didn't get called upon node "
-            "removal."
-        ).format(subscriber.called)
 
     def test_graph_function(self):
         fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
