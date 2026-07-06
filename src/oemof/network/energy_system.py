@@ -195,7 +195,7 @@ class EnergySystem:
         """
         Remove :class:`nodes <oemof.network.Node>` from this energy system.
         """
-        # --- BEGIN: To be removed for versions >= v0.7 ---
+        # --- BEGIN: To be removed when Node removal (including its API) is considered stable
         warnings.warn(
             "The function EnergySystem.remove() is experiemental."
             + "It might change without further notice.",
