@@ -135,7 +135,6 @@ class TestDumpRestore:
         es = EnergySystem()
         with pytest.warns(
             match="Please use EnergySystem.from_file()",
-
         ):
             msg = es.restore(
                 filename,
@@ -161,7 +160,6 @@ class TestDumpRestore:
         es = EnergySystem()
         with pytest.warns(
             match="Please use EnergySystem.from_file()",
-
         ):
             with pytest.warns(
                 match="Parameter 'dpath' will be removed in a future",
@@ -213,7 +211,6 @@ class TestDumpRestore:
         es = EnergySystem()
         with pytest.warns(
             match="Please use EnergySystem.from_file()",
-
         ):
             with pytest.warns(
                 match="Default directory for oemof dumps will change",
