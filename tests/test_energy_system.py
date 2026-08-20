@@ -133,10 +133,14 @@ class TestDumpRestore:
         assert filename in msg
 
         es = EnergySystem()
-        msg = es.restore(
-            filename,
-            consider_dpath=False,
-        )
+        with pytest.warns(
+            match="Please use EnergySystem.from_file()",
+
+        ):
+            msg = es.restore(
+                filename,
+                consider_dpath=False,
+            )
 
         assert filename in msg
         assert len(es.nodes) == 2
@@ -156,9 +160,13 @@ class TestDumpRestore:
 
         es = EnergySystem()
         with pytest.warns(
-            match="Parameter 'dpath' will be removed in a future",
+            match="Please use EnergySystem.from_file()",
+
         ):
-            msg = es.restore(dpath="./")
+            with pytest.warns(
+                match="Parameter 'dpath' will be removed in a future",
+            ):
+                msg = es.restore(dpath="./")
 
         assert default_filename in msg
         assert len(es.nodes) == 2
@@ -179,9 +187,12 @@ class TestDumpRestore:
 
         es = EnergySystem()
         with pytest.warns(
-            match="Parameter 'dpath' will be removed in a future",
+            match="Please use EnergySystem.from_file()",
         ):
-            msg = es.restore(directory, filename)
+            with pytest.warns(
+                match="Parameter 'dpath' will be removed in a future",
+            ):
+                msg = es.restore(directory, filename)
 
         assert filename in msg
         assert len(es.nodes) == 2
@@ -201,9 +212,13 @@ class TestDumpRestore:
 
         es = EnergySystem()
         with pytest.warns(
-            match="Default directory for oemof dumps will change",
+            match="Please use EnergySystem.from_file()",
+
         ):
-            msg = es.restore()
+            with pytest.warns(
+                match="Default directory for oemof dumps will change",
+            ):
+                msg = es.restore()
 
         assert default_filename in msg
         assert len(es.nodes) == 2
