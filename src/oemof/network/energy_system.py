@@ -443,3 +443,12 @@ class EnergySystem:
         msg = f"Attributes restored from {filename}."
         logging.debug(msg)
         return msg
+
+    @classmethod
+    def from_file(
+        cls,
+        filename,
+    ):
+        rv = cls()
+        rv.__dict__ = pickle.load(open(filename, "rb"))
+        return rv
