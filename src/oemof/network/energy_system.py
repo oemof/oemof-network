@@ -11,6 +11,7 @@ SPDX-FileCopyrightText: Uwe Krien <uwe.krien@ifam.fraunhofer.de>
 SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
+SPDX-FileCopyrightText: Lennart Schürmann <>
 
 SPDX-License-Identifier: MIT
 """
@@ -108,12 +109,15 @@ class EnergySystem:
     signals = {}
     """A dictionary of blinker_ signals emitted by energy systems.
 
-    Currently only one signal is supported. This signal is emitted whenever a
-    `node <oemof.network.Node>` is `add`ed to an energy system. The
-    signal's `sender` is set to the `node <oemof.network.Node>` that got
-    added to the energy system so that `node <oemof.network.Node>` have an
-    easy way to only receive signals for when they themselves get added to an
-    energy system.
+    Currently two signals are supported: `add` and `remove`.
+    The `add` signal is emitted whenever a `node <oemof.network.Node>` is
+    `add`ed to an energy system. The signal's `sender` is set to the
+    `node <oemof.network.Node>` that got added to the energy system so that
+    `node <oemof.network.Node>` have an easy way to only receive signals for
+    when they themselves get added to an energy system.
+    The `remove` signal is emitted whenever a `node <oemof.network.Node>` is
+    `remove`d from an energy system. The signal is structured in the same way
+    as the `add` signal.
 
     .. _blinker: https://blinker.readthedocs.io/en/stable/
     """
@@ -187,6 +191,60 @@ class EnergySystem:
 
     signals[add] = blinker.signal(add)
 
+    def remove(self, *nodes):
+        """
+        Remove :class:`nodes <oemof.network.Node>` from this energy system.
+        """
+        # --- BEGIN: To be removed when Node removal (including API) is stable
+        warnings.warn(
+            "The function EnergySystem.remove() is experiemental."
+            + "It might change without further notice.",
+            ExperimentalFeatureWarning,
+        )
+        # --- END ---
+        # perform breadth first search to catch all subnodes for removal
+        if any([n.subnodes for n in nodes]):
+            rm_nodes = dict()
+            queue = deque(nodes)
+            while queue:
+                node = queue.popleft()
+                if node.label in rm_nodes.keys():
+                    continue
+                rm_nodes[node.label] = node
+                for sn in node.subnodes:
+                    if sn.label not in rm_nodes.keys():
+                        queue.append(sn)
+        else:
+            rm_nodes = {node.label: node for node in nodes}
+        rm_node_strings = {str(node) for node in rm_nodes.values()}
+
+        if self._node_strings.issuperset(rm_node_strings):
+            self._node_strings.difference_update(rm_node_strings)
+            for node_label, node in rm_nodes.items():
+                del self._nodes[node_label]
+                if node.parent is not None:
+                    node.parent._subnodes.remove(node)
+                node._energy_system = None
+        else:
+            unknown_strings = sorted(
+                list(self._node_strings - rm_node_strings)
+            )
+            raise ValueError(
+                "EnergySystem does not contain Node(s) with the following"
+                + ' string representation: "'
+                + '", "'.join(unknown_strings)
+                + '". This can be because'
+                + " a) you try to remove one Node more than once, "
+                + " b) the Node has a different label than expected, or"
+                + " c) the Node was not added to the EnergySystem beforehand."
+            )
+        for n in rm_nodes.values():
+            self.signals[type(self).remove].send(n, EnergySystem=self)
+        self._groups = {}
+        self._first_ungrouped_node_index_ = 0
+
+    signals[remove] = blinker.signal(remove)
+
     @property
     def groups(self):
         gs = self._groups
@@ -246,7 +304,6 @@ class EnergySystem:
 
         # iterate through edges and collect parent nodes
         for source, target in self.flows():
-
             # parents and great parent of source
             source_parent = source.parent
 

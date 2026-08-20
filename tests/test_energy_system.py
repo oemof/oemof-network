@@ -10,6 +10,7 @@ SPDX-FileCopyrightText: Simon Hilpert <>
 SPDX-FileCopyrightText: Cord Kaldemeyer <>
 SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-FileCopyrightText: Pierre-Francois Duc <pierre-francois@rl-institut.de>
+SPDX-FileCopyrightText: Lennart Schürmann <>
 
 SPDX-License-Identifier: MIT
 """
@@ -229,6 +230,30 @@ class TestsEnergySystem:
         assert node2 in self.es.nodes
         assert (node1, node2) in self.es.flows().keys()
 
+    def test_remove_nodes(self):
+        assert not self.es.nodes
+        assert not self.es.flows()
+
+        node1 = Node(label="node1")
+        node2 = Node(label="node2", inputs={node1: Edge()})
+        self.es.add(node1, node2)
+        assert all([n in self.es.nodes for n in [node1, node2]])
+
+        self.es.remove(node2)
+        assert node2 not in self.es.nodes
+        # flow stays present when node2 is deleted
+        assert (node1, node2) in self.es.flows().keys()
+
+    def test_remove_subnodes(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        leaf1 = subnetwork.subnode(Node, local_name="leaf1")
+        assert leaf1 in self.es.nodes
+
+        self.es.remove(leaf1)
+        assert leaf1 not in self.es.nodes
+        assert subnetwork in self.es.nodes
+
     def test_enforce_unique_labels(self):
         node1 = Node(label="node1")
         self.es.add(node1)
@@ -261,6 +286,33 @@ class TestsEnergySystem:
         assert len(self.es.nodes) == 3
 
         assert self.es.node[("leaf1", "root")] == leaf1
+
+    def test_automatically_remove_subnodes(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        subnetwork.subnode(Node, local_name="leaf1")
+        assert len(self.es.nodes) == 2
+
+        self.es.remove(subnetwork)
+        assert len(self.es.nodes) == 0
+
+    def test_removal_from_parent_nodes_subnodes_list(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        leaf1 = subnetwork.subnode(Node, local_name="leaf1")
+        assert leaf1 in subnetwork.subnodes
+
+        self.es.remove(leaf1)
+        assert leaf1 not in subnetwork.subnodes
+
+    def test_energy_system_removal_subnode(self):
+        subnetwork = Node(label="root")
+        self.es.add(subnetwork)
+        leaf1 = subnetwork.subnode(Node, local_name="leaf1")
+        assert leaf1._energy_system == self.es
+
+        self.es.remove(leaf1)
+        assert leaf1._energy_system is None
 
     def test_add_populated_subnetwork(self):
         subnetwork = Node(label="root")
@@ -362,6 +414,25 @@ class TestsEnergySystem:
             "Got {}.\n"
             "Probable reason: `subscriber` didn't get called."
         ).format(subscriber.called)
+
+    def test_that_node_removals_are_signalled(self):
+        """
+        When a node get `remove`d, a corresponding signal should be emitted.
+        """
+        node = Node(label="Node")
+        self.es.add(node)
+
+        def subscriber(sender, **kwargs):
+            assert sender is node
+            assert kwargs["EnergySystem"] is self.es
+            subscriber.called = True
+
+        subscriber.called = False
+
+        EnergySystem.signals[EnergySystem.remove].connect(
+            subscriber, sender=node
+        )
+        self.es.remove(node)
 
     def test_graph_function(self):
         fpath = Path(Path.home(), "test_graph_x345_efhu73.graphml")
