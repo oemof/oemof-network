@@ -52,3 +52,5 @@ Changelog
 * The required python version is upped to 3.10. This prevents problems in
   environment creation and moves with the end-of-life-timeline of python 
   versions.
+* Added new way to load EnergySystem instances:
+  `EnergySystem.from_file(filename)`.

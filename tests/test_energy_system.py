@@ -103,6 +103,23 @@ class TestDumpRestore:
         assert len(es.nodes) == 2
         assert isinstance(es.node["node0"], Node)
 
+    def test_dump_restore_from_file(self):
+        """Test dumping and restoring using 'from_file'."""
+
+        filename = "./es_test_dump.oemof"
+
+        msg = self.es.dump(
+            filename=filename,
+            consider_dpath=False,
+        )
+
+        assert filename in msg
+
+        es = EnergySystem.from_file(filename)
+
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
     def test_dump_restore_dpath_remapping(self):
         """Test dumping and restoring to and from current working directory."""
 
