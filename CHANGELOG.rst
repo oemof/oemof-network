@@ -54,3 +54,7 @@ Changelog
   versions.
 * Added new way to load EnergySystem instances:
   `EnergySystem.from_file(filename)`.
+
+0.5.4
+-----
+
