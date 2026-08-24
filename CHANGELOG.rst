@@ -42,8 +42,8 @@ Changelog
   string representation is already known. (It turned out that just having
   different labels sometimes is not good enough.)
 
-0.5.3
------
+0.5.3 (2026-08-24)
+------------------
 
 * Properties "results", "timeindex", "timeincrement", and "temporal"
   of the class EnergySystem are now deprecated. They are not used (at least
