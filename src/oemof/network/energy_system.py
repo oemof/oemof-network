@@ -429,6 +429,13 @@ class EnergySystem:
         consider_dpath : bool
             Use separate parameters for path (defualt: ~/.oemof/) and filename.
         """
+        warnings.warn(
+            "Using EnergySystem.restore(filename) to overwrite an existing "
+            + "EnergySystem instance is depreciated."
+            + " Please use EnergySystem.from_file(filename)"
+            + " instead to create a fresh EnergySystem based on the file.",
+            FutureWarning,
+        )
         logging.info(
             "Restoring attributes will overwrite existing attributes."
         )
@@ -443,3 +450,12 @@ class EnergySystem:
         msg = f"Attributes restored from {filename}."
         logging.debug(msg)
         return msg
+
+    @classmethod
+    def from_file(
+        cls,
+        filename,
+    ):
+        rv = cls()
+        rv.__dict__ = pickle.load(open(filename, "rb"))
+        return rv
