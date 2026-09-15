@@ -76,13 +76,6 @@ class Node(Entity):
         if parent_node is not None:
             parent_node.add(self)
 
-        # TODO: Try to avoid this local `import`.
-        from ..energy_system import EnergySystem
-
-        EnergySystem.signals[EnergySystem.add].connect(
-            self._add_subnodes, sender=self
-        )
-
         if inputs is None:
             inputs = {}
         if outputs is None:
@@ -153,6 +146,13 @@ class Node(Entity):
     def parent(self) -> Node:
         """Get parent of this `Node`."""
         return self._parent
+
+    def connect_to_energy_system(self, energy_system):
+        """"""
+        self._energy_system = energy_system
+        energy_system.signals[type(energy_system).add].connect(
+            self._add_subnodes, sender=self
+        )
 
     def add(self, *subnodes):
         """Add subnodes to this `Node`."""
@@ -230,9 +230,8 @@ class Node(Entity):
         #    Explain why the `node` argument is necessary.
         if self is not node:
             raise ValueError("Call needs to be obj._add_subnodes(obj).")
-        self._energy_system = kwargs["EnergySystem"]
         deque(
-            (kwargs["EnergySystem"].add(sn) for sn in self._subnodes),
+            (self._energy_system.add(sn) for sn in self._subnodes),
             maxlen=0,
         )
 
