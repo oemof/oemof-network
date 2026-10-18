@@ -57,4 +57,6 @@ Changelog
 
 0.5.4
 -----
-
+* It is now possible to remove nodes from the EnergySystem using the function
+  EnergySystem.remove(node).
+  
