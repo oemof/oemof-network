@@ -42,8 +42,8 @@ Changelog
   string representation is already known. (It turned out that just having
   different labels sometimes is not good enough.)
 
-0.5.3
------
+0.5.3 (2026-08-24)
+------------------
 
 * Properties "results", "timeindex", "timeincrement", and "temporal"
   of the class EnergySystem are now deprecated. They are not used (at least
@@ -52,5 +52,11 @@ Changelog
 * The required python version is upped to 3.10. This prevents problems in
   environment creation and moves with the end-of-life-timeline of python 
   versions.
+* Added new way to load EnergySystem instances:
+  `EnergySystem.from_file(filename)`.
+
+0.5.4
+-----
 * It is now possible to remove nodes from the EnergySystem using the function
   EnergySystem.remove(node).
+  

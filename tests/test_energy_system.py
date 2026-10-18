@@ -104,6 +104,23 @@ class TestDumpRestore:
         assert len(es.nodes) == 2
         assert isinstance(es.node["node0"], Node)
 
+    def test_dump_restore_from_file(self):
+        """Test dumping and restoring using 'from_file'."""
+
+        filename = "./es_test_dump.oemof"
+
+        msg = self.es.dump(
+            filename=filename,
+            consider_dpath=False,
+        )
+
+        assert filename in msg
+
+        es = EnergySystem.from_file(filename)
+
+        assert len(es.nodes) == 2
+        assert isinstance(es.node["node0"], Node)
+
     def test_dump_restore_dpath_remapping(self):
         """Test dumping and restoring to and from current working directory."""
 
@@ -117,10 +134,13 @@ class TestDumpRestore:
         assert filename in msg
 
         es = EnergySystem()
-        msg = es.restore(
-            filename,
-            consider_dpath=False,
-        )
+        with pytest.warns(
+            match="Please use EnergySystem.from_file()",
+        ):
+            msg = es.restore(
+                filename,
+                consider_dpath=False,
+            )
 
         assert filename in msg
         assert len(es.nodes) == 2
@@ -140,9 +160,12 @@ class TestDumpRestore:
 
         es = EnergySystem()
         with pytest.warns(
-            match="Parameter 'dpath' will be removed in a future",
+            match="Please use EnergySystem.from_file()",
         ):
-            msg = es.restore(dpath="./")
+            with pytest.warns(
+                match="Parameter 'dpath' will be removed in a future",
+            ):
+                msg = es.restore(dpath="./")
 
         assert default_filename in msg
         assert len(es.nodes) == 2
@@ -163,9 +186,12 @@ class TestDumpRestore:
 
         es = EnergySystem()
         with pytest.warns(
-            match="Parameter 'dpath' will be removed in a future",
+            match="Please use EnergySystem.from_file()",
         ):
-            msg = es.restore(directory, filename)
+            with pytest.warns(
+                match="Parameter 'dpath' will be removed in a future",
+            ):
+                msg = es.restore(directory, filename)
 
         assert filename in msg
         assert len(es.nodes) == 2
@@ -185,9 +211,12 @@ class TestDumpRestore:
 
         es = EnergySystem()
         with pytest.warns(
-            match="Default directory for oemof dumps will change",
+            match="Please use EnergySystem.from_file()",
         ):
-            msg = es.restore()
+            with pytest.warns(
+                match="Default directory for oemof dumps will change",
+            ):
+                msg = es.restore()
 
         assert default_filename in msg
         assert len(es.nodes) == 2
