@@ -13,6 +13,7 @@ SPDX-FileCopyrightText: Patrik Schönfeldt <patrik.schoenfeldt@dlr.de>
 SPDX-License-Identifier: MIT
 """
 
+from abc import abstractmethod
 from collections.abc import Hashable
 from collections.abc import Iterable
 from collections.abc import Mapping
@@ -126,6 +127,7 @@ class Grouping:
             if kw in kwargs:
                 setattr(self, kw, kwargs[kw])
 
+    @abstractmethod
     def key(self, node):
         """Obtain a key under which to store the group.
 
@@ -187,6 +189,7 @@ class Grouping:
             + "Possibly duplicate uids/labels?"
         )
 
+    @abstractmethod
     def filter(self, group):
         """
         :func:`Filter <builtins.filter>` the group returned by :meth:`value`
